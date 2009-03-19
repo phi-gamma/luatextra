@@ -22,7 +22,7 @@
   \fi
   \NeedsTeXFormat{LaTeX2e}
   \ProvidesPackage{luatextra}
-    [2009/02/26 v0.9 LuaTeX extra low-level macros]
+    [2009/03/19 v0.91 LuaTeX extra low-level macros]
   \RequirePackage{environ}
   \NewEnviron{luacode}{\luadirect{\BODY}}
   \newcommand\luaRequireModule[2][0]{\luadirect{luatextra.require_module([[#2]], [[#1]])}}
@@ -62,8 +62,6 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 }
 
 \def\luaUseModule#1{\luadirect{luatextra.use_module([[#1]])}}
-
-\luaUseModule{luamcallbacks}
 
 \newcount\luaattdefcounter
 \luaattdefcounter = 1
