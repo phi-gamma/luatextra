@@ -313,11 +313,11 @@ function luatextra.define_font(name, size)
     elseif ext == 'ttf' or ext == 'otf' or ext == 'ttc' then
         f = callback.call('open_otf_font', fontinfos)
     else
-        luatextra.font_load_error("unable to find font "..name)
+        luatextra.font_load_error("unable to determine the type of font "..name)
         f = luatextra.load_default_font(size)
     end
     if not f then
-        luatextra.font_load_error("unable to find font "..name)
+        luatextra.font_load_error("unable to load font "..name)
         f = luatextra.load_default_font(size)
     end
     callback.call('post_font_opening', f, fontinfos)
