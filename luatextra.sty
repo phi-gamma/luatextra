@@ -31,12 +31,13 @@
 \def\LuaTeX{Lua\TeX }
 \def\LuaLaTeX{Lua\LaTeX }
 
-\ifnum\luatexversion<40 
+\ifnum\luatexversion<36
   \def\directlua{\primitive\directlua0}
   \def\latelua{\primitive\latelua0}
   \def\luadirect{\primitive\directlua0}
   \def\lualate{\primitive\latelua0}
 \else
+  \directlua{tex.enableprimitives('',tex.extraprimitives())}
   \def\luadirect{\primitive\directlua}
   \def\lualate{\primitive\latelua}
 \fi
