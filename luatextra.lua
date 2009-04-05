@@ -204,16 +204,21 @@ luatextra.attributes = {}
 
 tex.attributenumber = luatextra.attributes
 
-function luatextra.attributedef(name, number)
+function luatextra.attributedef_from_tex(name, number)
     truename = name:gsub('[\\ ]', '')
     luatextra.attributes[truename] = tonumber(number)
+end
+
+function luatextra.newattribute(name)
+    tex.sprint('\\newluaattribute\\'..name)
+    return tex.attributenumber[name]
 end
 
 luatextra.catcodetables = {}
 
 tex.catcodetablenumber = luatextra.catcodetables
 
-function luatextra.catcodetabledef(name, number)
+function luatextra.catcodetabledef_from_tex(name, number)
     truename = name:gsub('[\\ ]', '')
     luatextra.catcodetables[truename] = tonumber(number)
 end
@@ -263,6 +268,12 @@ end
 
 function luatextra.default_pre_read(env)
     return env
+end
+
+do
+  if tex.luatexversion < 36 then
+      fontloader = fontforge
+  end
 end
 
 function luatextra.find_font(name)
