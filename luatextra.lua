@@ -303,6 +303,7 @@ function luatextra.define_font(name, size)
         size = size
         }
     callback.call('font_syntax', fontinfos)
+    name = fontinfos.name
     local path = fontinfos.path
     if not path then
         path = luatextra.find_font(name)
