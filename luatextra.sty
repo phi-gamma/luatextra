@@ -41,7 +41,7 @@
   \def\luadirect{\primitive\directlua}
   \def\lualate{\primitive\latelua}
 \fi
-\def\luaattribute{\primitive\attribute}
+\def\luaattribute{\attribute}
 \def\luaattributedef{\attributedef}
 \def\luaclose{\primitive\closelua}
 \def\luaclearmarks{\primitive\luaclearmarks}
@@ -76,7 +76,7 @@ See the module #1 documentation for explanation.^^J ...^^J}%
     \fi 
     \wlog{\string#1=\string\attribute\the\allocationnumber}%
     \luadirect{%
-      luatextra.attributedef([[\noexpand#1]], '\number\allocationnumber')}%
+      luatextra.attributedef_from_tex([[\noexpand#1]], '\number\allocationnumber')}%
   \else 
     \errmessage{No room for a new \string\attribute}%
   \fi
@@ -100,7 +100,7 @@ See the module #1 documentation for explanation.^^J ...^^J}%
     \allocationnumber=\luacatcodetabledefcounter
     \global\chardef#1=\allocationnumber
     \luadirect{%
-      luatextra.catcodetabledef([[\noexpand#1]], '\number\allocationnumber')}%
+      luatextra.catcodetabledef_from_tex([[\noexpand#1]], '\number\allocationnumber')}%
     \wlog{\string#1=\string\catcodetable\the\allocationnumber}%
   \else
     \errmessage{No room for a new \string\catcodetable}%
