@@ -1,3 +1,8 @@
+\expandafter\ifx\csname luaUseModule\endcsname\relax
+\else
+  \expandafter\endinput
+\fi
+
 %Loading of ifluatex first, to avoir \if errors:
 \expandafter\ifx\csname ProvidesPackage\endcsname\relax
   \expandafter\ifx\csname ifluatex\endcsname\relax
@@ -14,6 +19,7 @@
     \immediate\write16{}
     \errmessage{Package luatextra Error: This package must be used with LuaTeX}
   \fi
+  
   \def\luaRequireModule#1#2{\luadirect{luatextra.require_module([[#1]], [[#2]])}}
 \else
 % LaTeX:
