@@ -209,11 +209,6 @@ function luatextra.attributedef_from_tex(name, number)
     luatextra.attributes[truename] = tonumber(number)
 end
 
-function luatextra.newattribute(name)
-    tex.sprint('\\newluaattribute\\'..name)
-    return tex.attributenumber[name]
-end
-
 luatextra.catcodetables = {}
 
 tex.catcodetablenumber = luatextra.catcodetables
@@ -348,6 +343,10 @@ function luatextra.default_post_font(f, fontinfos)
     return true
 end
 
+function luatextra.register_font_callback()
+    callback.add('define_font', luatextra.define_font, 'luatextra.define_font')
+end
+
 do
     luatextra.use_module('luamcallbacks')
     callback.create('pre_read_file', 'simple', luatextra.default_pre_read)
@@ -357,7 +356,6 @@ do
     callback.create('font_syntax', 'simple', luatextra.default_font_syntax)
     callback.create('open_otf_font', 'first', luatextra.default_open_otf)
     callback.create('post_font_opening', 'simple', luatextra.default_post_font)
-    callback.add('define_font', luatextra.define_font, 'luatextra.define_font')
 
     if luatextrapath then
         texio.write(')')
