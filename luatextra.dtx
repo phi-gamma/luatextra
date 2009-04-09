@@ -1,3 +1,149 @@
+% \iffalse meta-comment
+%
+% Copyright (C) 2009 by Elie Roux <elie.roux@telecom-bretagne.eu>
+%
+% This work is under the CC0 license.
+%
+% This work consists of the main source file luamcallbacks.dtx
+% and the derived files
+%    luatextra.sty, luatextra.lua
+%    luatextra.drv, luatextra.pdf.
+%
+% Unpacking and documentation:
+%    pdflatex luatextra.dtx
+%
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%
+%
+%<*ignore>
+\begingroup
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: luatextra 2009/04/09 v0.92 Additional low level functions for LuaTeX}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+
+\preamble
+This is a generated file.
+
+Copyright (C) 2009 by Elie Roux <elie.roux@telecom-bretagne.eu>
+
+This work is under the CC0 license.
+
+This work consists of the main source file luainputenc.dtx
+and the derived files
+    luatextra.sty, luatextra.lua
+    luatextra.drv, luatextra.pdf
+
+\endpreamble
+
+\let\MetaPrefix\DoubleperCent
+
+
+\generate{%
+  \file{luatextra.drv}{\from{luatextra.dtx}{driver}}%
+  \file{luatextra.sty}{\from{luatextra.dtx}{package}}%
+}
+
+% The following hacks are to generate a lua file with lua comments starting by -- instead of %%
+
+\def\MetaPrefix{-- }
+
+\def\luapostamble{%
+  \MetaPrefix^^J%
+  \MetaPrefix\space End of File `\outFileName'.%
+}
+
+\def\currentpostamble{\luapostamble}%
+
+\generate{%
+  \usedir{tex/luatex/generic}%
+  \file{luatextra.lua}{\from{luatextra.dtx}{lua}}%%
+}
+
+\obeyspaces
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     luatextra.sty luatextra.lua}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{luaminimalotf.drv}%
+  [2009/04/09 v0.92 LuaTeX extra low-level macros.]%
+\documentclass{ltxdoc}
+\EnableCrossrefs
+\CodelineIndex
+\begin{document}
+  \DocInput{luatextra.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{0}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{luatextra.drv}
+%
+% \title{The \textsf{luatextra} package}
+% \date{2009/04/09 v0.92}
+% \author{Elie Roux \\ \texttt{elie.roux@telecom-bretagne.eu}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% TODO
+% \end{abstract}
+
+% \texttt{luatextra.sty} for \LaTeX .
+%
+% \iffalse
+%<*lua>
+% \fi
+%    \begin{macrocode}
 do
     local luatextrapath = kpse.find_file("luatextra.lua")
     if luatextrapath then
@@ -12,13 +158,13 @@ luatextra = {}
 
 module("luatextra", package.seeall)
 
-luatextra.modules = luatextra.modules or {}
+luatextra.modules = {}
 
 luatextra.modules['luatextra'] = {
-    version     = 0.91,
+    version     = 0.92,
     name        = "luatextra",
-    date        = "2009/03/19",
-    description = "Low level functions for LuaTeX basic usage",
+    date        = "2009/04/09",
+    description = "Additional low level functions for LuaTeX",
     author      = "Elie Roux",
     copyright   = "Elie Roux, 2009",
     license     = "CC0",
@@ -361,3 +507,211 @@ do
         texio.write(')')
     end
 end
+%    \end{macrocode}
+% \iffalse
+%</lua>
+% \fi
+%
+% \iffalse
+%<*package>
+% \fi
+%    \begin{macrocode}
+\csname ifluatextraloaded\endcsname
+\let\ifxetexloaded\endinput
+
+%Loading of ifluatex first, to avoir \if errors:
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+  \expandafter\ifx\csname ifluatex\endcsname\relax
+    \input ifluatex.sty
+  \fi
+\else
+  \RequirePackage{ifluatex}
+\fi
+
+% Loading:
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+% Plain:
+  \ifluatex\else 
+    \immediate\write16{}
+    \errmessage{Package luatextra Error: This package must be used with LuaTeX}
+  \fi
+  
+  \def\luaRequireModule#1#2{\luadirect{luatextra.require_module([[#1]], [[#2]])}}
+\else
+% LaTeX:
+  \ifluatex\else 
+    \PackageError{luatextra}{This package must be used with LuaTeX.}
+  \fi
+  \NeedsTeXFormat{LaTeX2e}
+  \ProvidesPackage{luatextra}
+    [2009/04/09 v0.92 LuaTeX extra low-level macros]
+  \RequirePackage{environ}
+  \NewEnviron{luacode}{\luadirect{\BODY}}
+  \newcommand\luaRequireModule[2][0]{\luadirect{luatextra.require_module([[#2]], [[#1]])}}
+\fi
+
+\def\LuaTeX{Lua\TeX }
+\def\LuaLaTeX{Lua\LaTeX }
+
+\ifnum\luatexversion<36
+  \def\directlua{\primitive\directlua0}
+  \def\latelua{\primitive\latelua0}
+  \def\luadirect{\primitive\directlua0}
+  \def\lualate{\primitive\latelua0}
+\else
+  \directlua{tex.enableprimitives('',tex.extraprimitives())}
+  \def\luadirect{\primitive\directlua}
+  \def\lualate{\primitive\latelua}
+\fi
+\def\luaattribute{\attribute}
+\def\luaattributedef{\attributedef}
+\def\luaclose{\primitive\closelua}
+\def\luaclearmarks{\primitive\luaclearmarks}
+\def\luanoligs{\primitive\noligs}
+\def\luanokerns{\primitive\nokerns}
+\def\luaformatname{\primitive\formatname}
+\def\luascantexttokens{\primitive\scantexttokens}
+\def\luacatcodetable{\catcodetable}
+\def\initluacatcodetable{\initcatcodetable}
+\def\saveluacatcodetable{\savecatcodetable}
+
+\luadirect{dofile(kpse.find_file("luatextra.lua"))}
+
+\def\luaModuleError#1#2{%
+  \errorcontextlines=0\relax
+  \immediate\write16{}%
+  \errmessage{Module #1 error: #2^^J^^J%
+See the module #1 documentation for explanation.^^J ...^^J}%
+}
+
+\def\luaUseModule#1{\luadirect{luatextra.use_module([[#1]])}}
+
+\newcount\luaattdefcounter
+\luaattdefcounter = 1
+
+\def\newluaattribute#1{%
+  \ifnum\luaattdefcounter<65535\relax
+    \global\advance\luaattdefcounter by 1\relax
+    \allocationnumber\luaattdefcounter
+    \ifluatex
+      \global\luaattributedef#1=\allocationnumber
+    \fi 
+    \wlog{\string#1=\string\attribute\the\allocationnumber}%
+    \luadirect{%
+      luatextra.attributedef_from_tex([[\noexpand#1]], '\number\allocationnumber')}%
+  \else 
+    \errmessage{No room for a new \string\attribute}%
+  \fi
+} 
+
+\def\setluaattribute#1#2{%
+  #1 = \numexpr#2\relax
+}
+
+\def\unsetluaattribute#1{%
+  #1 = -1\relax
+}
+
+\newcount\luacatcodetabledefcounter
+
+\luacatcodetabledefcounter = 1
+
+\def\newluacatcodetable#1{%
+  \ifnum\luacatcodetabledefcounter<1114110\relax % 0x10FFFF is maximal \chardef
+    \global\advance\luacatcodetabledefcounter by 1\relax
+    \allocationnumber=\luacatcodetabledefcounter
+    \global\chardef#1=\allocationnumber
+    \luadirect{%
+      luatextra.catcodetabledef_from_tex([[\noexpand#1]], '\number\allocationnumber')}%
+    \wlog{\string#1=\string\catcodetable\the\allocationnumber}%
+  \else
+    \errmessage{No room for a new \string\catcodetable}%
+  \fi
+}
+
+\expandafter\edef\csname ltxtra@AtEnd\endcsname{%
+  \catcode64 \the\catcode64\relax
+}
+
+\catcode 64=11\relax
+
+\expandafter\ifx\csname @tempcnta\endcsname\relax
+  \csname newcount\endcsname\@tempcnta
+\fi
+\expandafter\ifx\csname @tempcntb\endcsname\relax
+  \csname newcount\endcsname\@tempcntb
+\fi
+
+\def\luasetcatcoderange#1#2#3{%
+  \edef\luaSCR@temp{%
+    \noexpand\@tempcnta=\the\@tempcnta
+    \noexpand\@tempcntb=\the\@tempcntb
+    \noexpand\count@=\the\count@
+    \relax
+  }%
+  \@tempcnta=#1\relax
+  \@tempcntb=#2\relax
+  \count@=#3\relax
+  \loop\unless\ifnum\@tempcnta>\@tempcntb
+    \catcode\@tempcnta=\count@
+    \advance\@tempcnta by 1\relax
+  \repeat
+  \luaSCR@temp
+}
+
+\newluacatcodetable\CatcodeTableIniTeX
+\newluacatcodetable\CatcodeTableString
+\newluacatcodetable\CatcodeTableOther
+\newluacatcodetable\CatcodeTableLaTeX
+\initluacatcodetable\CatcodeTableIniTeX
+
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+
+\begingroup
+  \def\@makeother#1{\catcode#1=12\relax}%
+  \@firstofone{%
+    \luacatcodetable\CatcodeTableIniTeX
+    \begingroup
+      \luasetcatcoderange{0}{8}{15}%
+      \catcode9=10  % tab
+      \catcode11=15 %
+      \catcode12=13 % form feed
+      \luasetcatcoderange{14}{31}{15}%
+      \catcode35=6 % hash
+      \catcode36=3 % dollar
+      \catcode38=4 % ampersand
+      \catcode94=7 % circumflex
+      \catcode95=8 % underscore
+      \catcode123=1 % brace left
+      \catcode125=2 % brace right
+      \catcode126=13 % tilde
+      \catcode127=15 %
+      \saveluacatcodetable\CatcodeTableLaTeX
+    \endgroup
+    \@makeother{0}% nul
+    \@makeother{13}% carriage return
+    \@makeother{37}% percent
+    \@makeother{92}% backslash
+    \@makeother{127}%
+    \luasetcatcoderange{65}{90}{12}% A-Z
+    \luasetcatcoderange{97}{122}{12}% a-z
+    \saveluacatcodetable\CatcodeTableString
+    \@makeother{32}% space
+    \saveluacatcodetable\CatcodeTableOther
+  \endgroup
+}
+
+\def\ltxtra@RegisterFontCallback{
+  \luadirect{luatextra.register_font_callback()}
+}
+  
+\ltxtra@AtEnd
+%    \end{macrocode}
+% \iffalse
+%</package>
+% \fi
+% 
+% \Finale
+\endinput
