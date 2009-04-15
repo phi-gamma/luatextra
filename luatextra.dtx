@@ -6,10 +6,13 @@
 %
 % This work consists of the main source file luamcallbacks.dtx
 % and the derived files
-%    luatextra.sty, luatextra.lua
+%    luatextra.sty, luatextra.lua, luatextra-latex.tex,
 %    luatextra.drv, luatextra.pdf.
 %
-% Unpacking and documentation:
+% Unpacking:
+%    tex luatextra.dtx
+%
+% Documentation:
 %    pdflatex luatextra.dtx
 %
 %    The class ltxdoc loads the configuration file ltxdoc.cfg
@@ -32,7 +35,7 @@
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: luatextra 2009/04/09 v0.92 Additional low level functions for LuaTeX}
+\Msg{* Package: luatextra 2009/04/15 v0.93 Additional low level functions for LuaTeX}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -49,7 +52,7 @@ This work is under the CC0 license.
 
 This work consists of the main source file luainputenc.dtx
 and the derived files
-    luatextra.sty, luatextra.lua
+    luatextra.sty, luatextra.lua, luatextra-latex.tex,
     luatextra.drv, luatextra.pdf
 
 \endpreamble
@@ -85,7 +88,7 @@ and the derived files
 \Msg{* To finish the installation you have to move the following}
 \Msg{* files into a directory searched by TeX:}
 \Msg{*}
-\Msg{*     luatextra.sty luatextra.lua}
+\Msg{*     luatextra.sty luatextra-latex.tex luatextra.lua}
 \Msg{*}
 \Msg{* Happy TeXing!}
 \Msg{*}
@@ -99,7 +102,7 @@ and the derived files
 %<*driver>
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesFile{luaminimalotf.drv}%
-  [2009/04/09 v0.92 LuaTeX extra low-level macros.]%
+  [2009/04/15 v0.93 LuaTeX extra low-level macros.]%
 \documentclass{ltxdoc}
 \EnableCrossrefs
 \CodelineIndex
@@ -130,7 +133,7 @@ and the derived files
 % \GetFileInfo{luatextra.drv}
 %
 % \title{The \textsf{luatextra} package}
-% \date{2009/04/09 v0.92}
+% \date{2009/04/15 v0.93}
 % \author{Elie Roux \\ \texttt{elie.roux@telecom-bretagne.eu}}
 %
 % \maketitle
@@ -142,6 +145,10 @@ and the derived files
 % \tableofcontents
 %
 % \section{Documentation}
+%
+% \subsection{Preamble}
+%
+% This document is made for people wanting to understand how the package was made. For an introduction to the use of Lua\TeX\ with the formats Plain and \LaTeX , please read the document \texttt{luatex-additions.pdf} that you can find in your \TeX\ distribution (\TeX Live from version 2009) or on the CTAN.
 % 
 % \subsection{History of formats and engines}
 % 
@@ -600,7 +607,7 @@ end
 
 %    \end{macrocode}
 %
-% \subsection{Multiple callbacks on the \texttt{define\_font} callback}
+% \subsection{Multiple callbacks on the \texttt{define\_font} callback\label{sub:df}}
 %
 % The same principle is applied to the \texttt{define\_font} callback. The main difference is that this mechanism is not applied by default. The reason is that the callback most people will register in the \texttt{define\_font} callback is the one from Con\TeX t allowing the use of OT fonts. When the code will be more adapted (not so soon certainly), this mechanism will certainly be used, as it allows more flexibility in the font syntax, the OT font load mechanism, etc.
 %
@@ -725,11 +732,13 @@ end
 %<*package>
 % \fi
 %
+% \subsection{Initializations}
+%
 % First we prevent multiple loads of the file (useful for plain-\TeX ).
 %
 %    \begin{macrocode}
 \csname ifluatextraloaded\endcsname
-\let\ifxetexloaded\endinput
+\let\ifluatextraloaded\endinput
 
 %    \end{macrocode}
 %
@@ -773,7 +782,7 @@ end
   \newcommand\luaRequireModule[2][0]{\luadirect{luatextra.require_module([[#2]], [[#1]])}}
 %    \end{macrocode}
 %
-% We also require the package \textsf{etex} to be loaded. The \texttt{\string\input} is a hack that modifies some values in the register attribution scheme of $\varepsilon$-\TeX\ and remaps \texttt{\string\newcount} to \textsf{etex}'s \texttt{\string\globcount}. We have to do such a remapping in a separate file that Plain doesn't see, otherwise it outputs an error if we try to change \texttt{\string\newcount}.
+% We also require the package \textsf{etex} to be loaded. The \texttt{\string\input} is a hack that modifies some values in the register attribution scheme of $\varepsilon$-\TeX\ and remaps \texttt{\string\newcount} to \textsf{etex}'s \texttt{\string\globcount}. We have to do such a remapping in a separate file that Plain doesn't see, otherwise it outputs an error if we try to change \texttt{\string\newcount} (because it is an \texttt{\string\outer} macro). See section \ref{sub:latex} for the file content.
 %
 %    \begin{macrocode}
   \RequirePackage{etex}[1998/03/26]%
@@ -791,35 +800,94 @@ end
 
 %    \end{macrocode}
 %
-% Here we start renaming primitives.
+% \subsection{Primitives renaming}
 %
-% In the case of an old Lua\TeX\ version, we
+% Here we differenciate two very different cases: Lua\TeX\ version < 0.36 has no \texttt{tex.enableprimitives} function, and has support for multiple lua states, and for versions > 0.35, the \texttt{tex.enableprimitives} is provided, and the old \texttt{\string\directlua} syntax prints a warning.
+%
+% If we are in a recent version, \texttt{\string\luatexversion} may not me provided, so we check for it, and provide it if it's not present. See Lua\TeX\ manual for more details about providing primitives in recent Lua\TeX .
 %
 %    \begin{macrocode}
+
+\expandafter\ifx\csname luatexversion\endcsname\relax
+  \directlua{tex.enableprimitives('',{'luatexversion'})}
+\fi
+
 \ifnum\luatexversion<36
+%    \end{macrocode}
+%
+% For old versions, we simply rename the primitives. You can note that \texttt{\string\attribute} (and also others) have no \texttt{\string\primitive} before them, because it would make users unable to call \texttt{\string\global\string\luaattribute}, which is a strong restriction. With this method, we can call it, but if \texttt{\string\attribute} was defined before, this means that \texttt{\string\luaattribute} will get its meaning, which is dangerous. Note also that you cannot use multiple states.
+%
+%    \begin{macrocode}
   \def\directlua{\primitive\directlua0}
   \def\latelua{\primitive\latelua0}
   \def\luadirect{\primitive\directlua0}
   \def\lualate{\primitive\latelua0}
+  \def\luaattribute{\attribute}
+  \def\luaattributedef{\attributedef}
+  \def\luaclearmarks{\primitive\luaclearmarks}
+  \def\luaformatname{\primitive\formatname}
+  \def\luascantexttokens{\primitive\scantexttokens}
+  \def\luacatcodetable{\catcodetable}
 \else
-  \directlua{tex.enableprimitives('',tex.extraprimitives())}
+%    \end{macrocode}
+%
+% For newer versions, we first enable all primitives with their default name. Then we add a prefix to some. Note that with this method, \texttt{\string\luaattribute} will always have the good meaning (except, of course, if it was defined before, but I think we can call it perversion...).
+%
+%    \begin{macrocode}
+  
+  \directlua{tex.enableprimitives('lua', {'attribute'})}
+  \directlua{tex.enableprimitives('lua', {'attributedef'})}
+  \directlua{tex.enableprimitives('lua', {'clearmarks'})}
+  \directlua{tex.enableprimitives('lua', {'formatname'})}
+  \directlua{tex.enableprimitives('lua', {'scantexttokens'})}
+  \directlua{tex.enableprimitives('lua', {'catcodetable'})}
   \def\luadirect{\primitive\directlua}
   \def\lualate{\primitive\latelua}
 \fi
 
-\def\luaattribute{\attribute}
-\def\luaattributedef{\attributedef}
+%    \end{macrocode}
+%
+% Finally we add some common definitions that have lua inside their name, or that must remove their suffix.
+%
+%    \begin{macrocode}
+\def\initluacatcodetable{\primitive\initcatcodetable}
+\def\saveluacatcodetable{\primitive\savecatcodetable}
 \def\luaclose{\primitive\closelua}
-\def\luaclearmarks{\primitive\luaclearmarks}
-\def\luanoligs{\primitive\noligs}
-\def\luanokerns{\primitive\nokerns}
-\def\luaformatname{\primitive\formatname}
-\def\luascantexttokens{\primitive\scantexttokens}
-\def\luacatcodetable{\catcodetable}
-\def\initluacatcodetable{\initcatcodetable}
-\def\saveluacatcodetable{\savecatcodetable}
+
+%    \end{macrocode}
+%
+% We load the \texttt{lua} file.
+%
+%    \begin{macrocode}
 
 \luadirect{dofile(kpse.find_file("luatextra.lua"))}
+
+%    \end{macrocode}
+%
+% A small macro to register the \texttt{define\_font} callback from \textsf{luatextra}. See section \ref{sub:df} for more details.
+%
+%    \begin{macrocode}
+
+\def\ltxtra@RegisterFontCallback{
+  \luadirect{luatextra.register_font_callback()}
+}
+
+%    \end{macrocode}
+%
+% \subsection{Module handling}
+%
+% The \texttt{\string\luaModuleError} macro is called by the lua function \texttt{luatextra.module\_error}. It is necessary because we can't call directly \texttt{\string\errmessage} in lua.
+%
+%    \begin{macrocode}
+
+%    \end{macrocode}
+%
+% \subsection{Module handling}
+%
+% The \texttt{\string\luaModuleError} macro is called by the lua function \texttt{luatextra.module\_error}. It is necessary because we can't call directly \texttt{\string\errmessage} in lua. Then we define \texttt{\string\luaUseModule} that simply calls \texttt{luatextra.use\_module}. Remember that \texttt{\string\luaRequireModule} is defined at the beginning of this file.
+%
+%    \begin{macrocode}
+
 
 \def\luaModuleError#1#2{%
   \errorcontextlines=0\relax
@@ -830,31 +898,58 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 
 \def\luaUseModule#1{\luadirect{luatextra.use_module([[#1]])}}
 
+%    \end{macrocode}
+%
+% \subsection{Attributes handling}
+%
+% The most important macro here is \texttt{\string\newluaattribute} that allocates a new attribute, and adds it in the \texttt{tex.attributename} table (see \texttt{luatextra.attributedef\_from\_tex} for more details. It works just like the other \texttt{\string\new*} macros, we can allocate up to 65536 different attributes.
+%
+%    \begin{macrocode}
+
+
 \newcount\luaattdefcounter
 \luaattdefcounter = 1
 
 \def\newluaattribute#1{%
-  \ifnum\luaattdefcounter<65535\relax
-    \global\advance\luaattdefcounter by 1\relax
-    \allocationnumber\luaattdefcounter
-    \ifluatex
-      \global\luaattributedef#1=\allocationnumber
-    \fi
+  \ifnum\luaattdefcounter<65535\relax %
+    \global\advance\luaattdefcounter by 1\relax %
+    \allocationnumber\luaattdefcounter %
+    \ifluatex %
+      \global\luaattributedef#1=\allocationnumber %
+    \fi %
     \wlog{\string#1=\string\attribute\the\allocationnumber}%
     \luadirect{%
       luatextra.attributedef_from_tex([[\noexpand#1]], '\number\allocationnumber')}%
-  \else
+  \else %
     \errmessage{No room for a new \string\attribute}%
-  \fi
+  \fi %
 }
 
+%    \end{macrocode}
+%
+% Two convenient macros, one to set an attribute (basically just a wrapper), and another one to uset it. Unsetting attributes with this function is important, as the \texttt{unset} value may change, as it already has in the 0.37 version.
+%
+%    \begin{macrocode}
+
 \def\setluaattribute#1#2{%
-  #1 = \numexpr#2\relax
+  #1=\numexpr#2\relax %
 }
 
 \def\unsetluaattribute#1{%
-  #1 = -1\relax
+  \ifnum\luatexversion<37\relax %
+    #1=-1\relax %
+  \else %
+    #1=-"7FFFFFFF\relax %
+  \fi %
 }
+
+%    \end{macrocode}
+%
+% \subsection{Catcodetables handling}
+%
+% Here we allocate catcodetables the same way we handle attributes.
+%
+%    \begin{macrocode}
 
 \newcount\luacatcodetabledefcounter
 
@@ -862,16 +957,22 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 
 \def\newluacatcodetable#1{%
   \ifnum\luacatcodetabledefcounter<1114110\relax % 0x10FFFF is maximal \chardef
-    \global\advance\luacatcodetabledefcounter by 1\relax
-    \allocationnumber=\luacatcodetabledefcounter
-    \global\chardef#1=\allocationnumber
+    \global\advance\luacatcodetabledefcounter by 1\relax %
+    \allocationnumber=\luacatcodetabledefcounter %
+    \global\chardef#1=\allocationnumber %
     \luadirect{%
       luatextra.catcodetabledef_from_tex([[\noexpand#1]], '\number\allocationnumber')}%
     \wlog{\string#1=\string\catcodetable\the\allocationnumber}%
-  \else
+  \else %
     \errmessage{No room for a new \string\catcodetable}%
-  \fi
+  \fi %
 }
+
+%    \end{macrocode}
+%
+% A small patch to manage the catcode of \@ in Plain, and to get two new counters in Plain too.
+%
+%    \begin{macrocode}
 
 \expandafter\edef\csname ltxtra@AtEnd\endcsname{%
   \catcode64 \the\catcode64\relax
@@ -885,6 +986,12 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 \expandafter\ifx\csname @tempcntb\endcsname\relax
   \csname newcount\endcsname\@tempcntb
 \fi
+
+%    \end{macrocode}
+%
+% A macro that sets the catcode of a range of characters. The first parameter is the character number of the first character of the range, the second parameter is one for the last character, and the third parameter is the catcode we want them to have. 
+%
+%    \begin{macrocode}
 
 \def\luasetcatcoderange#1#2#3{%
   \edef\luaSCR@temp{%
@@ -902,6 +1009,19 @@ See the module #1 documentation for explanation.^^J ...^^J}%
   \repeat
   \luaSCR@temp
 }
+
+%    \end{macrocode}
+%
+% Finally we create several catcodetables that may be used by the user. These are:
+%
+% \begin{itemize}
+% \item \texttt{\string\CatcodeTableIniTeX}: the base \TeX\ catcodes
+% \item \texttt{\string\CatcodeTableString}: almost all characters have catcode 12
+% \item \texttt{\string\CatcodeTableOther}: all characters have catcode 12 (even space)
+% \item \texttt{\string\CatcodeTableLaTeX}: the \LaTeX\ classical catcodes
+% \end{itemize}
+%
+%    \begin{macrocode}
 
 \newluacatcodetable\CatcodeTableIniTeX
 \newluacatcodetable\CatcodeTableString
@@ -947,25 +1067,20 @@ See the module #1 documentation for explanation.^^J ...^^J}%
   \endgroup
 }
 
-\def\ltxtra@RegisterFontCallback{
-  \luadirect{luatextra.register_font_callback()}
-}
-
 \ltxtra@AtEnd
 %    \end{macrocode}
 % \iffalse
 %</package>
 % \fi
 %
-% \subsection{\texttt{luatextra-latex.sty}}
+% \section{\texttt{luatextra-latex.tex}\label{sub:latex}}
 %
-% This file is very small, it just changes the maximum values of allowed registers from 32768 to 65536, and remaps \texttt{\string\newcount} to \textsf{etex}'s \texttt{\string\globcount}.
+% This file is very small, it just changes the maximum values of allowed registers from 32768 to 65536, and remaps \texttt{\string\newcount} (and friends) to \textsf{etex}'s \texttt{\string\globcount}.
 %
 % \iffalse
-%</package>
+%<*latex>
 % \fi
 %    \begin{macrocode}
-\RequirePackage{etex}%
 \def\ltxtra@temp#1{%
 \ifnum\count27#1=32768 %
   \count27#1=65536 %
@@ -984,7 +1099,7 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 \let\newbox\globbox
 %    \end{macrocode}
 % \iffalse
-%</package>
+%</latex>
 % \fi
 %
 % 
