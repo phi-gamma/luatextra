@@ -808,9 +808,9 @@ end
 %
 %    \begin{macrocode}
 
-\expandafter\ifx\csname luatexversion\endcsname\relax
-  \directlua{tex.enableprimitives('',{'luatexversion'})}
-\fi
+\directlua{if tex.enableprimitives then
+  tex.enableprimitives('',{'luatexversion'})
+  end}
 
 \ifnum\luatexversion<36
 %    \end{macrocode}
@@ -818,15 +818,15 @@ end
 % For old versions, we simply rename the primitives. You can note that \texttt{\string\attribute} (and also others) have no \texttt{\string\primitive} before them, because it would make users unable to call \texttt{\string\global\string\luaattribute}, which is a strong restriction. With this method, we can call it, but if \texttt{\string\attribute} was defined before, this means that \texttt{\string\luaattribute} will get its meaning, which is dangerous. Note also that you cannot use multiple states.
 %
 %    \begin{macrocode}
-  \def\directlua{\primitive\directlua0}
-  \def\latelua{\primitive\latelua0}
-  \def\luadirect{\primitive\directlua0}
-  \def\lualate{\primitive\latelua0}
+  \def\directlua{\pdfprimitive\directlua0}
+  \def\latelua{\pdfprimitive\latelua0}
+  \def\luadirect{\pdfprimitive\directlua0}
+  \def\lualate{\pdfprimitive\latelua0}
   \def\luaattribute{\attribute}
   \def\luaattributedef{\attributedef}
-  \def\luaclearmarks{\primitive\luaclearmarks}
-  \def\luaformatname{\primitive\formatname}
-  \def\luascantexttokens{\primitive\scantexttokens}
+  \def\luaclearmarks{\pdfprimitive\luaclearmarks}
+  \def\luaformatname{\pdfprimitive\formatname}
+  \def\luascantexttokens{\pdfprimitive\scantexttokens}
   \def\luacatcodetable{\catcodetable}
 \else
 %    \end{macrocode}
@@ -841,8 +841,8 @@ end
   \directlua{tex.enableprimitives('lua', {'formatname'})}
   \directlua{tex.enableprimitives('lua', {'scantexttokens'})}
   \directlua{tex.enableprimitives('lua', {'catcodetable'})}
-  \def\luadirect{\primitive\directlua}
-  \def\lualate{\primitive\latelua}
+  \def\luadirect{\pdfprimitive\directlua}
+  \def\lualate{\pdfprimitive\latelua}
 \fi
 
 %    \end{macrocode}
@@ -850,9 +850,9 @@ end
 % Finally we add some common definitions that have lua inside their name, or that must remove their suffix.
 %
 %    \begin{macrocode}
-\def\initluacatcodetable{\primitive\initcatcodetable}
-\def\saveluacatcodetable{\primitive\savecatcodetable}
-\def\luaclose{\primitive\closelua}
+\def\initluacatcodetable{\pdfprimitive\initcatcodetable}
+\def\saveluacatcodetable{\pdfprimitive\savecatcodetable}
+\def\luaclose{\pdfprimitive\closelua}
 
 %    \end{macrocode}
 %
