@@ -804,13 +804,7 @@ end
 %
 % Here we differenciate two very different cases: Lua\TeX\ version < 0.36 has no \texttt{tex.enableprimitives} function, and has support for multiple lua states, and for versions > 0.35, the \texttt{tex.enableprimitives} is provided, and the old \texttt{\string\directlua} syntax prints a warning.
 %
-% If we are in a recent version, \texttt{\string\luatexversion} may not me provided, so we check for it, and provide it if it's not present. See Lua\TeX\ manual for more details about providing primitives in recent Lua\TeX .
-%
 %    \begin{macrocode}
-
-\directlua{if tex.enableprimitives then
-  tex.enableprimitives('',{'luatexversion'})
-  end}
 
 \ifnum\luatexversion<36
 %    \end{macrocode}
@@ -834,7 +828,6 @@ end
 % For newer versions, we first enable all primitives with their default name. Then we add a prefix to some. Note that with this method, \texttt{\string\luaattribute} will always have the good meaning (except, of course, if it was defined before, but I think we can call it perversion...).
 %
 %    \begin{macrocode}
-  
   \directlua{tex.enableprimitives('lua', {'attribute'})}
   \directlua{tex.enableprimitives('lua', {'attributedef'})}
   \directlua{tex.enableprimitives('lua', {'clearmarks'})}
@@ -1066,6 +1059,20 @@ See the module #1 documentation for explanation.^^J ...^^J}%
     \saveluacatcodetable\CatcodeTableOther
   \endgroup
 }
+
+%    \end{macrocode}
+%
+% We load \textsf{luaotfload} if we are in PDF mode. 
+%
+%    \begin{macrocode}
+
+\ifnum\pdfoutput>0
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \input luaotfload.sty
+  \else
+    \RequirePackage{luaotfload}
+  \fi
+\fi
 
 \ltxtra@AtEnd
 %    \end{macrocode}
