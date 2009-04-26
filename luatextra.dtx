@@ -475,7 +475,7 @@ luatextra.use_module('luaextra')
 %    \begin{macrocode}
 
 function luatextra.kpse_module_loader(mod)
-  local file = luatextra.find_module(mod)
+  local file = luatextra.find_module_file(mod)
   if file then
     local loader, error = loadfile(file)
     if loader then
@@ -1062,16 +1062,14 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 
 %    \end{macrocode}
 %
-% We load \textsf{luaotfload} if we are in PDF mode. 
+% We load \textsf{luaotfload}. 
 %
 %    \begin{macrocode}
 
-\ifnum\pdfoutput>0
-  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
-    \input luaotfload.sty
-  \else
-    \RequirePackage{luaotfload}
-  \fi
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+  \input luaotfload.sty
+\else
+  \RequirePackage{luaotfload}
 \fi
 
 \ltxtra@AtEnd

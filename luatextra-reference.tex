@@ -50,13 +50,11 @@
 
 This document describes, from the user or developer point of view, how to use the coherent set of packages \textsf{luatextra}, \textsf{luainputenc}, \textsf{luaotfload}, \textsf{luamcallbacks} and \textsf{luaextra}.
 
-If you are looking for documentation on the \LuaTeX\ engine, please refer to the file \texttt{luatexref-t.pdf}, but not that using these packages will slightly modify some \LuaTeX\ behaviours, especially the \texttt{callback} library.
+If you are looking for documentation on the \LuaTeX\ engine, please refer to the file \texttt{luatexref-t.pdf}, but note that using these packages will slightly modify some \LuaTeX\ behaviours, especially the \texttt{callback} library.
 
-If you want technical details about one of the packages, you can refer to its documentation. Each of them have a complete documentation in the file \texttt{package.pdf} with package being the name of the package.
+If you are looking for technical details about one of the packages, you can refer to its documentation. Each of them have a complete documentation in the file \texttt{package.pdf} with package being the name of the package.
 
 \tableofcontents
-
-\newpage
 
 \section{Introduction}
 
@@ -128,7 +126,7 @@ The \LuaTeX tra coherent set of packages contains:
 
 The main idea, as explained above, is to provide a safe way to use different packages that are not coherent, without loading several times the same code, or taking ressources (like attributes) already used by other packages.
 
-To do so, we have used a concept for lua files named ``module", inspired by the \LaTeX\ packages. \textbf{Warning:} the module concept described here comes as an extention to the base lua module concept. We advise not to use the base lua modules, but the \LuaTeX tra module system, as it provides more informations, prints informations in logs, etc. The \LuaTeX tra lua modules work basically like the \LaTeX\ packages: you can simply use them, or require them with a version number, etc.
+To do so, we have used a concept for lua files named ``module", inspired by the \LaTeX\ packages. \textbf{Warning:} the module concept described here comes as an extention to the base lua module concept. We advise not to use the base lua modules, but the \LuaTeX tra module system, as it provides more informations, prints informations in logs, etc. The \LuaTeX tra lua module system works basically like the \LaTeX\ package system: you can simply use them, or require them with a version number, etc.
 
 As explained above, another important function provided by \LuaTeX tra is attributes allocation with \texttt{\string\newluaattribute}.
 
@@ -140,9 +138,11 @@ In \LuaTeX tra we decided to adopt a simple naming convention: all macros start 
 
 \subsection{Plain and \LaTeX\ macros}
 
+The most useful macro provided by \textsf{luatextra} is certainly \texttt{\string\luadirect}, which is a wrapper for \texttt{\string\directlua}, but will keep the same signature whatever the \LuaTeX\ version. For example this macro works for \LuaTeX\ versions $<$ 0.36, and will most certainly work for future versions of \LuaTeX . It is advised to use this macro to keep the compatibility of your package with all versions of \LuaTeX . \texttt{\string\lualate} is also provided as a wrapper for \texttt{\string\latelua}.
+
 Some small but useful macros are \texttt{\string\LuaTeX} and \texttt{\string\LuaLaTeX} that produce \LaTeX\ and \LuaLaTeX .
 
-In PDF mode, \textsf{luatextra} automatically loads \textsf{luaotfload}, so you can open otf fonts directly, for instance \texttt{\string\font\string\foo = "LinLibertine.otf"\string\foo} will work! You can also pass options to the font opening, for example the different OTF options you want. These options are passed with the \XeTeX\ font syntax (briefly described in \texttt{XeTeX-reference.pdf}), for example if you want to open a font with the usual \TeX\ substitutions and ligatures, with also the font default ligatures, you can try \newline \texttt{\string\font\string\foo = "LinLibertine.otf;+tlig;+tsub;+liga;+rlig;"\string\foo}.
+\textsf{luatextra} automatically loads \textsf{luaotfload}, so you can open otf fonts directly, for instance \texttt{\string\font\string\foo = "LinLibertine.otf"\string\foo} will work. You can also pass options to the font opening, for example the different OTF options you want. These options are passed with the \XeTeX\ font syntax (briefly described in \texttt{XeTeX-reference.pdf}), for example if you want to open a font with the usual \TeX\ substitutions and ligatures, with also the font default ligatures, you can try \newline \texttt{\string\font\string\foo = "LinLibertine.otf;+tlig;+tsub;+liga;+rlig;"\string\foo}.
 
 \subsection{\LaTeX -only macros}
 
@@ -248,7 +248,7 @@ The most useful of these added functions is certainly \texttt{table.serialize} t
 \begin{verbatim}
 mypackage = { }
 
-luamplib.module = {
+mypackage.module = {
     name          = "mypackage",
     version       =  1.0,
     date          = "2009/03/08",
