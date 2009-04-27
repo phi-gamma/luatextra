@@ -1,0 +1,18 @@
+LuaTeXtra is a collection of three coherent packages:
+
+luatextra provides low-level functions for LuaTeX use with LaTeX and Plain, for
+instance the macro \newluaattribute. It also provides a way to use and register
+new lua modules, inspired by the LaTeX packages system.
+
+luamcallback provides a way to register several functions in a LuaTeX callback.
+
+luaextra provides extra lua functions useful for package development.
+
+These packages are really necessary if you want to take advantage of the new
+LuaTeX functions in a safe way.
+
+Note that this package automatically loads luaotfload.
+
+Please see the luatextra-reference.pdf documentation for more details.
+
+This package is developped on http://github.com/eroux/lualatex/tree/master .
