@@ -7,9 +7,11 @@
 % This work consists of the main source file luamcallbacks.dtx
 % and the derived files
 %    luamcallbacks.sty, luamcallbacks.tex, luamcallbacks.lua
-%    luamcallbacks.drv, luamcallbacks-test.tex, luamcallbacks.pdf.
+%    luamcallbacks-test.tex, luamcallbacks.pdf.
 %
-% Unpacking and documentation:
+% Unpacking:
+%    tex luamcallbacks.dtx
+% Documentation:
 %    pdflatex luamcallbacks.dtx
 %
 %    The class ltxdoc loads the configuration file ltxdoc.cfg
@@ -19,7 +21,14 @@
 %
 %<*ignore>
 \begingroup
-
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
@@ -40,16 +49,14 @@ This work is under the CC0 license.
 
 This work consists of the main source file luamcallbacks.dtx
 and the derived files
-  luamcallbacks.lua, luamcallbacks.drv, luamcallbacks-test.tex,
-  luamcallbacks.pdf.
+  luamcallbacks.lua, luamcallbacks-test.tex, luamcallbacks.pdf.
 
 \endpreamble
 
 \let\MetaPrefix\DoubleperCent
 
 \generate{%
-  \file{luamcallbacks.drv}{\from{luamcallbacks.dtx}{driver}}%
-  \usedir{doc/luatex/luamcallbacks}%
+  \usedir{doc/luatex/luatextra}%
   \file{luamcallbacks-test.tex}{\from{luamcallbacks.dtx}{test}}%
 }
 
@@ -65,7 +72,7 @@ and the derived files
 \def\currentpostamble{\luapostamble}%
 
 \generate{%
-  \usedir{luatex/lua/luamcallbacks}%
+  \usedir{tex/luatex/luatextra}%
   \file{luamcallbacks.lua}{\from{luamcallbacks.dtx}{lua}}%
 }
 
@@ -81,16 +88,15 @@ and the derived files
 \Msg{*}
 \Msg{************************************************************************}
 
-\endgroup
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
 %</ignore>
-% \iffalse
-%<driver>
-%<driver>\NeedsTeXFormat{LaTeX2e}
-%<driver>\ProvidesPackage{luamcallbacks.sty}
-%<driver>  [2009/03/10 v0.91 LuaTeX multiple callbacks package]
-%<driver>
-% \fi
 %<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{luamcallbacks.drv}
+  [2009/03/10 v0.91 LuaTeX multiple callbacks package]
 \documentclass{ltxdoc}
 \EnableCrossrefs
 \CodelineIndex

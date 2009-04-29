@@ -6,8 +6,7 @@
 %
 % This work consists of the main source file luamcallbacks.dtx
 % and the derived files
-%    luatextra.sty, luatextra.lua, luatextra-latex.tex,
-%    luatextra.drv, luatextra.pdf.
+%    luatextra.sty, luatextra.lua, luatextra-latex.tex, luatextra.pdf.
 %
 % Unpacking:
 %    tex luatextra.dtx
@@ -52,8 +51,7 @@ This work is under the CC0 license.
 
 This work consists of the main source file luainputenc.dtx
 and the derived files
-    luatextra.sty, luatextra.lua, luatextra-latex.tex,
-    luatextra.drv, luatextra.pdf
+    luatextra.sty, luatextra.lua, luatextra-latex.tex, luatextra.pdf
 
 \endpreamble
 
@@ -61,7 +59,7 @@ and the derived files
 
 
 \generate{%
-  \file{luatextra.drv}{\from{luatextra.dtx}{driver}}%
+  \usedir{tex/luatex/luatextra}%
   \file{luatextra.sty}{\from{luatextra.dtx}{package}}%
   \file{luatextra-latex.tex}{\from{luatextra.dtx}{latex}}%
 }
@@ -78,7 +76,7 @@ and the derived files
 \def\currentpostamble{\luapostamble}%
 
 \generate{%
-  \usedir{tex/luatex/generic}%
+  \usedir{tex/luatex/luatextra}%
   \file{luatextra.lua}{\from{luatextra.dtx}{lua}}%%
 }
 
