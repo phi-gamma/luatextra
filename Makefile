@@ -40,12 +40,12 @@ DO_PDFLATEX = pdflatex --interaction=batchmode $< >/dev/null
 DO_PDFLUALATEX = pdflualatex --interaction=batchmode $< >/dev/null
 DO_MAKEINDEX = makeindex -s gind.ist $(subst .dtx,,$<) >/dev/null 2>&1
 
-all: unpack doc
-world: all ctan
-ctan: $(CTAN_ZIP)
+all: $(GENERATED)
 doc: $(COMPILED)
 unpack: $(UNPACKED)
+ctan: $(CTAN_ZIP)
 tds: $(TDS_ZIP)
+world: all ctan
 
 %.pdf: %.dtx
 	$(DO_PDFLATEX)
@@ -82,10 +82,17 @@ $(TDS_ZIP): $(ALL_FILES)
 	@zip -9 $@ -r $(ALL_DIRS) >/dev/null
 	@$(RM) -r tex doc source
 
+.PHONY: manifest clean mrproper
+
+manifest: 
+	@echo "Source files:"
+	@echo $(SOURCE)
+	@echo "Derived files:"
+	@echo $(COMPILED) $(GENERATED)
+
 clean: 
-	@$(RM) -- *.log *.aux *.toc *.idx *.ind *.ilg *.out
+	@$(RM) -- *.log *.aux *.toc *.idx *.ind *.ilg
 
 mrproper: clean
 	@$(RM) -- $(GENERATED) $(ZIPS)
 
-.PHONY: clean mrproper
