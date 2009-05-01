@@ -223,9 +223,9 @@ module("luatextra", package.seeall)
 luatextra.modules = {}
 
 luatextra.modules['luatextra'] = {
-    version     = 0.92,
+    version     = 0.93,
     name        = "luatextra",
-    date        = "2009/04/09",
+    date        = "2009/04/15",
     description = "Additional low level functions for LuaTeX",
     author      = "Elie Roux",
     copyright   = "Elie Roux, 2009",
@@ -774,7 +774,7 @@ end
   \fi
   \NeedsTeXFormat{LaTeX2e}
   \ProvidesPackage{luatextra}
-    [2009/04/09 v0.92 LuaTeX extra low-level macros]
+    [2009/04/15 v0.93 LuaTeX extra low-level macros]
   \RequirePackage{environ}
   \NewEnviron{luacode}{\luadirect{\BODY}}
   \newcommand\luaRequireModule[2][0]{\luadirect{luatextra.require_module([[#2]], [[#1]])}}
