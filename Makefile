@@ -12,7 +12,8 @@ UNPACKED_MCB = luamcallbacks-test.tex luamcallbacks.lua
 UNPACKED_TEXTRA = luatextra-latex.tex luatextra.lua luatextra.sty 
 UNPACKED = $(UNPACKED_EXTRA) $(UNPACKED_MCB) $(UNPACKED_TEXTRA)
 COMPILED = $(DOC_DTX) $(DOC_TEX) 
-GENERATED = $(UNPACKED) $(COMPILED)
+# $(DOC_TEX) has a compiled version in the repository
+GENERATED = $(UNPACKED) $(DOC_DTX)
 SOURCE = $(DTX) $(SRC_TEX) README Makefile
 
 # Files grouped by installation location
@@ -22,7 +23,7 @@ SRCFILES = $(DTX) $(SRC_TEX) Makefile
 
 # The following definitions should be equivalent
 # ALL_FILES = $(RUNFILES) $(DOCFILES) $(SRCFILES)
-ALL_FILES = $(GENERATED) $(SOURCE)
+ALL_FILES = $(GENERATED) $(SOURCE) $(DOC_TEX)
 
 # Installation locations
 FORMAT = luatex
@@ -40,7 +41,7 @@ DO_PDFLATEX = pdflatex --interaction=batchmode $< >/dev/null
 DO_PDFLUALATEX = pdflualatex --interaction=batchmode $< >/dev/null
 DO_MAKEINDEX = makeindex -s gind.ist $(subst .dtx,,$<) >/dev/null 2>&1
 
-all: $(GENERATED)
+all: $(GENERATED) $(DOC_TEX)
 doc: $(COMPILED)
 unpack: $(UNPACKED)
 ctan: $(CTAN_ZIP)
