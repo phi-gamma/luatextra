@@ -34,7 +34,7 @@
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: luatextra 2009/04/15 v0.93 Additional low level functions for LuaTeX}
+\Msg{* Package: luatextra 2009/04/15 v0.93 Extra low level functions for LuaTeX}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -64,7 +64,8 @@ and the derived files
   \file{luatextra-latex.tex}{\from{luatextra.dtx}{latex}}%
 }
 
-% The following hacks are to generate a lua file with lua comments starting by -- instead of %%
+% The following hacks are to generate a lua file with lua comments starting by
+% -- instead of %%
 
 \def\MetaPrefix{-- }
 
@@ -137,7 +138,8 @@ and the derived files
 % \maketitle
 %
 % \begin{abstract}
-% \textsf{luatextra} provides low-level addition to the formats Plain and \LaTeX\ to be used with the engine Lua\TeX.
+% \textsf{luatextra} provides low-level addition to the formats Plain and
+% \LaTeX\ to be used with the engine Lua\TeX.
 % \end{abstract}
 %
 % \tableofcontents
@@ -146,41 +148,97 @@ and the derived files
 %
 % \subsection{Preamble}
 %
-% This document is made for people wanting to understand how the package was made. For an introduction to the use of Lua\TeX\ with the formats Plain and \LaTeX , please read the document \texttt{luatextra-reference.pdf} that you can find in your \TeX\ distribution (\TeX Live from version 2009) or on the CTAN.
-% 
+% This document is made for people wanting to understand how the package was
+% made. For an introduction to the use of Lua\TeX\ with the formats Plain and
+% \LaTeX , please read the document \texttt{luatextra-reference.pdf} that you
+% can find in your \TeX\ distribution (\TeX Live from version 2009) or on the
+% CTAN.
+%
 % \subsection{History of formats and engines}
-% 
-% To understand this package, one must fist understand some historical choices in the \TeX\ world.
 %
-% A \TeX\ engine is a binary executable that provides some very low-level primitives, for example \texttt{\string\count} to set a counter to a certain value. A \TeX\ format is a macro package that provides higher-level macros for the user and the package developer, for example \texttt{\string\newcount} that allocates a new counter and gives it a name. Examples of engines are the old \TeX\ 82, $\varepsilon$-\TeX, pdf\TeX, Omega/Aleph, Lua\TeX\ and Xe\TeX. Examples of formats are Plain, \LaTeX\ and Con\TeX t. 
-% 
-% This distinction is hard to make as only one command is invoked, for example when you call the command \texttt{tex}, you often have no idea that the engine \TeX\ 82 is invoked with the format Plain.
+% To understand this package, one must fist understand some historical choices
+% in the \TeX\ world.
 %
-% Evolution is also something confusing in the \TeX\ world: engines often evolve, and new engines have always appeared, when most formats are frozen: the Plain and \LaTeX\ formats do not accept any new code to cope with the new engines. In theory, this package shouldn't exist, or at least shouldn't be a package, but its code should be integrated into a format. But as Plain and \LaTeX\ are frozen, people wanting to take advantage of the new engines have to use a package. 
+% A \TeX\ engine is a binary executable that provides some very low-level
+% primitives, for example \texttt{\string\count} to set a counter to a certain
+% value. A \TeX\ format is a macro package that provides higher-level macros
+% for the user and the package developer, for example
+% \texttt{\string\newcount} that allocates a new counter and gives it a name.
+% Examples of engines are the old \TeX\ 82, $\varepsilon$-\TeX, pdf\TeX,
+% Omega/Aleph, Lua\TeX\ and Xe\TeX. Examples of formats are Plain, \LaTeX\ and
+% Con\TeX t.
 %
-% This package is really necessary to take advantage of Lua\TeX\ as it provides things users are expecting a macro package to provide, for example \texttt{\string\newluaattribute} that acts like \texttt{\string\newcount} for lua attributes. It also enables all Lua\TeX\ primitives, that are disabled by default.
+% This distinction is hard to make as only one command is invoked, for example
+% when you call the command \texttt{tex}, you often have no idea that the
+% engine \TeX\ 82 is invoked with the format Plain.
+%
+% Evolution is also something confusing in the \TeX\ world: engines often
+% evolve, and new engines have always appeared, when most formats are frozen:
+% the Plain and \LaTeX\ formats do not accept any new code to cope with the
+% new engines. In theory, this package shouldn't exist, or at least shouldn't
+% be a package, but its code should be integrated into a format. But as Plain
+% and \LaTeX\ are frozen, people wanting to take advantage of the new engines
+% have to use a package.
+%
+% This package is really necessary to take advantage of Lua\TeX\ as it
+% provides things users are expecting a macro package to provide, for example
+% \texttt{\string\newluaattribute} that acts like \texttt{\string\newcount}
+% for lua attributes. It also enables all Lua\TeX\ primitives, that are
+% disabled by default.
 %
 % \subsection{choices made in this package}
 %
-% In the very long term, it is higly possible that Lua\TeX\ will replace pdf\TeX\ as the default \LaTeX\ engine, so it is necessary to keep backward compatibility. This lead us to the decision of renaming Lua\TeX -only primitives so that they all start by \texttt{lua}, like the pdf\TeX -only primitives start by \texttt{pdf}. Thus attributes become luaattributes, \texttt{\string\directlua} becomes \texttt{\string\luadirect}, etc. This also allows primitives to keep having the same name, even if their name is changed later at the engine level.
+% In the very long term, it is higly possible that Lua\TeX\ will replace
+% pdf\TeX\ as the default \LaTeX\ engine, so it is necessary to keep backward
+% compatibility. This lead us to the decision of renaming Lua\TeX -only
+% primitives so that they all start by \texttt{lua}, like the pdf\TeX -only
+% primitives start by \texttt{pdf}. Thus attributes become luaattributes,
+% \texttt{\string\directlua} becomes \texttt{\string\luadirect}, etc. This
+% also allows primitives to keep having the same name, even if their name is
+% changed later at the engine level.
 %
 % \subsection{registers allocation scheme}
 %
-% The default register allocation scheme of \LaTeX\ is old and limited (like the one of \TeX 82) to 256 values. The engine $\varepsilon$-\TeX allows more different registers (up to 32768), and Lua\TeX\ allows even 65536 ones. These new limits were not acknowledged by \LaTeX . A package \textsf{etex} was created for \LaTeX\ to extends the allocation scheme. \textsf{luatextra} loads \textsf{etex}, and overrides somes values to extend the allocation max number to 65536.
+% The default register allocation scheme of \LaTeX\ is old and limited (like
+% the one of \TeX 82) to 256 values. The engine $\varepsilon$-\TeX allows more
+% different registers (up to 32768), and Lua\TeX\ allows even 65536 ones.
+% These new limits were not acknowledged by \LaTeX . A package \textsf{etex}
+% was created for \LaTeX\ to extends the allocation scheme. \textsf{luatextra}
+% loads \textsf{etex}, and overrides somes values to extend the allocation max
+% number to 65536.
 %
 % \subsection{attributes}
-% 
-% Attributes are a new concept in Lua\TeX\ (see the Lua\TeX\ documentation for details). As the macro \texttt{\string\attribute} is certainly very common in the user's documents, they are renamed \texttt{luaattribute}s. This package provides a simple way to allocate new attributes, with the macro \texttt{\string\newluaattribute}. For more informations about attribute handling in lua, please read section \ref{sub:attr}.
-% 
+%
+% Attributes are a new concept in Lua\TeX\ (see the Lua\TeX\ documentation for
+% details). As the macro \texttt{\string\attribute} is certainly very common
+% in the user's documents, they are renamed \texttt{luaattribute}s. This
+% package provides a simple way to allocate new attributes, with the macro
+% \texttt{\string\newluaattribute}. For more informations about attribute
+% handling in lua, please read section \ref{sub:attr}.
+%
 % \subsection{Module system}
 %
-% Lua has some embedded module management, with the functions \texttt{module} and \texttt{require}. With this package we try get more control on the module system, by implementing something close to the \LaTeX 's \texttt{\string\usepackage} and \texttt{\string\RequirePackage} macros: the \texttt{\string\luaUseModule} and \texttt{\string\luaRequireModule} that act like them, but for lua files. The functions \texttt{module} and \texttt{require} should not be used, in profit of the lua functions \texttt{luatextra.provides\_module} and \texttt{luatextra.use\_module} or \texttt{luatextra.require\_module}.
+% Lua has some embedded module management, with the functions \texttt{module}
+% and \texttt{require}. With this package we try get more control on the
+% module system, by implementing something close to the \LaTeX 's
+% \texttt{\string\usepackage} and \texttt{\string\RequirePackage} macros: the
+% \texttt{\string\luaUseModule} and \texttt{\string\luaRequireModule} that act
+% like them, but for lua files. The functions \texttt{module} and
+% \texttt{require} should not be used, in profit of the lua functions
+% \texttt{luatextra.provides\_module} and \texttt{luatextra.use\_module} or
+% \texttt{luatextra.require\_module}.
 %
 % \subsection{Multiple callbacks handling}
 %
-% Lua\TeX\ has no way to register multiple functions in a callback. This package loads \textsf{luamcallbacks} that provides a safe way to do so. But the \textsf{luamcallbacks} package can't register several functions in some callbacks, like \texttt{open\_read\_file} and \texttt{define\_font}. This package takes advantage of the callback creation possibilities of \textsf{luamcallbacks} to split these callbacks into several ones that can agregate several functions. Thus it allows several packages to safely use the callbacks. See section \ref{sub:orf} for more details.
+% Lua\TeX\ has no way to register multiple functions in a callback. This
+% package loads \textsf{luamcallbacks} that provides a safe way to do so. But
+% the \textsf{luamcallbacks} package can't register several functions in some
+% callbacks, like \texttt{open\_read\_file} and \texttt{define\_font}. This
+% package takes advantage of the callback creation possibilities of
+% \textsf{luamcallbacks} to split these callbacks into several ones that can
+% agregate several functions. Thus it allows several packages to safely use
+% the callbacks. See section \ref{sub:orf} for more details.
 %
-% 
 % \section{\texttt{luatextra.lua}}
 %
 % \subsection{Initialization and internal functions}
@@ -189,9 +247,14 @@ and the derived files
 %<*lua>
 % \fi
 %
-% \TeX\ always prints the names of the files that are input. Unfortunatly it can't do so with lua files called with \texttt{dofile}. We will fix it with the \texttt{luatextra.use\_module} function, but in the meantime we print this information for the \texttt{luatextra.lua} file.
+%    \TeX\ always prints the names of the files that are input. Unfortunatly
+%    it can't do so with lua files called with \texttt{dofile}. We will fix it
+%    with the \texttt{luatextra.use\_module} function, but in the meantime we
+%    print this information for the \texttt{luatextra.lua} file.
 %
-% A change compared to usual filename printings is the fact that Lua\TeX\ does not print the \texttt{./} for files in the current directory. We keep this convention for lua filename printings.
+%    A change compared to usual filename printings is the fact that Lua\TeX\
+%    does not print the \texttt{./} for files in the current directory. We
+%    keep this convention for lua filename printings.
 %
 %    \begin{macrocode}
 do
@@ -200,13 +263,14 @@ do
         if luatextrapath:sub(1,2) == "./" then
             luatextrapath = luatextrapath:sub(3)
         end
-        texio.write(' ('..luatextrapath) 
+        texio.write(' ('..luatextrapath)
     end
 end
 
 %    \end{macrocode}
 %
-% We create the \texttt{luatextra} table that will contain all the functions and variables, and we register it as a normal lua module.
+%    We create the \texttt{luatextra} table that will contain all the
+%    functions and variables, and we register it as a normal lua module.
 %
 %    \begin{macrocode}
 
@@ -216,7 +280,11 @@ module("luatextra", package.seeall)
 
 %    \end{macrocode}
 %
-% We initiate the modules table that will contain informations about the loaded modules. And we register the \texttt{luatextra} module. The informations contained in the table describing the module are always the same, it can be taken as a template. See \texttt{luatextra.provides\_module} for more details.
+%    We initiate the modules table that will contain informations about the
+%    loaded modules. And we register the \texttt{luatextra} module. The
+%    informations contained in the table describing the module are always the
+%    same, it can be taken as a template. See
+%    \texttt{luatextra.provides\_module} for more details.
 %
 %    \begin{macrocode}
 
@@ -236,7 +304,8 @@ local format = string.format
 
 %    \end{macrocode}
 %
-% Here we define the warning and error functions specific to \texttt{luatextra}.
+%    Here we define the warning and error functions specific to
+%    \texttt{luatextra}.
 %
 %    \begin{macrocode}
 
@@ -258,7 +327,11 @@ end
 %
 % \subsection{Error, warning and info function for modules}
 %
-% Some module printing functions are provided, they have the same philosophy as the \LaTeX 's \texttt{\string\PackageError} and \texttt{\string\PackageWarning} macros: their first argument is the name of the module, and the second is the message. These functions are meant to be used by lua module writers.
+%    Some module printing functions are provided, they have the same
+%    philosophy as the \LaTeX 's \texttt{\string\PackageError} and
+%    \texttt{\string\PackageWarning} macros: their first argument is the name
+%    of the module, and the second is the message. These functions are meant
+%    to be used by lua module writers.
 %
 %    \begin{macrocode}
 
@@ -302,9 +375,10 @@ end
 
 %    \end{macrocode}
 %
-% \subsection{module loading and providing functions}
+%    \subsection{module loading and providing functions}
 %
-% A small function to find a lua module file according to its name, with or without the \texttt{.lua} at the end of the filename.
+%    A small function to find a lua module file according to its name, with or
+%    without the \texttt{.lua} at the end of the filename.
 %
 %    \begin{macrocode}
 
@@ -321,7 +395,8 @@ end
 
 %    \end{macrocode}
 %
-% A small patch, for the \texttt{module} function to work in this file. I can't understand why it doens't otherwise.
+%    A small patch, for the \texttt{module} function to work in this file. I
+%    can't understand why it doens't otherwise.
 %
 %    \begin{macrocode}
 
@@ -329,9 +404,12 @@ luatextra.module = module
 
 %    \end{macrocode}
 %
-% \begin{macro}{luatextra.use module}
+%    \begin{macro}{luatextra.use module}
 %
-% This macro is the one used to simply load a lua module file. It does not reload it if it's already loaded, and prints the filename in the terminal and the log. A lua module must call the macro \texttt{luatextra.provides\_module}.
+%    This macro is the one used to simply load a lua module file. It does not
+%    reload it if it's already loaded, and prints the filename in the terminal
+%    and the log. A lua module must call the macro
+%    \texttt{luatextra.provides\_module}.
 %
 %    \begin{macrocode}
 
@@ -361,9 +439,12 @@ end
 
 %    \end{macrocode}
 %
-% \end{macro}
+%    \end{macro}
 %
-% Some internal functions to convert a date into a number, and to determine if a string is a date. It is useful for \texttt{luatextra.require\_package} to understand if a user asks a version with a date or a version number.
+%    Some internal functions to convert a date into a number, and to determine
+%    if a string is a date. It is useful for
+%    \texttt{luatextra.require\_package} to understand if a user asks a
+%    version with a date or a version number.
 %
 %    \begin{macrocode}
 
@@ -393,9 +474,11 @@ luatextra.requiredversions = {}
 
 %    \end{macrocode}
 %
-% \begin{macro}{luatextra.require module}
+%    \begin{macro}{luatextra.require module}
 %
-% This function is like the \texttt{luatextra.use\_module} function, but can accept a second argument that checks for the version of the module. The version can be a number or a date (format yyyy/mm/dd).
+%    This function is like the \texttt{luatextra.use\_module} function, but
+%    can accept a second argument that checks for the version of the module.
+%    The version can be a number or a date (format yyyy/mm/dd).
 %
 %    \begin{macrocode}
 
@@ -425,13 +508,19 @@ end
 
 %    \end{macrocode}
 %
-% \end{macro}
+%    \end{macro}
 %
-% \begin{macro}{luatextra.provides module}
+%    \begin{macro}{luatextra.provides module}
 %
-% This macro is the one that must be called in the module files. It takes a table as argument. You can put any information you want in this table, but the mandatory ones are \texttt{name} (a string), \texttt{version} (a number), \texttt{date} (a string) and \texttt{description} (a string). Other fields are usually \texttt{copyright}, \texttt{author} and \texttt{license}.
+%    This macro is the one that must be called in the module files. It takes a
+%    table as argument. You can put any information you want in this table,
+%    but the mandatory ones are \texttt{name} (a string), \texttt{version} (a
+%    number), \texttt{date} (a string) and \texttt{description} (a string).
+%    Other fields are usually \texttt{copyright}, \texttt{author} and
+%    \texttt{license}.
 %
-% This function logs informations about the module the same way \LaTeX\ does for informations about packages.
+%    This function logs informations about the module the same way \LaTeX\
+%    does for informations about packages.
 %
 %    \begin{macrocode}
 
@@ -458,9 +547,11 @@ end
 
 %    \end{macrocode}
 %
-% \end{macro}
+%    \end{macro}
 %
-% Here we load the \textsf{luaextra} module, that contains a bunch of very useful functions. See the documentation of \textsf{luaextra} for more details.
+%    Here we load the \textsf{luaextra} module, that contains a bunch of very
+%    useful functions. See the documentation of \textsf{luaextra} for more
+%    details.
 %
 %    \begin{macrocode}
 
@@ -468,7 +559,10 @@ luatextra.use_module('luaextra')
 
 %    \end{macrocode}
 %
-% \texttt{luatextra.kpse\_module\_loader} finds a module with the \texttt{kpse} library. This function is then registered in the table of the functions used by the lua function \texttt{require} to look for modules.
+%    \texttt{luatextra.kpse\_module\_loader} finds a module with the
+%    \texttt{kpse} library. This function is then registered in the table of
+%    the functions used by the lua function \texttt{require} to look for
+%    modules.
 %
 %    \begin{macrocode}
 
@@ -490,9 +584,23 @@ table.insert(package.loaders, luatextra.kpse_module_loader)
 
 %    \end{macrocode}
 %
-% \subsection{Attributes handling\label{sub:attr}}
+%    \subsection{Attributes handling\label{sub:attr}}
 %
-% Attribute allocation is done mainly in the \texttt{sty} file, but there is also a lua addition for attribute handling: Lua\TeX\ is by default unable to tell the attribute number corresponding to an attribute name. This attribute number is necessary for functions such as \texttt{node.has\_attribute}, which is used very often. The solution until now was to give a chosen attribute number to each attribute, and pray that someone else didn't use it before. With this method it was easy to know the number of an attribute, as it was chosen. Now with the \texttt{\string\newluaattribute} macro, it's impossible to know the number of an attribute. To fix it, when \texttt{\string\newluaattribute} is called, it calls \texttt{luatextra.attributedef\_from\_tex}. This function registers the number in the table \texttt{tex.attributenumber}. For example to get the number of the attribute \texttt{myattribute} registered with \texttt{\string\newluaattribute\string\myattribute}, you can simply call \texttt{tex.attributenumber[myattribute]}.
+%    Attribute allocation is done mainly in the \texttt{sty} file, but there
+%    is also a lua addition for attribute handling: Lua\TeX\ is by default
+%    unable to tell the attribute number corresponding to an attribute name.
+%    This attribute number is necessary for functions such as
+%    \texttt{node.has\_attribute}, which is used very often. The solution
+%    until now was to give a chosen attribute number to each attribute, and
+%    pray that someone else didn't use it before. With this method it was easy
+%    to know the number of an attribute, as it was chosen. Now with the
+%    \texttt{\string\newluaattribute} macro, it's impossible to know the
+%    number of an attribute. To fix it, when \texttt{\string\newluaattribute}
+%    is called, it calls \texttt{luatextra.attributedef\_from\_tex}. This
+%    function registers the number in the table \texttt{tex.attributenumber}.
+%    For example to get the number of the attribute \texttt{myattribute}
+%    registered with \texttt{\string\newluaattribute\string\myattribute}, you
+%    can simply call \texttt{tex.attributenumber[myattribute]}.
 %
 %    \begin{macrocode}
 
@@ -509,7 +617,9 @@ end
 %
 % \subsection{Catcodetables handling}
 %
-% In the same way, the table \texttt{tex.catcodetablenumber} contains the numbers of the catcodetables registered with \texttt{\string\newluacatcodetable}.
+%    In the same way, the table \texttt{tex.catcodetablenumber} contains the
+%    numbers of the catcodetables registered with
+%    \texttt{\string\newluacatcodetable}.
 %
 %    \begin{macrocode}
 
@@ -524,19 +634,36 @@ end
 
 %    \end{macrocode}
 %
-% \subsection{Multiple callbacks on the \texttt{open\_read\_file} callback\label{sub:orf}}
+%    \subsection{Multiple callbacks on the \texttt{open\_read\_file}
+%    callback\label{sub:orf}}
 %
-% The luamcallbacks (see documentation for details) cannot really provide a simple and reliable way of registering multiple functions in some callbacks. To be able to do so, the solution we implemented is to register one function in these callbacks, and to create "sub-callbacks" that can accept several functions. That's what we do here for the callback \texttt{open\_read\_file}.
+%    The luamcallbacks (see documentation for details) cannot really provide a
+%    simple and reliable way of registering multiple functions in some
+%    callbacks. To be able to do so, the solution we implemented is to
+%    register one function in these callbacks, and to create "sub-callbacks"
+%    that can accept several functions. That's what we do here for the
+%    callback \texttt{open\_read\_file}.
 %
-% \begin{macro}{luatextra.open read file}
+%    \begin{macro}{luatextra.open read file}
 %
-% This function is the one that will be registered in the callback. It calls new callbacks, that will be created later. These callbacks are:
+%    This function is the one that will be registered in the callback. It
+%    calls new callbacks, that will be created later. These callbacks are:
 %
-%\begin{itemize}
-% \item \texttt{pre\_read\_file} in which you can register a function with the signature \texttt{pre\_read\_file(env)}, with \texttt{env} being a table containing the fields \texttt{filename} which is the argument of the callback \texttt{open\_read\_file}, and \texttt{path} which is the result of \texttt{kpse.find\_file}. You can put any field you want in the \texttt{env} table, you can even override the existing fields. This function is called at the very beginning of the callback, it allows for instance to register functions in the other callbacks. It is useless to add a field \texttt{reader} or \texttt{close}, as they will be overriden.
-% \item \texttt{file\_reader} is automatically registered in the \texttt{reader} callback for every file, it has the same signature.
-% \item \texttt{file\_close} is registered in the \texttt{close} callback for every file, and has the same signature.
-%\end{itemize}
+%    \begin{itemize}
+%    \item \texttt{pre\_read\_file} in which you can register a function with
+%    the signature \texttt{pre\_read\_file(env)}, with \texttt{env} being a
+%    table containing the fields \texttt{filename} which is the argument of
+%    the callback \texttt{open\_read\_file}, and \texttt{path} which is the
+%    result of \texttt{kpse.find\_file}. You can put any field you want in the
+%    \texttt{env} table, you can even override the existing fields. This
+%    function is called at the very beginning of the callback, it allows for
+%    instance to register functions in the other callbacks. It is useless to
+%    add a field \texttt{reader} or \texttt{close}, as they will be overriden.
+%    \item \texttt{file\_reader} is automatically registered in the
+%    \texttt{reader} callback for every file, it has the same signature.
+%    \item \texttt{file\_close} is registered in the \texttt{close} callback
+%    for every file, and has the same signature.
+%    \end{itemize}
 %
 %    \begin{macrocode}
 
@@ -568,10 +695,10 @@ end
 %
 % \end{macro}
 %
-% The two next functions are the one called in the \texttt{open\_read\_file} callback.
+%    The two next functions are the one called in the
+%    \texttt{open\_read\_file} callback.
 %
 %    \begin{macrocode}
-
 
 function luatextra.reader(env)
     local line = (env.file):read()
@@ -586,10 +713,12 @@ end
 
 %    \end{macrocode}
 %
-% In the callback creation process we need to have default behaviours. Here they are. These are called only when no function is registered in the created callback. See the documentation of \texttt{luamcallbacks} for more details.
+%    In the callback creation process we need to have default behaviours. Here
+%    they are. These are called only when no function is registered in the
+%    created callback. See the documentation of \texttt{luamcallbacks} for
+%    more details.
 %
 %    \begin{macrocode}
-
 
 function luatextra.default_reader(env, line)
     return line
@@ -605,21 +734,41 @@ end
 
 %    \end{macrocode}
 %
-% \subsection{Multiple callbacks on the \texttt{define\_font} callback\label{sub:df}}
+%    \subsection{Multiple callbacks on the \texttt{define\_font}
+%    callback\label{sub:df}}
 %
-% The same principle is applied to the \texttt{define\_font} callback. The main difference is that this mechanism is not applied by default. The reason is that the callback most people will register in the \texttt{define\_font} callback is the one from Con\TeX t allowing the use of OT fonts. When the code will be more adapted (not so soon certainly), this mechanism will certainly be used, as it allows more flexibility in the font syntax, the OT font load mechanism, etc.
+%    The same principle is applied to the \texttt{define\_font} callback. The
+%    main difference is that this mechanism is not applied by default. The
+%    reason is that the callback most people will register in the
+%    \texttt{define\_font} callback is the one from Con\TeX t allowing the use
+%    of OT fonts. When the code will be more adapted (not so soon certainly),
+%    this mechanism will certainly be used, as it allows more flexibility in
+%    the font syntax, the OT font load mechanism, etc.
 %
-% The callbacks we register here are the following ones:
+%    The callbacks we register here are the following ones:
 %
-% \begin{itemize}
-% \item \texttt{font\_syntax} that takes a table with the fields \texttt{asked\_name}, \texttt{name} and \texttt{size}, and modifies this table to add more information. It must add at least a \texttt{path} field. The structure of the final table is not precisely defined, as it can vary from one syntax to another.
-% \item \texttt{open\_otf\_font} takes the previous table, and must return a valid font structure as described in the Lua\TeX\ manual.
-% \item \texttt{post\_font\_opening} takes the final font table and can modify it, before this table is returned to the \texttt{define\_font} callback.
-% \end{itemize}
+%    \begin{itemize}
+%    \item \texttt{font\_syntax} that takes a table with the fields
+%    \texttt{asked\_name}, \texttt{name} and \texttt{size}, and modifies this
+%    table to add more information. It must add at least a \texttt{path}
+%    field. The structure of the final table is not precisely defined, as it
+%    can vary from one syntax to another.
+%    \item \texttt{open\_otf\_font} takes the previous table, and must return
+%    a valid font structure as described in the Lua\TeX\ manual.
+%    \item \texttt{post\_font\_opening} takes the final font table and can
+%    modify it, before this table is returned to the \texttt{define\_font}
+%    callback.
+%    \end{itemize}
 %
-% But first, we acknowledge the fact that \texttt{fontforge} has been renamed to \texttt{fontloader}. This check allows older versions of Lua\TeX\ to use \texttt{fontloader}.
+%    But first, we acknowledge the fact that \texttt{fontforge} has been
+%    renamed to \texttt{fontloader}. This check allows older versions of
+%    Lua\TeX\ to use \texttt{fontloader}.
 %
-% As this mechanism is not loaded by default and certainly won't be until version 1.0 of Lua\TeX , we don't document it further. See the documentation of \texttt{luatextra.sty} (macro \texttt{\string\ltxtra\string@RegisterFontCallback}) to know how to load this mechanism anyway.
+%    As this mechanism is not loaded by default and certainly won't be until
+%    version 1.0 of Lua\TeX , we don't document it further. See the
+%    documentation of \texttt{luatextra.sty} (macro
+%    \texttt{\string\ltxtra\string@RegisterFontCallback}) to know how to load
+%    this mechanism anyway.
 %
 %    \begin{macrocode}
 
@@ -730,9 +879,9 @@ end
 %<*package>
 % \fi
 %
-% \subsection{Initializations}
+%    \subsection{Initializations}
 %
-% First we prevent multiple loads of the file (useful for plain-\TeX ).
+%    First we prevent multiple loads of the file (useful for plain-\TeX ).
 %
 %    \begin{macrocode}
 \csname ifluatextraloaded\endcsname
@@ -740,7 +889,7 @@ end
 
 %    \end{macrocode}
 %
-% Then we load \textsf{ifluatex}.
+%    Then we load \textsf{ifluatex}.
 %
 %    \begin{macrocode}
 
@@ -755,7 +904,9 @@ end
 \expandafter\ifx\csname ProvidesPackage\endcsname\relax
 %    \end{macrocode}
 %
-% If the package is loaded with Plain, we raise an error if the package is called with a non-Lua\TeX\ engine, and we define \texttt{\string\luaRequireModule} with two mandatory arguments.
+%    If the package is loaded with Plain, we raise an error if the package is
+%    called with a non-Lua\TeX\ engine, and we define
+%    \texttt{\string\luaRequireModule} with two mandatory arguments.
 %
 %    \begin{macrocode}
   \ifluatex\else
@@ -766,7 +917,10 @@ end
 \else
 %    \end{macrocode}
 %
-% If the package is loaded with \LaTeX , we also print the error message, and we define \texttt{\string\luaRequireModule} with one mandatory argument (the name of the package) and one optional (the version or the date). We also define the environment \texttt{luacode}.
+%    If the package is loaded with \LaTeX , we also print the error message,
+%    and we define \texttt{\string\luaRequireModule} with one mandatory
+%    argument (the name of the package) and one optional (the version or the
+%    date). We also define the environment \texttt{luacode}.
 %
 %    \begin{macrocode}
   \ifluatex\else
@@ -780,7 +934,14 @@ end
   \newcommand\luaRequireModule[2][0]{\luadirect{luatextra.require_module([[#2]], [[#1]])}}
 %    \end{macrocode}
 %
-% We also require the package \textsf{etex} to be loaded. The \texttt{\string\input} is a hack that modifies some values in the register attribution scheme of $\varepsilon$-\TeX\ and remaps \texttt{\string\newcount} to \textsf{etex}'s \texttt{\string\globcount}. We have to do such a remapping in a separate file that Plain doesn't see, otherwise it outputs an error if we try to change \texttt{\string\newcount} (because it is an \texttt{\string\outer} macro). See section \ref{sub:latex} for the file content.
+%    We also require the package \textsf{etex} to be loaded. The
+%    \texttt{\string\input} is a hack that modifies some values in the
+%    register attribution scheme of $\varepsilon$-\TeX\ and remaps
+%    \texttt{\string\newcount} to \textsf{etex}'s \texttt{\string\globcount}.
+%    We have to do such a remapping in a separate file that Plain doesn't see,
+%    otherwise it outputs an error if we try to change
+%    \texttt{\string\newcount} (because it is an \texttt{\string\outer}
+%    macro). See section \ref{sub:latex} for the file content.
 %
 %    \begin{macrocode}
   \RequirePackage{etex}[1998/03/26]%
@@ -789,7 +950,9 @@ end
 
 %    \end{macrocode}
 %
-% The two macros \texttt{\string\LuaTeX} and \texttt{\string\LuaLaTeX} are defined to Lua\TeX\ and Lua\LaTeX , because that's the way it's written in the Lua\TeX 's manual (not in small capitals).
+%    The two macros \texttt{\string\LuaTeX} and \texttt{\string\LuaLaTeX} are
+%    defined to Lua\TeX\ and Lua\LaTeX , because that's the way it's written
+%    in the Lua\TeX 's manual (not in small capitals).
 %
 %    \begin{macrocode}
 
@@ -800,14 +963,25 @@ end
 %
 % \subsection{Primitives renaming}
 %
-% Here we differenciate two very different cases: Lua\TeX\ version < 0.36 has no \texttt{tex.enableprimitives} function, and has support for multiple lua states, and for versions > 0.35, the \texttt{tex.enableprimitives} is provided, and the old \texttt{\string\directlua} syntax prints a warning.
+%    Here we differenciate two very different cases: Lua\TeX\ version < 0.36
+%    has no \texttt{tex.enableprimitives} function, and has support for
+%    multiple lua states, and for versions > 0.35, the
+%    \texttt{tex.enableprimitives} is provided, and the old
+%    \texttt{\string\directlua} syntax prints a warning.
 %
 %    \begin{macrocode}
 
 \ifnum\luatexversion<36
 %    \end{macrocode}
 %
-% For old versions, we simply rename the primitives. You can note that \texttt{\string\attribute} (and also others) have no \texttt{\string\primitive} before them, because it would make users unable to call \texttt{\string\global\string\luaattribute}, which is a strong restriction. With this method, we can call it, but if \texttt{\string\attribute} was defined before, this means that \texttt{\string\luaattribute} will get its meaning, which is dangerous. Note also that you cannot use multiple states.
+%    For old versions, we simply rename the primitives. You can note that
+%    \texttt{\string\attribute} (and also others) have no
+%    \texttt{\string\primitive} before them, because it would make users
+%    unable to call \texttt{\string\global\string\luaattribute}, which is a
+%    strong restriction. With this method, we can call it, but if
+%    \texttt{\string\attribute} was defined before, this means that
+%    \texttt{\string\luaattribute} will get its meaning, which is dangerous.
+%    Note also that you cannot use multiple states.
 %
 %    \begin{macrocode}
   \def\directlua{\pdfprimitive\directlua0}
@@ -823,7 +997,11 @@ end
 \else
 %    \end{macrocode}
 %
-% For newer versions, we first enable all primitives with their default name. Then we add a prefix to some. Note that with this method, \texttt{\string\luaattribute} will always have the good meaning (except, of course, if it was defined before, but I think we can call it perversion...).
+%    For newer versions, we first enable all primitives with their default
+%    name. Then we add a prefix to some. Note that with this method,
+%    \texttt{\string\luaattribute} will always have the good meaning (except,
+%    of course, if it was defined before, but I think we can call it
+%    perversion...).
 %
 %    \begin{macrocode}
   \directlua{tex.enableprimitives('lua', {'attribute'})}
@@ -838,7 +1016,8 @@ end
 
 %    \end{macrocode}
 %
-% Finally we add some common definitions that have lua inside their name, or that must remove their suffix.
+%    Finally we add some common definitions that have lua inside their name,
+%    or that must remove their suffix.
 %
 %    \begin{macrocode}
 \def\initluacatcodetable{\pdfprimitive\initcatcodetable}
@@ -847,7 +1026,7 @@ end
 
 %    \end{macrocode}
 %
-% We load the \texttt{lua} file.
+%    We load the \texttt{lua} file.
 %
 %    \begin{macrocode}
 
@@ -855,7 +1034,8 @@ end
 
 %    \end{macrocode}
 %
-% A small macro to register the \texttt{define\_font} callback from \textsf{luatextra}. See section \ref{sub:df} for more details.
+%    A small macro to register the \texttt{define\_font} callback from
+%    \textsf{luatextra}. See section \ref{sub:df} for more details.
 %
 %    \begin{macrocode}
 
@@ -865,20 +1045,23 @@ end
 
 %    \end{macrocode}
 %
-% \subsection{Module handling}
+%    \subsection{Module handling}
 %
-% The \texttt{\string\luaModuleError} macro is called by the lua function \texttt{luatextra.module\_error}. It is necessary because we can't call directly \texttt{\string\errmessage} in lua.
+%    The \texttt{\string\luaModuleError} macro is called by the lua function
+%    \texttt{luatextra.module\_error}. It is necessary because we can't call
+%    directly \texttt{\string\errmessage} in lua.
+%
+%    \subsection{Module handling}
+%
+%    The \texttt{\string\luaModuleError} macro is called by the lua function
+%    \texttt{luatextra.module\_error}. It is necessary because we can't call
+%    directly \texttt{\string\errmessage} in lua. Then we define
+%    \texttt{\string\luaUseModule} that simply calls
+%    \texttt{luatextra.use\_module}. Remember that
+%    \texttt{\string\luaRequireModule} is defined at the beginning of this
+%    file.
 %
 %    \begin{macrocode}
-
-%    \end{macrocode}
-%
-% \subsection{Module handling}
-%
-% The \texttt{\string\luaModuleError} macro is called by the lua function \texttt{luatextra.module\_error}. It is necessary because we can't call directly \texttt{\string\errmessage} in lua. Then we define \texttt{\string\luaUseModule} that simply calls \texttt{luatextra.use\_module}. Remember that \texttt{\string\luaRequireModule} is defined at the beginning of this file.
-%
-%    \begin{macrocode}
-
 
 \def\luaModuleError#1#2{%
   \errorcontextlines=0\relax
@@ -891,9 +1074,13 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 
 %    \end{macrocode}
 %
-% \subsection{Attributes handling}
+%    \subsection{Attributes handling}
 %
-% The most important macro here is \texttt{\string\newluaattribute} that allocates a new attribute, and adds it in the \texttt{tex.attributename} table (see \texttt{luatextra.attributedef\_from\_tex} for more details. It works just like the other \texttt{\string\new*} macros, we can allocate up to 65536 different attributes.
+%    The most important macro here is \texttt{\string\newluaattribute} that
+%    allocates a new attribute, and adds it in the \texttt{tex.attributename}
+%    table (see \texttt{luatextra.attributedef\_from\_tex} for more details.
+%    It works just like the other \texttt{\string\new*} macros, we can
+%    allocate up to 65536 different attributes.
 %
 %    \begin{macrocode}
 
@@ -918,7 +1105,10 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 
 %    \end{macrocode}
 %
-% Two convenient macros, one to set an attribute (basically just a wrapper), and another one to uset it. Unsetting attributes with this function is important, as the \texttt{unset} value may change, as it already has in the 0.37 version.
+%    Two convenient macros, one to set an attribute (basically just a
+%    wrapper), and another one to uset it. Unsetting attributes with this
+%    function is important, as the \texttt{unset} value may change, as it
+%    already has in the 0.37 version.
 %
 %    \begin{macrocode}
 
@@ -936,9 +1126,9 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 
 %    \end{macrocode}
 %
-% \subsection{Catcodetables handling}
+%    \subsection{Catcodetables handling}
 %
-% Here we allocate catcodetables the same way we handle attributes.
+%    Here we allocate catcodetables the same way we handle attributes.
 %
 %    \begin{macrocode}
 
@@ -961,7 +1151,8 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 
 %    \end{macrocode}
 %
-% A small patch to manage the catcode of \@ in Plain, and to get two new counters in Plain too.
+%    A small patch to manage the catcode of \@ in Plain, and to get two new
+%    counters in Plain too.
 %
 %    \begin{macrocode}
 
@@ -980,7 +1171,10 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 
 %    \end{macrocode}
 %
-% A macro that sets the catcode of a range of characters. The first parameter is the character number of the first character of the range, the second parameter is one for the last character, and the third parameter is the catcode we want them to have. 
+%    A macro that sets the catcode of a range of characters. The first
+%    parameter is the character number of the first character of the range,
+%    the second parameter is one for the last character, and the third
+%    parameter is the catcode we want them to have.
 %
 %    \begin{macrocode}
 
@@ -1003,14 +1197,17 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 
 %    \end{macrocode}
 %
-% Finally we create several catcodetables that may be used by the user. These are:
+%    Finally we create several catcodetables that may be used by the user.
+%    These are:
 %
-% \begin{itemize}
-% \item \texttt{\string\CatcodeTableIniTeX}: the base \TeX\ catcodes
-% \item \texttt{\string\CatcodeTableString}: almost all characters have catcode 12
-% \item \texttt{\string\CatcodeTableOther}: all characters have catcode 12 (even space)
-% \item \texttt{\string\CatcodeTableLaTeX}: the \LaTeX\ classical catcodes
-% \end{itemize}
+%    \begin{itemize}
+%    \item \texttt{\string\CatcodeTableIniTeX}: the base \TeX\ catcodes
+%    \item \texttt{\string\CatcodeTableString}: almost all characters have
+%    catcode 12
+%    \item \texttt{\string\CatcodeTableOther}: all characters have catcode 12
+%    (even space)
+%    \item \texttt{\string\CatcodeTableLaTeX}: the \LaTeX\ classical catcodes
+%    \end{itemize}
 %
 %    \begin{macrocode}
 
@@ -1060,7 +1257,7 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 
 %    \end{macrocode}
 %
-% We load \textsf{luaotfload}. 
+%    We load \textsf{luaotfload}.
 %
 %    \begin{macrocode}
 
@@ -1078,11 +1275,14 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 %
 % \section{\texttt{luatextra-latex.tex}\label{sub:latex}}
 %
-% This file is very small, it just changes the maximum values of allowed registers from 32768 to 65536, and remaps \texttt{\string\newcount} (and friends) to \textsf{etex}'s \texttt{\string\globcount}.
-%
 % \iffalse
 %<*latex>
 % \fi
+%
+%    This file is very small, it just changes the maximum values of allowed
+%    registers from 32768 to 65536, and remaps \texttt{\string\newcount} (and
+%    friends) to \textsf{etex}'s \texttt{\string\globcount}.
+%
 %    \begin{macrocode}
 \def\ltxtra@temp#1{%
 \ifnum\count27#1=32768 %
@@ -1105,6 +1305,6 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 %</latex>
 % \fi
 %
-% 
+%
 % \Finale
 \endinput

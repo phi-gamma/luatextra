@@ -7,13 +7,20 @@
 %
 
 \documentclass{article}
-\usepackage[english]{babel}
 \usepackage[utf8]{luainputenc}
 \usepackage[T1]{fontenc}
+\usepackage{times}
 \usepackage{amsfonts}
 \usepackage{eurosym}
-\usepackage[pdftex, bookmarks, colorlinks=false, pdftitle={LuaTeXtra references}, pdfauthor={Elie Roux}, pdfsubject={LuaTeXtra references}, pdfborder={0 0 0}]{hyperref}
 \usepackage[pdftex]{graphicx}
+\usepackage[pdftex, 
+  bookmarks, 
+  colorlinks=false, 
+  pdftitle={LuaTeXtra references},
+  pdfauthor={Elie Roux},
+  pdfsubject={LuaTeXtra references},
+  pdfborder={0 0 0}]{hyperref}
+\usepackage[english]{babel}
 
 \makeatletter
 \newlength\xxt@kern@Te
@@ -40,8 +47,6 @@
    }\kern\xxt@kern@Te\TeX}}%
 \TeX@logo@spacing{-0.15em}{-0.15em}{0.5ex}{-0.36em}{-0.15em}{-0.1em}
 
-
-\usepackage{times}
 \title{Lua\TeX tra references}
 \author{Elie Roux \\ \url{elie.roux@telecom-bretagne.eu}}
 \begin{document}
@@ -50,122 +55,237 @@
 
 \subsubsection*{Preamble: What is this document?}
 
-This document describes, from the user or developer point of view, how to use the coherent set of packages \textsf{luatextra}, \textsf{luainputenc}, \textsf{luaotfload}, \textsf{luamcallbacks} and \textsf{luaextra}.
+This document describes, from the user or developer point of view, how to use
+the coherent set of packages \textsf{luatextra}, \textsf{luainputenc},
+\textsf{luaotfload}, \textsf{luamcallbacks} and \textsf{luaextra}.
 
-If you are looking for documentation on the \LuaTeX\ engine, please refer to the file \texttt{luatexref-t.pdf}, but note that using these packages will slightly modify some \LuaTeX\ behaviours, especially the \texttt{callback} library.
+If you are looking for documentation on the \LuaTeX\ engine, please refer to
+the file \texttt{luatexref-t.pdf}, but note that using these packages will
+slightly modify some \LuaTeX\ behaviours, especially the \texttt{callback}
+library.
 
-If you are looking for technical details about one of the packages, you can refer to its documentation. Each of them have a complete documentation in the file \texttt{package.pdf} with package being the name of the package.
+If you are looking for technical details about one of the packages, you can
+refer to its documentation. Each of them have a complete documentation in the
+file \texttt{package.pdf} with package being the name of the package.
 
 \tableofcontents
 
 \section{Introduction}
 
-Before going any further, we need to explain the difference between an engine, a format, and a program. If you know the difference between these, please go to section \ref{sub:luatextra}.
+Before going any further, we need to explain the difference between an engine,
+a format, and a program. If you know the difference between these, please go
+to section \ref{sub:luatextra}.
 
 \subsection{What is \LuaTeX ?}
 
-\LuaTeX\ is a \TeX\ engine. A \TeX\ engine is a binary executable that provides some very low-level primitives, for example \texttt{\string\count} to set a counter to a certain value. Examples of engines are the old \TeX\ 82, \eTeX, pdf\TeX, Omega, Aleph, Lua\TeX\ and \XeTeX . 
+\LuaTeX\ is a \TeX\ engine. A \TeX\ engine is a binary executable that
+provides some very low-level primitives, for example \texttt{\string\count} to
+set a counter to a certain value. Examples of engines are the old \TeX\ 82,
+\eTeX, pdf\TeX, Omega, Aleph, Lua\TeX\ and \XeTeX . 
 
-There are two main differences between \LuaTeX\ and its predecessor, pdfTeX: \LuaTeX\ now truely understands UTF-8 and enables the execution of some lua code at certain points of the \TeX\ algorithm. These two features allow, among other things, to open modern fonts like OpenType or TrueType fonts.
+There are two main differences between \LuaTeX\ and its predecessor, pdfTeX:
+\LuaTeX\ now truely understands UTF-8 and enables the execution of some lua
+code at certain points of the \TeX\ algorithm. These two features allow, among
+other things, to open modern fonts like OpenType or TrueType fonts.
 
 \subsection{What is the difference with \LaTeX ?}
 
-The nature of \LaTeX\ is fundamentally different: \LaTeX\ is a \TeX\ format. Examples of formats are Plain, \LaTeX\ and Con\TeX t.
+The nature of \LaTeX\ is fundamentally different: \LaTeX\ is a \TeX\ format.
+Examples of formats are Plain, \LaTeX\ and Con\TeX t.
 
-This distinction is very hard to make, first because you cannot find any documentation on it, and secondly because the only things everyone knows are programs. A program is a command you type in your terminal that calls an engine with a format. Here are the different things behind what you type:
+This distinction is very hard to make, first because you cannot find any
+documentation on it, and secondly because the only things everyone knows are
+programs. A program is a command you type in your terminal that calls an
+engine with a format. Here are the different things behind what you type:
 
 \begin{itemize}
-\item \texttt{tex} is the engine \TeX\ 82 with the format Plain. Both were created by Donald Knuth a very long time ago.
-\item \texttt{pdftex} is the engine pdf\TeX\ (in PDF mode) with the format Plain.
-\item \texttt{luatex} is the engine \LuaTeX\ (in PDF mode) with the format Plain.
-\item \texttt{xetex} is the engine \XeTeX\ (in PDF mode) with the format Plain.
-\item \texttt{latex} is the engine pdf\TeX\ (in DVI mode) with the format \LaTeX .
-\item \texttt{pdflatex} is the engine pdf\TeX\ (in PDF mode) with the format \LaTeX .
-\item \texttt{lualatex} is the engine \LuaTeX\ (in PDF mode) with the format \LaTeX .
-\item \texttt{xelatex} is the engine \XeTeX\ (in PDF mode) with the format \LaTeX .
+  \item \texttt{tex} is the engine \TeX\ 82 with the format Plain. Both were
+    created by Donald Knuth a very long time ago.
+  \item \texttt{pdftex} is the engine pdf\TeX\ (in PDF mode) with the format
+    Plain.
+  \item \texttt{luatex} is the engine \LuaTeX\ (in PDF mode) with the format
+    Plain.
+  \item \texttt{xetex} is the engine \XeTeX\ (in PDF mode) with the format
+    Plain.
+  \item \texttt{latex} is the engine pdf\TeX\ (in DVI mode) with the format
+    \LaTeX .
+  \item \texttt{pdflatex} is the engine pdf\TeX\ (in PDF mode) with the format
+    \LaTeX .
+  \item \texttt{lualatex} is the engine \LuaTeX\ (in PDF mode) with the format
+    \LaTeX .
+  \item \texttt{xelatex} is the engine \XeTeX\ (in PDF mode) with the format
+    \LaTeX .
 \end{itemize}
 
-pdf\TeX\ and \LuaTeX\ can produce both DVI and PDF output. To choose it, you can simply set \texttt{\string\pdfoutput} to 0 or 1.
+pdf\TeX\ and \LuaTeX\ can produce both DVI and PDF output. To choose it, you
+can simply set \texttt{\string\pdfoutput} to 0 or 1.
 
-As you can see, there is absolutely no corellation between \LuaTeX\ and \LaTeX , even if the names are close\dots
+As you can see, there is absolutely no corellation between \LuaTeX\ and
+\LaTeX, even if the names are close\dots
 
 \subsection{What is Lua\TeX tra?\label{sub:luatextra}}
 
-Lua\TeX tra is the adaptation of the engine \LuaTeX\ to the formats Plain and \LaTeX . It enables these formats to benefit from the \LuaTeX\ new features, like UTF-8 reading, attributes handling, extended registers, modern font opening, etc.
+Lua\TeX tra is the adaptation of the engine \LuaTeX\ to the formats Plain and
+\LaTeX . It enables these formats to benefit from the \LuaTeX\ new features,
+like UTF-8 reading, attributes handling, extended registers, modern font
+opening, etc.
 
-\LuaTeX\ provides only very low-level macros for these features, and a lot of code has to be done by the format to really provide a good user experience.
+\LuaTeX\ provides only very low-level macros for these features, and a lot of
+code has to be done by the format to really provide a good user experience.
 
-With what I just said, a good question would be the following: why isn't \textsf{luatextra} integrated into \LaTeX\ and Plain?
+With what I just said, a good question would be the following: why isn't
+\textsf{luatextra} integrated into \LaTeX\ and Plain?
 
-The answer is simple: because Plain and \LaTeX\ are frozen. This means that they don't accept new code anymore, even if it's totally necessary to benefit from new engines. Thus, the only solution is to provide a package that every user will have to load.
+The answer is simple: because Plain and \LaTeX\ are frozen. This means that
+they don't accept new code anymore, even if it's totally necessary to benefit
+from new engines. Thus, the only solution is to provide a package that every
+user will have to load.
 
 \subsection{Why is it necessary?}
 
-\LuaTeX tra is necessary for users and developers because it provides a way for several packages to access ressources. 
+\LuaTeX tra is necessary for users and developers because it provides a way
+for several packages to access ressources. 
 
-Let's take a very concrete example: \LuaTeX\ has a totally new concept named attributes; basically they can be considered as special counts: you can name them with the primitive \texttt{\string\attribute}, like you can name an counter with \texttt{\string\count}, and you can give them a value with \texttt{\string\attributedef}, that works like \texttt{\string\countdef} (see the \LuaTeX\ documentation for more details about attributes). Attributes, like counts, are described by numbers, for example you have \texttt{\string\attribute0}, \texttt{\string\attribute1}, etc. 
+Let's take a very concrete example: \LuaTeX\ has a totally new concept named
+attributes; basically they can be considered as special counts: you can name
+them with the primitive \texttt{\string\attribute}, like you can name an
+counter with \texttt{\string\count}, and you can give them a value with
+\texttt{\string\attributedef}, that works like \texttt{\string\countdef} (see
+the \LuaTeX\ documentation for more details about attributes). Attributes,
+like counts, are described by numbers, for example you have
+\texttt{\string\attribute0}, \texttt{\string\attribute1}, etc. 
 
-Plain and \LaTeX\ provide a macro \texttt{\string\newcount} that takes the first free counter and attributes it a name, for example we can image that \texttt{\string\newcount\string\foo} will in fact do \texttt{\string\count25\string\foo}. This enables packages to automatically take a free counter. Without it, package developers would have to maintain a list saying ``please don't take attribute number foo, it's for the package bar!".
+Plain and \LaTeX\ provide a macro \texttt{\string\newcount} that takes the
+first free counter and attributes it a name, for example we can image that
+\texttt{\string\newcount\string\foo} will in fact do
+\texttt{\string\count25\string\foo}. This enables packages to automatically
+take a free counter. Without it, package developers would have to maintain a
+list saying ``please don't take attribute number foo, it's for the package
+bar!".
 
-Plain and \LaTeX\ do not provide \texttt{\string\newattribute} to allocate a free attribute; but we do it in \textsf{luatextra}. Without \LuaTeX tra, people have to take arbitrary attributes and cross their fingers hoping that noone else will use the attributes they've chosen. With \LuaTeX tra, you can safely take attributes, being sure that noone else will use them.
+Plain and \LaTeX\ do not provide \texttt{\string\newattribute} to allocate a
+free attribute; but we do it in \textsf{luatextra}. Without \LuaTeX tra,
+people have to take arbitrary attributes and cross their fingers hoping that
+noone else will use the attributes they've chosen. With \LuaTeX tra, you can
+safely take attributes, being sure that noone else will use them.
 
-Another similar problem is callback access: by default \LuaTeX\ does not provide a way to register several functions in a callback, so if two packages want to register a function in a callback, they won't be compatible, as only one will work. \textsf{luamcallback} provides a new mechanism for callbacks that enables this, allowing more package compatibility.
+Another similar problem is callback access: by default \LuaTeX\ does not
+provide a way to register several functions in a callback, so if two packages
+want to register a function in a callback, they won't be compatible, as only
+one will work. \textsf{luamcallback} provides a new mechanism for callbacks
+that enables this, allowing more package compatibility.
 
-These two problems are very concrete, that's the main reason why \LuaTeX tra has been created: without it a lot of package compatibility problems would have been raised.
+These two problems are very concrete, that's the main reason why \LuaTeX tra
+has been created: without it a lot of package compatibility problems would
+have been raised.
 
 \subsection{The different packages}
 
 The \LuaTeX tra coherent set of packages contains:
 
 \begin{itemize}
-\item \textsf{luatextra}: the basic general macros and lua functions
-\item \textsf{luainputenc}: adaptation of \textsf{inputenc} to \LuaTeX
-\item \textsf{luamcallbacks}: pure lua package to be able to register several functions in a callback
-\item \textsf{luaextra}: additional lua functions
+  \item \textsf{luatextra}: the basic general macros and lua functions
+  \item \textsf{luainputenc}: adaptation of \textsf{inputenc} to \LuaTeX
+  \item \textsf{luamcallbacks}: pure lua package to be able to register
+    several functions in a callback
+  \item \textsf{luaextra}: additional lua functions
 \end{itemize}
 
 \subsection{Overview}
 
-The main idea, as explained above, is to provide a safe way to use different packages that are not coherent, without loading several times the same code, or taking ressources (like attributes) already used by other packages.
+The main idea, as explained above, is to provide a safe way to use different
+packages that are not coherent, without loading several times the same code,
+or taking ressources (like attributes) already used by other packages.
 
-To do so, we have used a concept for lua files named ``module", inspired by the \LaTeX\ packages. \textbf{Warning:} the module concept described here comes as an extention to the base lua module concept. We advise not to use the base lua modules, but the \LuaTeX tra module system, as it provides more informations, prints informations in logs, etc. The \LuaTeX tra lua module system works basically like the \LaTeX\ package system: you can simply use them, or require them with a version number, etc.
+To do so, we have used a concept for lua files named ``module", inspired by
+the \LaTeX\ packages. \textbf{Warning:} the module concept described here
+comes as an extention to the base lua module concept. We advise not to use the
+base lua modules, but the \LuaTeX tra module system, as it provides more
+informations, prints informations in logs, etc. The \LuaTeX tra lua module
+system works basically like the \LaTeX\ package system: you can simply use
+them, or require them with a version number, etc.
 
-As explained above, another important function provided by \LuaTeX tra is attributes allocation with \texttt{\string\newluaattribute}.
+As explained above, another important function provided by \LuaTeX tra is
+attributes allocation with \texttt{\string\newluaattribute}.
 
 \subsection{Naming conventions}
 
-In \LuaTeX tra we decided to adopt a simple naming convention: all macros start by \texttt{lua}. There are though a few exceptions: for instance we renamed the concept of \LuaTeX 's \texttt{attribute} to \texttt{luaattribute}, as attribute is already something used by a lot of packages and users. This lead us to name our macros \texttt{\string\newluaattribute}, \texttt{\string\unsetluaattribute}, etc. for backward compatibility. On the same principle, \texttt{catcodetable} is replaced by \texttt{luacatcodetable}.
+In \LuaTeX tra we decided to adopt a simple naming convention: all macros
+start by \texttt{lua}. There are though a few exceptions: for instance we
+renamed the concept of \LuaTeX 's \texttt{attribute} to \texttt{luaattribute},
+as attribute is already something used by a lot of packages and users. This
+lead us to name our macros \texttt{\string\newluaattribute},
+\texttt{\string\unsetluaattribute}, etc. for backward compatibility. On the
+same principle, \texttt{catcodetable} is replaced by \texttt{luacatcodetable}.
 
 \section{Basic user point of view}
 
 \subsection{Plain and \LaTeX\ macros}
 
-The most useful macro provided by \textsf{luatextra} is certainly \texttt{\string\luadirect}, which is a wrapper for \texttt{\string\directlua}, but will keep the same signature whatever the \LuaTeX\ version. For example this macro works for \LuaTeX\ versions $<$ 0.36, and will most certainly work for future versions of \LuaTeX . It is advised to use this macro to keep the compatibility of your package with all versions of \LuaTeX . \texttt{\string\lualate} is also provided as a wrapper for \texttt{\string\latelua}.
+The most useful macro provided by \textsf{luatextra} is certainly
+\texttt{\string\luadirect}, which is a wrapper for \texttt{\string\directlua},
+but will keep the same signature whatever the \LuaTeX\ version. For example
+this macro works for \LuaTeX\ versions $<$ 0.36, and will most certainly work
+for future versions of \LuaTeX . It is advised to use this macro to keep the
+compatibility of your package with all versions of \LuaTeX .
+\texttt{\string\lualate} is also provided as a wrapper for
+\texttt{\string\latelua}.
 
-Some small but useful macros are \texttt{\string\LuaTeX} and \texttt{\string\LuaLaTeX} that produce \LaTeX\ and \LuaLaTeX .
+Some small but useful macros are \texttt{\string\LuaTeX} and
+\texttt{\string\LuaLaTeX} that produce \LaTeX\ and \LuaLaTeX .
 
-\textsf{luatextra} automatically loads \textsf{luaotfload}, so you can open otf fonts directly, for instance \texttt{\string\font\string\foo = "LinLibertine.otf"\string\foo} will work. You can also pass options to the font opening, for example the different OTF options you want. These options are passed with the \XeTeX\ font syntax (briefly described in \texttt{XeTeX-reference.pdf}), for example if you want to open a font with the usual \TeX\ substitutions and ligatures, with also the font default ligatures, you can try \newline \texttt{\string\font\string\foo = "LinLibertine.otf;+tlig;+tsub;+liga;+rlig;"\string\foo}.
+\textsf{luatextra} automatically loads \textsf{luaotfload}, so you can open
+otf fonts directly, for instance \texttt{\string\font\string\foo =
+  "LinLibertine.otf"\string\foo} will work. You can also pass options to the
+font opening, for example the different OTF options you want. These options
+are passed with the \XeTeX\ font syntax (briefly described in
+\texttt{XeTeX-reference.pdf}), for example if you want to open a font with the
+usual \TeX\ substitutions and ligatures, with also the font default ligatures,
+you can try \newline \texttt{\string\font\string\foo =
+  "LinLibertine.otf;+tlig;+tsub;+liga;+rlig;"\string\foo}.
 
 \subsection{\LaTeX -only macros}
 
 \subsubsection{luainputenc}
 
-From the user point of view, adapting an old document for \LuaTeX\ is really easy: replacing \textsf{inputenc} by \textsf{luainputenc} in the preamble is enough.
+From the user point of view, adapting an old document for \LuaTeX\ is really
+easy: replacing \textsf{inputenc} by \textsf{luainputenc} in the preamble is
+enough.
 
-\textsf{Warning:} the current version of \textsf{luainputenc} automatically loads the \LuaTeX tra packages. It won't necessarily be the case in the future. So if you use some functions of \LuaTeX tra (like \texttt{\string\newluaattribute}), it is advised to also explicitely use \texttt{luatextra}. A typical part of \LaTeX\ preamble for \LuaTeX\ will be for example:
+\textsf{Warning:} the current version of \textsf{luainputenc} automatically
+loads the \LuaTeX tra packages. It won't necessarily be the case in the
+future. So if you use some functions of \LuaTeX tra (like
+\texttt{\string\newluaattribute}), it is advised to also explicitely use
+\texttt{luatextra}. A typical part of \LaTeX\ preamble for \LuaTeX\ will be
+for example:
 
 \begin{verbatim}
 \usepackage[utf8]{luainputenc}
 \usepackage{luatextra}
 \end{verbatim}
 
-Another important thing to know, for \LaTeX , is that loading \textsf{luainputenc} is necessary if you use old fonts. One could believe that \LuaTeX\ reading UTF-8 natively, \textsf{inputenc} is not necessary anymore. It's not the case! The exception to this is the case where you only use OTF fonts. But you can't simply suppress \textsf{inputenc} for your old documents.
+Another important thing to know, for \LaTeX , is that loading
+\textsf{luainputenc} is necessary if you use old fonts. One could believe that
+\LuaTeX\ reading UTF-8 natively, \textsf{inputenc} is not necessary anymore.
+It's not the case! The exception to this is the case where you only use OTF
+fonts. But you can't simply suppress \textsf{inputenc} for your old documents.
 
-Note that \textsf{luainputenc} automatically loads \textsf{inputenc} if called with an old engine, so you will still be able to compile your documents with pdf\TeX\ without changing them.
+Note that \textsf{luainputenc} automatically loads \textsf{inputenc} if called
+with an old engine, so you will still be able to compile your documents with
+pdf\TeX\ without changing them.
 
-A new font encoding has been added: \texttt{EU2}. It is meant to be used with OTF fonts. It is very minimal and just defines a default font (lmodern). Use it if you use only OTF fonts. To use it simply call \textsf{fontenc} with the option \texttt{EU2}. 
+A new font encoding has been added: \texttt{EU2}. It is meant to be used with
+OTF fonts. It is very minimal and just defines a default font (lmodern). Use
+it if you use only OTF fonts. To use it simply call \textsf{fontenc} with the
+option \texttt{EU2}. 
 
-EU2 encoding is special as it needs non-ASCII characters to be non-active (unlike other font encodings), so you cannot mix old encodings and EU2. If you want to use both old fonts and OTF fonts in your document, the way to do so is by using a new option of \textsf{luainputenc}: \texttt{lutf8x}. This option overrides \LaTeX 's mechanism to change the font encoding and activates or unactivates non-ASCII characters. If you use this option, you will be able to change the encoding, for example:
+EU2 encoding is special as it needs non-ASCII characters to be non-active
+(unlike other font encodings), so you cannot mix old encodings and EU2. If you
+want to use both old fonts and OTF fonts in your document, the way to do so is
+by using a new option of \textsf{luainputenc}: \texttt{lutf8x}. This option
+overrides \LaTeX 's mechanism to change the font encoding and activates or
+unactivates non-ASCII characters. If you use this option, you will be able to
+change the encoding, for example:
 
 \begin{verbatim}
 abc
@@ -177,11 +297,15 @@ abc
 abc
 \end{verbatim} 
 
-Another new option has been added to \textsf{luainputenc}: \texttt{unactivate}. With this option, non-ASCII characters won't be activated, so you will be able to use only OTF fonts. Typically you can use this options with the \texttt{EU2} \textsf{fontenc} option.
+Another new option has been added to \textsf{luainputenc}:
+\texttt{unactivate}. With this option, non-ASCII characters won't be
+activated, so you will be able to use only OTF fonts. Typically you can use
+this options with the \texttt{EU2} \textsf{fontenc} option.
 
 \subsubsection{luacode environment}
 
-\LuaTeX tra also provides an environment for lua code integration: \textsf{luacode}. You can simply use it this way:
+\LuaTeX tra also provides an environment for lua code integration:
+\textsf{luacode}. You can simply use it this way:
 
 \begin{verbatim}
 \begin{luacode}
@@ -193,57 +317,99 @@ texio.write_nl("It works!")
 
 \subsection{lua modules}
 
-For more informations about this part (and the attributes and catcodetables), see the documentation \texttt{luatextra.pdf}.
+For more informations about this part (and the attributes and catcodetables),
+see the documentation \texttt{luatextra.pdf}.
 
-\LuaTeX tra provides the same kind of functions for lua modules as \LaTeX\ does for packages: it provides the macros \texttt{\string\luaUseModule} and \texttt{\string\luaRequireModule}, as well as the functions \texttt{luatextra.use\_module}, \texttt{luatextra.require\_module} and \texttt{luatextra.provides\_module}.
+\LuaTeX tra provides the same kind of functions for lua modules as \LaTeX\
+does for packages: it provides the macros \texttt{\string\luaUseModule} and
+\texttt{\string\luaRequireModule}, as well as the functions
+\texttt{luatextra.use\_module}, \texttt{luatextra.require\_module} and
+\texttt{luatextra.provides\_module}.
 
-If you want to use a lua file mypackage.lua, you can safely use \texttt{\string\luaUseModule\{mypackage\}}: it will automatically load the file; and will load it only once if the function is called several times. You can also use \texttt{\string\luaRequireModule} that takes the minimal version (or date) as a second (optional under \LaTeX ) argument.
+If you want to use a lua file mypackage.lua, you can safely use
+\texttt{\string\luaUseModule\{mypackage\}}: it will automatically load the
+file; and will load it only once if the function is called several times. You
+can also use \texttt{\string\luaRequireModule} that takes the minimal version
+(or date) as a second (optional under \LaTeX ) argument.
 
-In a lua module, you have to call \texttt{luatextra.provides\_module}. It takes a table as an argument. This table must contain at least the fields \texttt{name}, \texttt{version}, \texttt{date} and \texttt{description}. You can also use the fields \texttt{author}, \texttt{copyright}, \texttt{license}, or any field you want.
+In a lua module, you have to call \texttt{luatextra.provides\_module}. It
+takes a table as an argument. This table must contain at least the fields
+\texttt{name}, \texttt{version}, \texttt{date} and \texttt{description}. You
+can also use the fields \texttt{author}, \texttt{copyright}, \texttt{license},
+or any field you want.
 
 See section \ref{sub:luatemplate} for an example of a lua module.
 
 \subsection{attributes}
 
-We already talked about the most important function: \texttt{\string\newluaattribute}. It is the equivalent of \texttt{\string\newcount} for attributes.
+We already talked about the most important function:
+\texttt{\string\newluaattribute}. It is the equivalent of
+\texttt{\string\newcount} for attributes.
 
-Another important function is \texttt{\string\unsetluaattribute} that unsets an attribute. It's adised to use this macro instead of unsetting it by hand, as the unset value may change (it changed in version 0.37 from \texttt{-1} to \texttt{-"7FFFFFFF}).
+Another important function is \texttt{\string\unsetluaattribute} that unsets
+an attribute. It's adised to use this macro instead of unsetting it by hand,
+as the unset value may change (it changed in version 0.37 from \texttt{-1} to
+\texttt{-"7FFFFFFF}).
 
-You can also use the macro \texttt{\string\setluaattribute} that takes an attribute and a value as arguments, and set the argument to the asked value.
+You can also use the macro \texttt{\string\setluaattribute} that takes an
+attribute and a value as arguments, and set the argument to the asked value.
 
 \subsection{catcodetables}
 
-The equivalent of \texttt{\string\newcount} for catcodetables is \texttt{\string\newluacatcodetable}. Also a set of predefined catcodetables comes with \LuaTeX tra:
+The equivalent of \texttt{\string\newcount} for catcodetables is
+\texttt{\string\newluacatcodetable}. Also a set of predefined catcodetables
+comes with \LuaTeX tra:
 
 \begin{itemize}
-\item \texttt{\string\CatcodeTableIniTeX}: the base \TeX\ catcodes
-\item \texttt{\string\CatcodeTableString}: almost all characters have catcode 12
-\item \texttt{\string\CatcodeTableOther}: all characters have catcode 12 (even space)
-\item \texttt{\string\CatcodeTableLaTeX}: the \LaTeX\ classical catcodes
+  \item \texttt{\string\CatcodeTableIniTeX}: the base \TeX\ catcodes
+  \item \texttt{\string\CatcodeTableString}: almost all characters have
+    catcode 12
+  \item \texttt{\string\CatcodeTableOther}: all characters have catcode 12
+    (even space)
+  \item \texttt{\string\CatcodeTableLaTeX}: the \LaTeX\ classical catcodes
 \end{itemize}
 
 \subsection{callbacks}
 
-For more informations about this part, see the documentation \texttt{luamcallbacks.pdf}.
+For more informations about this part, see the documentation
+\texttt{luamcallbacks.pdf}.
 
-One of the main goals of \LuaTeX tra is also to provide a way for several packages to register their functions in one callback. The function \texttt{callback.register} does not provide any way to do so. To fix it, \LuaTeX tra provides the function \texttt{callback.add} that takes the same two first arguments as \texttt{callback.register} (name of the callback and function to register), and two other arguments: a mandatory description of the function, and an optional priority (the lower the number, the higher the priority).
+One of the main goals of \LuaTeX tra is also to provide a way for several
+packages to register their functions in one callback. The function
+\texttt{callback.register} does not provide any way to do so. To fix it,
+\LuaTeX tra provides the function \texttt{callback.add} that takes the same
+two first arguments as \texttt{callback.register} (name of the callback and
+function to register), and two other arguments: a mandatory description of the
+function, and an optional priority (the lower the number, the higher the
+priority).
 
-If people use \texttt{callback.register} all the \LuaTeX tra mechanism is broken, so we override \texttt{callback.register} with a function that simply outputs an error message.
+If people use \texttt{callback.register} all the \LuaTeX tra mechanism is
+broken, so we override \texttt{callback.register} with a function that simply
+outputs an error message.
 
 Three other very useful new functions are provided:
 
 \begin{itemize}
-\item \texttt{callback.remove} takes the name of a callback and the description of a register function (third argument of \texttt{callback.add}), and removes the function from a callback.
-\item \texttt{callback.reset} removes all register functions from a callback.
-\item \texttt{callback.get\_priority} takes the name of a callback and the description of a registered function, and returns the priority of the function in the callback, or 0 if the function is not registered.
+  \item \texttt{callback.remove} takes the name of a callback and the
+    description of a register function (third argument of
+    \texttt{callback.add}), and removes the function from a callback.
+  \item \texttt{callback.reset} removes all register functions from a
+    callback.
+  \item \texttt{callback.get\_priority} takes the name of a callback and the
+    description of a registered function, and returns the priority of the
+    function in the callback, or 0 if the function is not registered.
 \end{itemize}
-
 
 \subsection{lua extra functions}
 
-Some extra functions have been added to the standard lua library, mostly coming from the Con\TeX t libraries, for the complete list of functions, please refer to the documentation \texttt{luaextra.pdf}.
+Some extra functions have been added to the standard lua library, mostly
+coming from the Con\TeX t libraries, for the complete list of functions,
+please refer to the documentation \texttt{luaextra.pdf}.
 
-The most useful of these added functions is certainly \texttt{table.serialize} that returns the string describing a given table. This string can be used for debugging purposes, or table saving in files, as the string can be read by lua to rebuild the original table.
+The most useful of these added functions is certainly \texttt{table.serialize}
+that returns the string describing a given table. This string can be used for
+debugging purposes, or table saving in files, as the string can be read by lua
+to rebuild the original table.
 
 \subsection{\texttt{.lua} module template\label{sub:luatemplate}}
 
