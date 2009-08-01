@@ -602,8 +602,11 @@ function luamcallbacks.remove (name, description)
             table.remove(l,k)
             luamcallbacks.log(
               format("removing function '%s' from '%s'",description,name))
-            if l == {} and not luamcallbacks.lua_callbacks_defaults[name] then                
+            if not next(l) then
+              luamcallbacks.callbacklist[name] = nil
+              if not luamcallbacks.lua_callbacks_defaults[name] then
                 luamcallbacks.internalregister(name, nil)
+              end
             end
             return
         end
