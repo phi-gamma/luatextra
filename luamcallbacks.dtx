@@ -32,7 +32,7 @@
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: luamcallbacks 2009/03/19 v0.92 LuaTeX multiple callbacks.}
+\Msg{* Package: luamcallbacks 2009/09/18 v0.93 LuaTeX multiple callbacks.}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -97,7 +97,7 @@ and the derived files
 %<*driver>
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesFile{luamcallbacks.drv}
-  [2009/03/19 v0.92 LuaTeX multiple callbacks package]
+  [2009/09/18 v0.93 LuaTeX multiple callbacks package]
 \documentclass{ltxdoc}
 \EnableCrossrefs
 \CodelineIndex
@@ -128,7 +128,7 @@ and the derived files
 % \GetFileInfo{luamcallbacks.drv}
 %
 % \title{The \textsf{luamcallbacks} package}
-% \date{2009/03/19 v0.92}
+% \date{2009/09/18 v0.93}
 % \author{Elie Roux \\ \texttt{elie.roux@telecom-bretagne.eu}}
 %
 % \maketitle
@@ -210,8 +210,8 @@ luamcallbacks          = { }
 
 luamcallbacks.module = {
     name          = "luamcallbacks",
-    version       = 0.92,
-    date          = "2009/03/19",
+    version       = 0.93",
+    date          = "2009/09/18",
     description   = "Module to register several functions in a callback.",
     author        = "Hans Hagen & Elie Roux",
     copyright     = "Hans Hagen & Elie Roux",
@@ -316,6 +316,17 @@ read_font_file = first,
 read_type1_file = first,
 read_data_file = first,
 }
+
+%    \end{macrocode}
+%
+%    In Lua\TeX\ version 0.43, a new callback called |process_output_buffer|
+%    appeared, so we enable it.
+%
+%    \begin{macrocode}
+
+if tex.luatexversion > 42 then
+    luamcallbacks.callbacktypes["process_output_buffer"] = data
+end
 
 %    \end{macrocode}
 %
