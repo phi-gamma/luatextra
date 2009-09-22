@@ -34,7 +34,7 @@
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: luatextra 2009/04/15 v0.93 Extra low level functions for LuaTeX}
+\Msg{* Package: luatextra 2009/09/22 v0.94 Extra low level functions for LuaTeX}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -101,7 +101,7 @@ and the derived files
 %<*driver>
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesFile{luaminimalotf.drv}%
-  [2009/04/15 v0.93 LuaTeX extra low-level macros.]%
+  [2009/09/22 v0.94 LuaTeX extra low-level macros.]%
 \documentclass{ltxdoc}
 \EnableCrossrefs
 \CodelineIndex
@@ -132,7 +132,7 @@ and the derived files
 % \GetFileInfo{luatextra.drv}
 %
 % \title{The \textsf{luatextra} package}
-% \date{2009/04/15 v0.93}
+% \date{2009/09/22 v0.94}
 % \author{Elie Roux \\ \texttt{elie.roux@telecom-bretagne.eu}}
 %
 % \maketitle
@@ -191,11 +191,12 @@ and the derived files
 % In the very long term, it is higly possible that Lua\TeX\ will replace
 % pdf\TeX\ as the default \LaTeX\ engine, so it is necessary to keep backward
 % compatibility. This lead us to the decision of renaming Lua\TeX -only
-% primitives so that they all start by \texttt{lua}, like the pdf\TeX -only
-% primitives start by \texttt{pdf}. Thus attributes become luaattributes,
-% \texttt{\string\directlua} becomes \texttt{\string\luadirect}, etc. This
-% also allows primitives to keep having the same name, even if their name is
-% changed later at the engine level.
+% primitives so that they all start by \texttt{luatex}, like the pdf\TeX -only
+% primitives start by \texttt{pdf}. Thus attributes become luatexattributes,
+% etc. This % also allows primitives to keep having the same name, even if their
+% name is changed later at the engine level. Also some new functions like
+% \texttt{newluatexattribute} are provided with the \texttt{lua} prefix, to
+% shorten the already too long name.
 %
 % \subsection{registers allocation scheme}
 %
@@ -291,9 +292,9 @@ module("luatextra", package.seeall)
 luatextra.modules = {}
 
 luatextra.modules['luatextra'] = {
-    version     = 0.93,
+    version     = 0.94,
     name        = "luatextra",
-    date        = "2009/04/15",
+    date        = "2009/09/22",
     description = "Additional low level functions for LuaTeX",
     author      = "Elie Roux",
     copyright   = "Elie Roux, 2009",
@@ -342,7 +343,7 @@ function luatextra.module_error(package, msg, helpmsg)
     if helpmsg then
         tex.sprint(format("\\errhelp{%s}", helpmsg))
     end
-    tex.sprint(format("\\luaModuleError{%s}{%s}", package, msg))
+    tex.sprint(format("\\luatexModuleError{%s}{%s}", package, msg))
 end
 
 function luatextra.module_warning(modulename, msg)
@@ -988,41 +989,48 @@ end
   \def\latelua{\pdfprimitive\latelua0}
   \def\luadirect{\pdfprimitive\directlua0}
   \def\lualate{\pdfprimitive\latelua0}
-  \def\luaattribute{\attribute}
-  \def\luaattributedef{\attributedef}
-  \def\luaclearmarks{\pdfprimitive\luaclearmarks}
-  \def\luaformatname{\pdfprimitive\formatname}
-  \def\luascantexttokens{\pdfprimitive\scantexttokens}
-  \def\luacatcodetable{\catcodetable}
+  \def\luatexattribute{\attribute}
+  \def\luatexattributedef{\attributedef}
+  \def\luatexclearmarks{\pdfprimitive\luaclearmarks}
+  \def\luatexformatname{\pdfprimitive\formatname}
+  \def\luatexscantexttokens{\pdfprimitive\scantexttokens}
+  \def\luatexcatcodetable{\catcodetable}
+  \def\initluatexcatcodetable{\pdfprimitive\initcatcodetable}
+  \def\saveluatexcatcodetable{\pdfprimitive\savecatcodetable}
+  \def\luaclose{\pdfprimitive\closelua}
 \else
 %    \end{macrocode}
 %
-%    For newer versions, we first enable all primitives with their default
-%    name. Then we add a prefix to some. Note that with this method,
-%    \texttt{\string\luaattribute} will always have the good meaning (except,
-%    of course, if it was defined before, but I think we can call it
-%    perversion...).
+%    From TeXLive 2009, all primitives should be provided with the |luatex|
+%    prefix. For TeXLive 2008, we provide some primitives with this prefix too,
+%    to keep backward compatibility.
 %
 %    \begin{macrocode}
-  \directlua{tex.enableprimitives('lua', {'attribute'})}
-  \directlua{tex.enableprimitives('lua', {'attributedef'})}
-  \directlua{tex.enableprimitives('lua', {'clearmarks'})}
-  \directlua{tex.enableprimitives('lua', {'formatname'})}
-  \directlua{tex.enableprimitives('lua', {'scantexttokens'})}
-  \directlua{tex.enableprimitives('lua', {'catcodetable'})}
+  \directlua{tex.enableprimitives('luatex', {'attribute'})}
+  \directlua{tex.enableprimitives('luatex', {'attributedef'})}
+  \directlua{tex.enableprimitives('luatex', {'clearmarks'})}
+  \directlua{tex.enableprimitives('luatex', {'formatname'})}
+  \directlua{tex.enableprimitives('luatex', {'scantexttokens'})}
+  \directlua{tex.enableprimitives('luatex', {'catcodetable'})}
+  \directlua{tex.enableprimitives('luatex', {'latelua'})}
+  \directlua{tex.enableprimitives('luatex', {'initcatcodetable'})}
+  \directlua{tex.enableprimitives('luatex', {'savecatcodetable'})}
+  \directlua{tex.enableprimitives('luatex', {'closelua'})}
   \def\luadirect{\pdfprimitive\directlua}
-  \def\lualate{\pdfprimitive\latelua}
+  \def\lualate{\pdfprimitive\luatexlatelua}
+  \def\initluatexcatcodetable{\pdfprimitive\luatexinitcatcodetable}
+  \def\saveluatexcatcodetable{\pdfprimitive\luatexsavecatcodetable}
+  \def\luaclose{\pdfprimitive\luatexcloselua}
 \fi
 
 %    \end{macrocode}
 %
-%    Finally we add some common definitions that have lua inside their name,
-%    or that must remove their suffix.
+%    Finally we add some common definitions that have |luatex| inside their 
+%    name, or that must remove their suffix.
 %
 %    \begin{macrocode}
-\def\initluacatcodetable{\pdfprimitive\initcatcodetable}
-\def\saveluacatcodetable{\pdfprimitive\savecatcodetable}
-\def\luaclose{\pdfprimitive\closelua}
+
+
 
 %    \end{macrocode}
 %
@@ -1053,30 +1061,30 @@ end
 %
 %    \subsection{Module handling}
 %
-%    The \texttt{\string\luaModuleError} macro is called by the lua function
+%    The \texttt{\string\luatexModuleError} macro is called by the lua function
 %    \texttt{luatextra.module\_error}. It is necessary because we can't call
 %    directly \texttt{\string\errmessage} in lua. Then we define
-%    \texttt{\string\luaUseModule} that simply calls
+%    \texttt{\string\luatexUseModule} that simply calls
 %    \texttt{luatextra.use\_module}. Remember that
-%    \texttt{\string\luaRequireModule} is defined at the beginning of this
+%    \texttt{\string\luatexRequireModule} is defined at the beginning of this
 %    file.
 %
 %    \begin{macrocode}
 
-\def\luaModuleError#1#2{%
+\def\luatexModuleError#1#2{%
   \errorcontextlines=0\relax
   \immediate\write16{}%
   \errmessage{Module #1 error: #2^^J^^J%
 See the module #1 documentation for explanation.^^J ...^^J}%
 }
 
-\def\luaUseModule#1{\luadirect{luatextra.use_module([[#1]])}}
+\def\luatexUseModule#1{\luadirect{luatextra.use_module([[#1]])}}
 
 %    \end{macrocode}
 %
 %    \subsection{Attributes handling}
 %
-%    The most important macro here is \texttt{\string\newluaattribute} that
+%    The most important macro here is \texttt{\string\newluatexattribute} that
 %    allocates a new attribute, and adds it in the \texttt{tex.attributename}
 %    table (see \texttt{luatextra.attributedef\_from\_tex} for more details.
 %    It works just like the other \texttt{\string\new*} macros, we can
@@ -1085,23 +1093,25 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 %    \begin{macrocode}
 
 
-\newcount\luaattdefcounter
-\luaattdefcounter = 1
+\newcount\luatexattdefcounter
+\luatexattdefcounter = 1
 
-\def\newluaattribute#1{%
-  \ifnum\luaattdefcounter<65535\relax %
-    \global\advance\luaattdefcounter by 1\relax %
-    \allocationnumber\luaattdefcounter %
+\def\newluatexattribute#1{%
+  \ifnum\luatexattdefcounter<65535\relax %
+    \global\advance\luatexattdefcounter by 1\relax %
+    \allocationnumber\luatexattdefcounter %
     \ifluatex %
-      \global\luaattributedef#1=\allocationnumber %
+      \global\luatexattributedef#1=\allocationnumber %
     \fi %
-    \wlog{\string#1=\string\attribute\the\allocationnumber}%
+    \wlog{\string#1=\string\luatexattribute\the\allocationnumber}%
     \luadirect{%
       luatextra.attributedef_from_tex([[\noexpand#1]], '\number\allocationnumber')}%
   \else %
     \errmessage{No room for a new \string\attribute}%
   \fi %
 }
+
+\def\newluaattribute{\newluatexattribute}
 
 %    \end{macrocode}
 %
@@ -1112,9 +1122,11 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 %
 %    \begin{macrocode}
 
-\def\setluaattribute#1#2{%
+\def\setluatexattribute#1#2{%
   #1=\numexpr#2\relax %
 }
+
+\def\setluaattribute{\setluatexattribute}
 
 \def\unsetluaattribute#1{%
   \ifnum\luatexversion<37\relax %
@@ -1124,6 +1136,8 @@ See the module #1 documentation for explanation.^^J ...^^J}%
   \fi %
 }
 
+\def\unsetluatexattribute{\unsetluatexattribute}
+
 %    \end{macrocode}
 %
 %    \subsection{Catcodetables handling}
@@ -1132,14 +1146,14 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 %
 %    \begin{macrocode}
 
-\newcount\luacatcodetabledefcounter
+\newcount\luatexcatcodetabledefcounter
 
-\luacatcodetabledefcounter = 1
+\luatexcatcodetabledefcounter = 1
 
-\def\newluacatcodetable#1{%
-  \ifnum\luacatcodetabledefcounter<1114110\relax % 0x10FFFF is maximal \chardef
-    \global\advance\luacatcodetabledefcounter by 1\relax %
-    \allocationnumber=\luacatcodetabledefcounter %
+\def\newluatexcatcodetable#1{%
+  \ifnum\luatexcatcodetabledefcounter<1114110\relax % 0x10FFFF is maximal \chardef
+    \global\advance\luatexcatcodetabledefcounter by 1\relax %
+    \allocationnumber=\luatexcatcodetabledefcounter %
     \global\chardef#1=\allocationnumber %
     \luadirect{%
       luatextra.catcodetabledef_from_tex([[\noexpand#1]], '\number\allocationnumber')}%
@@ -1148,6 +1162,8 @@ See the module #1 documentation for explanation.^^J ...^^J}%
     \errmessage{No room for a new \string\catcodetable}%
   \fi %
 }
+
+\def\newluacatcodetable{\newluatexcatcodetable}
 
 %    \end{macrocode}
 %
@@ -1178,7 +1194,7 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 %
 %    \begin{macrocode}
 
-\def\luasetcatcoderange#1#2#3{%
+\def\luatexsetcatcoderange#1#2#3{%
   \edef\luaSCR@temp{%
     \noexpand\@tempcnta=\the\@tempcnta
     \noexpand\@tempcntb=\the\@tempcntb
@@ -1211,11 +1227,11 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 %
 %    \begin{macrocode}
 
-\newluacatcodetable\CatcodeTableIniTeX
-\newluacatcodetable\CatcodeTableString
-\newluacatcodetable\CatcodeTableOther
-\newluacatcodetable\CatcodeTableLaTeX
-\initluacatcodetable\CatcodeTableIniTeX
+\newluatexcatcodetable\CatcodeTableIniTeX
+\newluatexcatcodetable\CatcodeTableString
+\newluatexcatcodetable\CatcodeTableOther
+\newluatexcatcodetable\CatcodeTableLaTeX
+\initluatexcatcodetable\CatcodeTableIniTeX
 
 \expandafter\ifx\csname @firstofone\endcsname\relax
   \long\def\@firstofone#1{#1}%
@@ -1224,13 +1240,13 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 \begingroup
   \def\@makeother#1{\catcode#1=12\relax}%
   \@firstofone{%
-    \luacatcodetable\CatcodeTableIniTeX
+    \luatexcatcodetable\CatcodeTableIniTeX
     \begingroup
-      \luasetcatcoderange{0}{8}{15}%
+      \luatexsetcatcoderange{0}{8}{15}%
       \catcode9=10  % tab
       \catcode11=15 %
       \catcode12=13 % form feed
-      \luasetcatcoderange{14}{31}{15}%
+      \luatexsetcatcoderange{14}{31}{15}%
       \catcode35=6 % hash
       \catcode36=3 % dollar
       \catcode38=4 % ampersand
@@ -1240,18 +1256,18 @@ See the module #1 documentation for explanation.^^J ...^^J}%
       \catcode125=2 % brace right
       \catcode126=13 % tilde
       \catcode127=15 %
-      \saveluacatcodetable\CatcodeTableLaTeX
+      \saveluatexcatcodetable\CatcodeTableLaTeX
     \endgroup
     \@makeother{0}% nul
     \@makeother{13}% carriage return
     \@makeother{37}% percent
     \@makeother{92}% backslash
     \@makeother{127}%
-    \luasetcatcoderange{65}{90}{12}% A-Z
-    \luasetcatcoderange{97}{122}{12}% a-z
-    \saveluacatcodetable\CatcodeTableString
+    \luatexsetcatcoderange{65}{90}{12}% A-Z
+    \luatexsetcatcoderange{97}{122}{12}% a-z
+    \saveluatexcatcodetable\CatcodeTableString
     \@makeother{32}% space
-    \saveluacatcodetable\CatcodeTableOther
+    \saveluatexcatcodetable\CatcodeTableOther
   \endgroup
 }
 
