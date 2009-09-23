@@ -219,11 +219,11 @@ and the derived files
 %
 % \subsection{Module system}
 %
-% Lua has some embedded module management, with the functions \texttt{module}
+% Lua has some embedded module management, with the functions \texttt{module}
 % and \texttt{require}. With this package we try get more control on the
 % module system, by implementing something close to the \LaTeX 's
 % \texttt{\string\usepackage} and \texttt{\string\RequirePackage} macros: the
-% \texttt{\string\luaUseModule} and \texttt{\string\luaRequireModule} that act
+% \texttt{\string\luatexUseModule} and \texttt{\string\luatexRequireModule} that act
 % like them, but for lua files. The functions \texttt{module} and
 % \texttt{require} should not be used, in profit of the lua functions
 % \texttt{luatextra.provides\_module} and \texttt{luatextra.use\_module} or
@@ -914,7 +914,7 @@ end
     \immediate\write16{}
     \errmessage{Package luatextra Error: This package must be used with LuaTeX}
   \fi
-  \def\luaRequireModule#1#2{\luadirect{luatextra.require_module([[#1]], [[#2]])}}
+  \def\luatexRequireModule#1#2{\luadirect{luatextra.require_module([[#1]], [[#2]])}}
 \else
 %    \end{macrocode}
 %
@@ -932,7 +932,7 @@ end
     [2009/04/15 v0.93 LuaTeX extra low-level macros]
   \RequirePackage{environ}
   \NewEnviron{luacode}{\luadirect{\BODY}}
-  \newcommand\luaRequireModule[2][0]{\luadirect{luatextra.require_module([[#2]], [[#1]])}}
+  \newcommand\luatexRequireModule[2][0]{\luadirect{luatextra.require_module([[#2]], [[#1]])}}
 %    \end{macrocode}
 %
 %    We also require the package \textsf{etex} to be loaded. The
@@ -1016,20 +1016,12 @@ end
   \directlua{tex.enableprimitives('luatex', {'initcatcodetable'})}
   \directlua{tex.enableprimitives('luatex', {'savecatcodetable'})}
   \directlua{tex.enableprimitives('luatex', {'closelua'})}
-  \def\luadirect{\pdfprimitive\directlua}
-  \def\lualate{\pdfprimitive\luatexlatelua}
-  \def\initluatexcatcodetable{\pdfprimitive\luatexinitcatcodetable}
-  \def\saveluatexcatcodetable{\pdfprimitive\luatexsavecatcodetable}
-  \def\luaclose{\pdfprimitive\luatexcloselua}
+  \let\luadirect\directlua
+  \let\lualate\luatexlatelua
+  \let\initluatexcatcodetable\luatexinitcatcodetable
+  \let\saveluatexcatcodetable\luatexsavecatcodetable
+  \let\luaclose\luatexcloselua
 \fi
-
-%    \end{macrocode}
-%
-%    Finally we add some common definitions that have |luatex| inside their 
-%    name, or that must remove their suffix.
-%
-%    \begin{macrocode}
-
 
 
 %    \end{macrocode}
@@ -1111,8 +1103,6 @@ See the module #1 documentation for explanation.^^J ...^^J}%
   \fi %
 }
 
-\def\newluaattribute{\newluatexattribute}
-
 %    \end{macrocode}
 %
 %    Two convenient macros, one to set an attribute (basically just a
@@ -1126,17 +1116,13 @@ See the module #1 documentation for explanation.^^J ...^^J}%
   #1=\numexpr#2\relax %
 }
 
-\def\setluaattribute{\setluatexattribute}
-
-\def\unsetluaattribute#1{%
+\def\unsetluatexattribute#1{%
   \ifnum\luatexversion<37\relax %
     #1=-1\relax %
   \else %
     #1=-"7FFFFFFF\relax %
   \fi %
 }
-
-\def\unsetluatexattribute{\unsetluatexattribute}
 
 %    \end{macrocode}
 %
@@ -1162,8 +1148,6 @@ See the module #1 documentation for explanation.^^J ...^^J}%
     \errmessage{No room for a new \string\catcodetable}%
   \fi %
 }
-
-\def\newluacatcodetable{\newluatexcatcodetable}
 
 %    \end{macrocode}
 %
@@ -1284,6 +1268,24 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 \fi
 
 \ltxtra@AtEnd
+
+%    \end{macrocode}
+%
+%    Finally we provide some functions for backward compatibility with old versions of luatextra.
+%
+%    \begin{macrocode}
+
+\let\newluaattribute\newluatexattribute
+\let\luaattribute\luatexattribute
+\let\unsetluaattribute\unsetluatexattribute
+\let\initluacatcodetable\initluatexcatcodetable
+\let\luasetcatcoderange\luatexsetcatcoderange
+\let\newluacatcodetable\newluatexcatcodetable
+\let\setluaattribute\setluatexattribute
+\let\luaModuleError\luatexModuleError
+\let\luaRequireModule\luatexRequireModule
+\let\luaUseModule\luatexUseModule
+
 %    \end{macrocode}
 % \iffalse
 %</package>
