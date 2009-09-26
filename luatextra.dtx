@@ -1255,23 +1255,11 @@ See the module #1 documentation for explanation.^^J ...^^J}%
   \endgroup
 }
 
-%    \end{macrocode}
-%
-%    We load \textsf{luaotfload}.
-%
-%    \begin{macrocode}
-
-\expandafter\ifx\csname ProvidesPackage\endcsname\relax
-  \input luaotfload.sty
-\else
-  \RequirePackage{luaotfload}
-\fi
-
 \ltxtra@AtEnd
 
 %    \end{macrocode}
 %
-%    Finally we provide some functions for backward compatibility with old versions of luatextra.
+%    We provide some functions for backward compatibility with old versions of luatextra.
 %
 %    \begin{macrocode}
 
@@ -1285,6 +1273,18 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 \let\luaModuleError\luatexModuleError
 \let\luaRequireModule\luatexRequireModule
 \let\luaUseModule\luatexUseModule
+
+%    \end{macrocode}
+%
+%    Finally, we load \textsf{luaotfload}.
+%
+%    \begin{macrocode}
+
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+  \input luaotfload.sty
+\else
+  \RequirePackage{luaotfload}
+\fi
 
 %    \end{macrocode}
 % \iffalse
