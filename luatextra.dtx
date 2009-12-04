@@ -34,7 +34,7 @@
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: luatextra 2009/09/22 v0.94 Extra low level functions for LuaTeX}
+\Msg{* Package: luatextra 2009/12/04 v0.95 Extra low level functions for LuaTeX}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -101,7 +101,7 @@ and the derived files
 %<*driver>
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesFile{luaminimalotf.drv}%
-  [2009/09/22 v0.94 LuaTeX extra low-level macros.]%
+  [2009/12/04 v0.95 LuaTeX extra low-level macros.]%
 \documentclass{ltxdoc}
 \EnableCrossrefs
 \CodelineIndex
@@ -132,7 +132,7 @@ and the derived files
 % \GetFileInfo{luatextra.drv}
 %
 % \title{The \textsf{luatextra} package}
-% \date{2009/09/22 v0.94}
+% \date{2009/12/04 v0.95}
 % \author{Elie Roux \\ \texttt{elie.roux@telecom-bretagne.eu}}
 %
 % \maketitle
@@ -264,7 +264,7 @@ do
         if luatextrapath:sub(1,2) == "./" then
             luatextrapath = luatextrapath:sub(3)
         end
-        texio.write(' ('..luatextrapath)
+        texio.write_nl('('..luatextrapath)
     end
 end
 
@@ -292,9 +292,9 @@ module("luatextra", package.seeall)
 luatextra.modules = {}
 
 luatextra.modules['luatextra'] = {
-    version     = 0.94,
+    version     = 0.95,
     name        = "luatextra",
-    date        = "2009/09/22",
+    date        = "2009/12/04",
     description = "Additional low level functions for LuaTeX",
     author      = "Elie Roux",
     copyright   = "Elie Roux, 2009",
@@ -426,7 +426,7 @@ function luatextra.use_module(name)
         if path:sub(1,2) == "./" then
             path = path:sub(3)
         end
-        texio.write(' ('..path)
+        texio.write_nl('('..path)
         dofile(path)
         if not luatextra.modules[name] then
             luatextra.internal_warning(format("You have requested module `%s',\n%s but the file %s does not provide it.", name, luatextra.internal_warning_spaces, filename))
@@ -890,7 +890,7 @@ end
 
 %    \end{macrocode}
 %
-%    Then we load \textsf{ifluatex}.
+%    Then we load \textsf{ifluatex} and etex if under \LaTeX.
 %
 %    \begin{macrocode}
 
@@ -900,53 +900,10 @@ end
   \fi
 \else
   \RequirePackage{ifluatex}
-\fi
-
-\expandafter\ifx\csname ProvidesPackage\endcsname\relax
-%    \end{macrocode}
-%
-%    If the package is loaded with Plain, we raise an error if the package is
-%    called with a non-Lua\TeX\ engine, and we define
-%    \texttt{\string\luaRequireModule} with two mandatory arguments.
-%
-%    \begin{macrocode}
-  \ifluatex\else
-    \immediate\write16{}
-    \errmessage{Package luatextra Error: This package must be used with LuaTeX}
-  \fi
-  \def\luatexRequireModule#1#2{\luadirect{luatextra.require_module([[#1]], [[#2]])}}
-\else
-%    \end{macrocode}
-%
-%    If the package is loaded with \LaTeX , we also print the error message,
-%    and we define \texttt{\string\luaRequireModule} with one mandatory
-%    argument (the name of the package) and one optional (the version or the
-%    date). We also define the environment \texttt{luacode}.
-%
-%    \begin{macrocode}
-  \ifluatex\else
-    \PackageError{luatextra}{This package must be used with LuaTeX.}
-  \fi
   \NeedsTeXFormat{LaTeX2e}
   \ProvidesPackage{luatextra}
-    [2009/04/15 v0.93 LuaTeX extra low-level macros]
-  \RequirePackage{environ}
-  \NewEnviron{luacode}{\luadirect{\BODY}}
-  \newcommand\luatexRequireModule[2][0]{\luadirect{luatextra.require_module([[#2]], [[#1]])}}
-%    \end{macrocode}
-%
-%    We also require the package \textsf{etex} to be loaded. The
-%    \texttt{\string\input} is a hack that modifies some values in the
-%    register attribution scheme of $\varepsilon$-\TeX\ and remaps
-%    \texttt{\string\newcount} to \textsf{etex}'s \texttt{\string\globcount}.
-%    We have to do such a remapping in a separate file that Plain doesn't see,
-%    otherwise it outputs an error if we try to change
-%    \texttt{\string\newcount} (because it is an \texttt{\string\outer}
-%    macro). See section \ref{sub:latex} for the file content.
-%
-%    \begin{macrocode}
-  \RequirePackage{etex}[1998/03/26]%
-  \input luatextra-latex.tex
+    [2009/12/04 v0.95 LuaTeX extra low-level macros]
+  \RequirePackage{etex}[1998/03/26]
 \fi
 
 %    \end{macrocode}
@@ -955,10 +912,64 @@ end
 %    defined to Lua\TeX\ and Lua\LaTeX , because that's the way it's written
 %    in the Lua\TeX 's manual (not in small capitals).
 %
+%    These two macros are the only two loaded if we are under a non-Lua\TeX{}
+%    engine.
+%
 %    \begin{macrocode}
 
 \def\LuaTeX{Lua\TeX }
 \def\LuaLaTeX{Lua\LaTeX }
+
+%    \end{macrocode}
+%
+%    Here we end the loading of the file if we are under a non-Lua\TeX{}
+%    engine, and we issue a warning.
+%
+%    \begin{macrocode}
+
+\ifluatex\else
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \immediate\write16{}
+    \immediate\write16{Package luatextra Warning: this package should be used with LuaTeX.}
+  \else
+    \PackageWarning{luatextra}{this package should be used with LuaTeX.}
+  \fi
+  \expandafter\endinput
+\fi
+
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+%    \end{macrocode}
+%
+%    If the package is loaded with Plain, we define
+%    \texttt{\string\luaRequireModule} with two mandatory arguments.
+%
+%    \begin{macrocode}
+  \def\luatexRequireModule#1#2{\luadirect{luatextra.require_module([[#1]], [[#2]])}}
+\else
+%    \end{macrocode}
+%
+%    If the package is loaded with \LaTeX , we define 
+%    \texttt{\string\luaRequireModule} with one mandatory
+%    argument (the name of the package) and one optional (the version or the
+%    date). We also define the environment \texttt{luacode}.
+%
+%    \begin{macrocode}
+  \RequirePackage{environ}
+  \NewEnviron{luacode}{\luadirect{\BODY}}
+  \newcommand\luatexRequireModule[2][0]{\luadirect{luatextra.require_module([[#2]], [[#1]])}}
+%    \end{macrocode}
+%
+%    The \texttt{\string\input} is a hack that modifies some values in the
+%    register attribution scheme of $\varepsilon$-\TeX\ and remaps
+%    \texttt{\string\newcount} to \textsf{etex}'s \texttt{\string\globcount}.
+%    We have to do such a remapping in a separate file that Plain doesn't see,
+%    otherwise it outputs an error if we try to change
+%    \texttt{\string\newcount} (because it is an \texttt{\string\outer}
+%    macro). See section \ref{sub:latex} for the file content.
+%
+%    \begin{macrocode}
+  \input luatextra-latex.tex
+\fi
 
 %    \end{macrocode}
 %
