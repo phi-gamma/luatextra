@@ -21,6 +21,23 @@ Please see the luatextra-reference.pdf documentation for more details.
 This package is developped on <http://github.com/eroux/lualatex/tree/master>.
 
 
+History
+-------
+
+2009/12/16, luatextra v0.95:
+    * package can now be loaded with a different engine, it then loads only
+        \LuaTeX and \LuaLaTeX
+    * \CatcodeTableLaTeXAtLetter and \CatcodeTableExpl have appeared
+    * short names have been added to the tex.catcodetablenumber table
+    
+2009/09/22, luatextra v0.94:
+    * prefixing macros with \luatex instead of \lua, to be coherent with 
+        TeX Live 2009.
+        
+2009/09/18, luamcallbacks v0.93:
+    * adding the callback process_output_buffer, to use it with luainputenc
+
+        
 Installation
 ------------
 
