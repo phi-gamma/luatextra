@@ -635,6 +635,45 @@ end
 
 %    \end{macrocode}
 %
+%    With this function we create some shortcuts for a
+%    better readability in lua code. This makes
+%    |tex.catcodenumber.latex| equivalent to 
+%    |tex.catcodenumber['CatcodeTableLaTeX']|.
+%
+%    \begin{macrocode}
+
+function luatextra.catcodetable_do_shortcuts()
+    local cat = tex.catcodetablenumber
+    local val = cat['CatcodeTableLaTeX']
+    if val then
+      cat['latex'] = val
+    end
+    val = cat['CatcodeTableLaTeXAtLetter']
+    if val then
+      cat['latex-package'] = val
+      cat['latex-makeatletter'] = val
+    end
+    val = cat['CatcodeTableIniTeX']
+    if val then
+      cat['ini'] = val
+    end
+    val = cat['CatcodeTableExpl']
+    if val then
+      cat['expl3'] = val
+      cat['expl'] = val
+    end
+    val = cat['CatcodeTableString']
+    if val then
+      cat['string'] = val
+    end
+    val = cat['CatcodeTableOther']
+    if val then
+      cat['other'] = val
+    end
+end
+
+%    \end{macrocode}
+%
 %    \subsection{Multiple callbacks on the \texttt{open\_read\_file}
 %    callback\label{sub:orf}}
 %
@@ -1218,6 +1257,9 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 %    \item \texttt{\string\CatcodeTableOther}: all characters have catcode 12
 %    (even space)
 %    \item \texttt{\string\CatcodeTableLaTeX}: the \LaTeX\ classical catcodes
+%    \item \texttt{\string\CatcodeTableLaTeXAtLetter}: the \LaTeX\ classical
+%    catcodes and |@| letter
+%    \item \texttt{\string\CatcodeTableExpl}: the expl3 catcodes
 %    \end{itemize}
 %
 %    \begin{macrocode}
@@ -1226,6 +1268,8 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 \newluatexcatcodetable\CatcodeTableString
 \newluatexcatcodetable\CatcodeTableOther
 \newluatexcatcodetable\CatcodeTableLaTeX
+\newluatexcatcodetable\CatcodeTableLaTeXAtLetter
+\newluatexcatcodetable\CatcodeTableExpl
 \initluatexcatcodetable\CatcodeTableIniTeX
 
 \expandafter\ifx\csname @firstofone\endcsname\relax
@@ -1252,6 +1296,27 @@ See the module #1 documentation for explanation.^^J ...^^J}%
       \catcode126=13 % tilde
       \catcode127=15 %
       \saveluatexcatcodetable\CatcodeTableLaTeX
+      \catcode64=11 %
+      \saveluatexcatcodetable\CatcodeTableLaTeXAtLetter
+    \endgroup
+    \begingroup
+      \luatexsetcatcoderange{0}{8}{15}%
+      \catcode9=9 % tab ignored
+      \catcode11=15 %
+      \catcode12=13 % form feed
+      \luatexsetcatcoderange{14}{31}{15}%
+      \catcode32=9 % space is ignored
+      \catcode35=6 % hash mark is macro parameter character
+      \catcode36=3 % dollar (not so sure about the catcode...)
+      \catcode38=4 % ampersand
+      \catcode58=11 % colon letter
+      \catcode94=7 % circumflex is superscript character
+      \catcode95=11 % underscore letter
+      \catcode123=1 % left brace is begin-group character
+      \catcode125=2 % right brace is end-group character
+      \catcode126=10 % tilde is a space char.
+      \catcode127=15 %
+      \saveluatexcatcodetable\CatcodeTableExpl
     \endgroup
     \@makeother{0}% nul
     \@makeother{13}% carriage return
@@ -1267,6 +1332,8 @@ See the module #1 documentation for explanation.^^J ...^^J}%
 }
 
 \ltxtra@AtEnd
+
+\luadirect{luatextra.catcodetable_do_shortcuts()}
 
 %    \end{macrocode}
 %
