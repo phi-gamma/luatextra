@@ -1,18 +1,13 @@
                           The luatextra generic bundle
 
 
-LuaTeXtra is a collection of three coherent packages:
+LuaTeXtra is a collection of two coherent packages:
 
-luatextra provides low-level functions for LuaTeX use with LaTeX and Plain, for
+1. luatextra provides low-level functions for LuaTeX use with LaTeX and Plain, for
 instance the macro \newluaattribute. It also provides a way to use and register
 new lua modules, inspired by the LaTeX packages system.
 
-luamcallback provides a way to register several functions in a LuaTeX callback.
-
-luaextra provides extra lua functions useful for package development.
-
-These packages are really necessary if you want to take advantage of the new
-LuaTeX functions in a safe way.
+2. luaextra provides extra lua functions useful for package development.
 
 Note that this package automatically loads luaotfload.
 
@@ -47,18 +42,14 @@ Manifest
 
 Source files:
         luaextra.dtx
-        luamcallbacks.dtx
         luatextra.dtx
         luatextra-reference.tex
 
 Derived files:
         luatextra-reference.pdf         introduction to luatextra packages
         luaextra.pdf
-        luamcallbacks.pdf
         luatextra.pdf
-        luamcallbacks-test.tex
         luaextra.lua
-        luamcallbacks.lua
         luatextra-latex.tex
         luatextra.lua
         luatextra.sty
