@@ -9,9 +9,8 @@ EXTRA = $(wildcard luaextra-*.lua)
 
 # Files grouped by generation mode
 UNPACKED_EXTRA = luaextra.lua 
-UNPACKED_MCB = luamcallbacks-test.tex luamcallbacks.lua
 UNPACKED_TEXTRA = luatextra-latex.tex luatextra.lua luatextra.sty 
-UNPACKED = $(UNPACKED_EXTRA) $(UNPACKED_MCB) $(UNPACKED_TEXTRA)
+UNPACKED = $(UNPACKED_EXTRA) $(UNPACKED_TEXTRA)
 COMPILED = $(DOC_DTX) $(DOC_TEX) 
 # $(DOC_TEX) has a compiled version in the repository
 GENERATED = $(UNPACKED) $(DOC_DTX)
@@ -64,9 +63,6 @@ $(UNPACKED_TEXTRA): luatextra.dtx
 	$(DO_TEX)
 
 $(UNPACKED_EXTRA): luaextra.dtx
-	$(DO_TEX)
-
-$(UNPACKED_MCB): luamcallbacks.dtx
 	$(DO_TEX)
 
 $(CTAN_ZIP): $(SOURCE) $(COMPILED) $(TDS_ZIP)
