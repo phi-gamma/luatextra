@@ -5,6 +5,7 @@ DTX = $(wildcard *.dtx)
 DOC_DTX = $(patsubst %.dtx, %.pdf, $(DTX))
 SRC_TEX = luatextra-reference.tex
 DOC_TEX = $(patsubst %.tex, %.pdf, $(SRC_TEX))
+EXTRA = $(wildcard luaextra-*.lua)
 
 # Files grouped by generation mode
 UNPACKED_EXTRA = luaextra.lua 
@@ -17,7 +18,7 @@ GENERATED = $(UNPACKED) $(DOC_DTX)
 SOURCE = $(DTX) $(SRC_TEX) README Makefile
 
 # Files grouped by installation location
-RUNFILES = $(UNPACKED_EXTRA) $(UNPACKED_TEXTRA) luamcallbacks.lua
+RUNFILES = $(UNPACKED_EXTRA) $(UNPACKED_TEXTRA) $(EXTRA) luamcallbacks.lua
 DOCFILES = $(DOC_DTX) $(DOC_TEX) README luamcallbacks-test.tex
 SRCFILES = $(DTX) $(SRC_TEX) Makefile
 
