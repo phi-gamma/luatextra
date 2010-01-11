@@ -23,6 +23,9 @@ This package is developped on <http://github.com/eroux/lualatex/tree/master>.
 
 History
 -------
+2010/01/10, luaextra v0.92:
+    * making the file loadable without luatextra (useful for lua scripts)
+    * fixing typo in localize_sep
 
 2009/12/16, luatextra v0.95:
     * package can now be loaded with a different engine, it then loads only
