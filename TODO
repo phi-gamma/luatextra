@@ -1,0 +1,3 @@
+- add \usepackage{luatexbase} once it's ready
+- make test documents for LuaTeX and Plain and be sure they work
+- add a 'check' target in makefile?
