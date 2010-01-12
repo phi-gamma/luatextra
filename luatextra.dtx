@@ -650,7 +650,6 @@ end
   \NeedsTeXFormat{LaTeX2e}
   \ProvidesPackage{luatextra}
     [2009/12/16 v0.95 LuaTeX extra low-level macros]
-  \RequirePackage{etex}[1998/03/26]
 \fi
 
 %    \end{macrocode}
@@ -693,21 +692,9 @@ end
 \expandafter\ifx\csname ProvidesPackage\endcsname\relax \else
   \RequirePackage{environ}
   \NewEnviron{luacode}{\luadirect{\BODY}}
-%    \end{macrocode}
-%
-%    The \texttt{\string\input} is a hack that modifies some values in the
-%    register attribution scheme of $\varepsilon$-\TeX\ and remaps
-%    \texttt{\string\newcount} to \textsf{etex}'s \texttt{\string\globcount}.
-%    We have to do such a remapping in a separate file that Plain doesn't see,
-%    otherwise it outputs an error if we try to change
-%    \texttt{\string\newcount} (because it is an \texttt{\string\outer}
-%    macro). See section \ref{sub:latex} for the file content.
-%
-%    \begin{macrocode}
-  \input luatextra-latex.tex
 \fi
-
 %    \end{macrocode}
+%
 %
 % \subsection{Primitives renaming}
 %
@@ -1035,38 +1022,6 @@ end
 %    \end{macrocode}
 % \iffalse
 %</package>
-% \fi
-%
-% \section{\texttt{luatextra-latex.tex}\label{sub:latex}}
-%
-% \iffalse
-%<*latex>
-% \fi
-%
-%    This file is very small, it just changes the maximum values of allowed
-%    registers from 32768 to 65536, and remaps \texttt{\string\newcount} (and
-%    friends) to \textsf{etex}'s \texttt{\string\globcount}.
-%
-%    \begin{macrocode}
-\def\ltxtra@temp#1{%
-\ifnum\count27#1=32768 %
-  \count27#1=65536 %
-\fi
-}%
-\ltxtra@temp0%
-\ltxtra@temp1%
-\ltxtra@temp2%
-\ltxtra@temp3%
-\ltxtra@temp4%
-\ltxtra@temp5%
-\ltxtra@temp6%
-\let\newcount\globcount
-\let\newdimen\globdimen
-\let\newskip\globskip
-\let\newbox\globbox
-%    \end{macrocode}
-% \iffalse
-%</latex>
 % \fi
 %
 %
