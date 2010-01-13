@@ -293,37 +293,6 @@ local format = string.format
 
 %    \end{macrocode}
 %
-%    \subsection{Attributes handling\label{sub:attr}}
-%
-%    Attribute allocation is done mainly in the \texttt{sty} file, but there
-%    is also a lua addition for attribute handling: Lua\TeX\ is by default
-%    unable to tell the attribute number corresponding to an attribute name.
-%    This attribute number is necessary for functions such as
-%    \texttt{node.has\_attribute}, which is used very often. The solution
-%    until now was to give a chosen attribute number to each attribute, and
-%    pray that someone else didn't use it before. With this method it was easy
-%    to know the number of an attribute, as it was chosen. Now with the
-%    \texttt{\string\newluaattribute} macro, it's impossible to know the
-%    number of an attribute. To fix it, when \texttt{\string\newluaattribute}
-%    is called, it calls \texttt{luatextra.attributedef\_from\_tex}. This
-%    function registers the number in the table \texttt{tex.attributenumber}.
-%    For example to get the number of the attribute \texttt{myattribute}
-%    registered with \texttt{\string\newluaattribute\string\myattribute}, you
-%    can simply call \texttt{tex.attributenumber[myattribute]}.
-%
-%    \begin{macrocode}
-
-luatextra.attributes = {}
-
-tex.attributenumber = luatextra.attributes
-
-function luatextra.attributedef_from_tex(name, number)
-    truename = name:gsub('[\\ ]', '')
-    luatextra.attributes[truename] = tonumber(number)
-end
-
-%    \end{macrocode}
-%
 % \subsection{Catcodetables handling}
 %
 %    In the same way, the table \texttt{tex.catcodetablenumber} contains the
@@ -775,58 +744,6 @@ end
 
 \def\ltxtra@RegisterFontCallback{
   \luadirect{luatextra.register_font_callback()}
-}
-
-%    \end{macrocode}
-%
-%    \subsection{Attributes handling}
-%
-%    The most important macro here is \texttt{\string\newluatexattribute} that
-%    allocates a new attribute, and adds it in the \texttt{tex.attributename}
-%    table (see \texttt{luatextra.attributedef\_from\_tex} for more details.
-%    It works just like the other \texttt{\string\new*} macros, we can
-%    allocate up to 65536 different attributes.
-%
-%    \begin{macrocode}
-
-
-\newcount\luatexattdefcounter
-\luatexattdefcounter = 1
-
-\def\newluatexattribute#1{%
-  \ifnum\luatexattdefcounter<65535\relax %
-    \global\advance\luatexattdefcounter by 1\relax %
-    \allocationnumber\luatexattdefcounter %
-    \ifluatex %
-      \global\luatexattributedef#1=\allocationnumber %
-    \fi %
-    \wlog{\string#1=\string\luatexattribute\the\allocationnumber}%
-    \luadirect{%
-      luatextra.attributedef_from_tex([[\noexpand#1]], '\number\allocationnumber')}%
-  \else %
-    \errmessage{No room for a new \string\attribute}%
-  \fi %
-}
-
-%    \end{macrocode}
-%
-%    Two convenient macros, one to set an attribute (basically just a
-%    wrapper), and another one to uset it. Unsetting attributes with this
-%    function is important, as the \texttt{unset} value may change, as it
-%    already has in the 0.37 version.
-%
-%    \begin{macrocode}
-
-\def\setluatexattribute#1#2{%
-  #1=\numexpr#2\relax %
-}
-
-\def\unsetluatexattribute#1{%
-  \ifnum\luatexversion<37\relax %
-    #1=-1\relax %
-  \else %
-    #1=-"7FFFFFFF\relax %
-  \fi %
 }
 
 %    \end{macrocode}
