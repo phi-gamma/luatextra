@@ -138,95 +138,18 @@ and the derived files
 % \maketitle
 %
 % \begin{abstract}
-% \textsf{luatextra} provides low-level addition to the formats Plain and
-% \LaTeX\ to be used with the engine Lua\TeX.
-% \end{abstract}
-%
-% \tableofcontents
-%
-% \section{Documentation}
-%
-% \subsection{Preamble}
-%
 % This document is made for people wanting to understand how the package was
 % made. For an introduction to the use of Lua\TeX\ with the formats Plain and
 % \LaTeX , please read the document \texttt{luatextra-reference.pdf} that you
 % can find in your \TeX\ distribution (\TeX Live from version 2009) or on the
 % CTAN.
 %
-% \subsection{History of formats and engines}
+% \textbf{Warning.} This package is undergoing major changes, so the
+% documentation may sometimes be inconsistent. Also, be aware that everything
+% may change.
+% \end{abstract}
 %
-% To understand this package, one must fist understand some historical choices
-% in the \TeX\ world.
-%
-% A \TeX\ engine is a binary executable that provides some very low-level
-% primitives, for example \texttt{\string\count} to set a counter to a certain
-% value. A \TeX\ format is a macro package that provides higher-level macros
-% for the user and the package developer, for example
-% \texttt{\string\newcount} that allocates a new counter and gives it a name.
-% Examples of engines are the old \TeX\ 82, $\varepsilon$-\TeX, pdf\TeX,
-% Omega/Aleph, Lua\TeX\ and Xe\TeX. Examples of formats are Plain, \LaTeX\ and
-% Con\TeX t.
-%
-% This distinction is hard to make as only one command is invoked, for example
-% when you call the command \texttt{tex}, you often have no idea that the
-% engine \TeX\ 82 is invoked with the format Plain.
-%
-% Evolution is also something confusing in the \TeX\ world: engines often
-% evolve, and new engines have always appeared, when most formats are frozen:
-% the Plain and \LaTeX\ formats do not accept any new code to cope with the
-% new engines. In theory, this package shouldn't exist, or at least shouldn't
-% be a package, but its code should be integrated into a format. But as Plain
-% and \LaTeX\ are frozen, people wanting to take advantage of the new engines
-% have to use a package.
-%
-% This package is really necessary to take advantage of Lua\TeX\ as it
-% provides things users are expecting a macro package to provide, for example
-% \texttt{\string\newluaattribute} that acts like \texttt{\string\newcount}
-% for lua attributes. It also enables all Lua\TeX\ primitives, that are
-% disabled by default.
-%
-% \subsection{choices made in this package}
-%
-% In the very long term, it is higly possible that Lua\TeX\ will replace
-% pdf\TeX\ as the default \LaTeX\ engine, so it is necessary to keep backward
-% compatibility. This lead us to the decision of renaming Lua\TeX -only
-% primitives so that they all start by \texttt{luatex}, like the pdf\TeX -only
-% primitives start by \texttt{pdf}. Thus attributes become luatexattributes,
-% etc. This % also allows primitives to keep having the same name, even if their
-% name is changed later at the engine level. Also some new functions like
-% \texttt{newluatexattribute} are provided with the \texttt{lua} prefix, to
-% shorten the already too long name.
-%
-% \subsection{registers allocation scheme}
-%
-% The default register allocation scheme of \LaTeX\ is old and limited (like
-% the one of \TeX 82) to 256 values. The engine $\varepsilon$-\TeX allows more
-% different registers (up to 32768), and Lua\TeX\ allows even 65536 ones.
-% These new limits were not acknowledged by \LaTeX . A package \textsf{etex}
-% was created for \LaTeX\ to extends the allocation scheme. \textsf{luatextra}
-% loads \textsf{etex}, and overrides somes values to extend the allocation max
-% number to 65536.
-%
-% \subsection{attributes}
-%
-% Attributes are a new concept in Lua\TeX\ (see the Lua\TeX\ documentation for
-% details). As the macro \texttt{\string\attribute} is certainly very common
-% in the user's documents, they are renamed \texttt{luaattribute}s. This
-% package provides a simple way to allocate new attributes, with the macro
-% \texttt{\string\newluaattribute}. For more informations about attribute
-% handling in lua, please read section \ref{sub:attr}.
-%
-% \subsection{Multiple callbacks handling}
-%
-% Lua\TeX\ has no way to register multiple functions in a callback. This
-% package loads \textsf{luamcallbacks} that provides a safe way to do so. But
-% the \textsf{luamcallbacks} package can't register several functions in some
-% callbacks, like \texttt{open\_read\_file} and \texttt{define\_font}. This
-% package takes advantage of the callback creation possibilities of
-% \textsf{luamcallbacks} to split these callbacks into several ones that can
-% agregate several functions. Thus it allows several packages to safely use
-% the callbacks. See section \ref{sub:orf} for more details.
+% \tableofcontents
 %
 % \section{\texttt{luatextra.lua}}
 %
@@ -236,37 +159,11 @@ and the derived files
 %<*lua>
 % \fi
 %
-%    \TeX\ always prints the names of the files that are input. Unfortunatly
-%    it can't do so with lua files called with \texttt{dofile}. We will fix it
-%    with the \texttt{luatextra.use\_module} function, but in the meantime we
-%    print this information for the \texttt{luatextra.lua} file.
-%
-%    A change compared to usual filename printings is the fact that Lua\TeX\
-%    does not print the \texttt{./} for files in the current directory. We
-%    keep this convention for lua filename printings.
-%
-%    \begin{macrocode}
-do
-    local luatextrapath = kpse.find_file("luatextra.lua")
-    if luatextrapath then
-        if luatextrapath:sub(1,2) == "./" then
-            luatextrapath = luatextrapath:sub(3)
-        end
-        texio.write_nl('('..luatextrapath)
-    end
-end
-
-%    \end{macrocode}
-%
 %    We create the \texttt{luatextra} table that will contain all the
 %    functions and variables, and we register it as a normal lua module.
 %
 %    \begin{macrocode}
-
-luatextra = {}
-
 module("luatextra", package.seeall)
-
 %    \end{macrocode}
 %
 %    We initiate the modules table that will contain informations about the
@@ -276,10 +173,7 @@ module("luatextra", package.seeall)
 %    \texttt{luatextra.provides\_module} for more details.
 %
 %    \begin{macrocode}
-
-luatextra.modules = {}
-
-luatextra.modules['luatextra'] = {
+luatextra.provides_module {
     version     = 0.95,
     name        = "luatextra",
     date        = "2009/12/16",
@@ -288,9 +182,7 @@ luatextra.modules['luatextra'] = {
     copyright   = "Elie Roux, 2009",
     license     = "CC0",
 }
-
 local format = string.format
-
 %    \end{macrocode}
 %
 %    \subsection{Multiple callbacks on the \texttt{open\_read\_file}
@@ -325,7 +217,6 @@ local format = string.format
 %    \end{itemize}
 %
 %    \begin{macrocode}
-
 function luatextra.open_read_file(filename)
     local path = kpse.find_file(filename)
     local env = {
@@ -349,7 +240,6 @@ function luatextra.open_read_file(filename)
     env.close = luatextra.close
     return env
 end
-
 %    \end{macrocode}
 %
 % \end{macro}
@@ -358,18 +248,15 @@ end
 %    \texttt{open\_read\_file} callback.
 %
 %    \begin{macrocode}
-
 function luatextra.reader(env)
     local line = (env.file):read()
     line = luamcallbacks.call('file_reader', env, line)
     return line
 end
-
 function luatextra.close(env)
     (env.file):close()
     luamcallbacks.call('file_close', env)
 end
-
 %    \end{macrocode}
 %
 %    In the callback creation process we need to have default behaviours. Here
@@ -378,19 +265,15 @@ end
 %    more details.
 %
 %    \begin{macrocode}
-
 function luatextra.default_reader(env, line)
     return line
 end
-
 function luatextra.default_close(env)
     return
 end
-
 function luatextra.default_pre_read(env)
     return env
 end
-
 %    \end{macrocode}
 %
 %    \subsection{Multiple callbacks on the \texttt{define\_font}
@@ -430,13 +313,11 @@ end
 %    this mechanism anyway.
 %
 %    \begin{macrocode}
-
 do
   if tex.luatexversion < 36 then
       fontloader = fontforge
   end
 end
-
 function luatextra.find_font(name)
     local types = {'ofm', 'ovf', 'opentype fonts', 'truetype fonts'}
     local path = kpse.find_file(name)
@@ -447,15 +328,12 @@ function luatextra.find_font(name)
     end
     return nil
 end
-
 function luatextra.font_load_error(error)
     luatextra.module_warning('luatextra', string.format('%s\nloading lmr10 instead...', error))
 end
-
 function luatextra.load_default_font(size)
     return font.read_tfm("lmr10", size)
 end
-
 function luatextra.define_font(name, size)
     if (size < 0) then size = (- 655.36) * size end
     local fontinfos = {
@@ -496,25 +374,23 @@ function luatextra.define_font(name, size)
     callback.call('post_font_opening', f, fontinfos)
     return f
 end
-
 function luatextra.default_font_syntax(fontinfos)
     return
 end
-
 function luatextra.default_open_otf(fontinfos)
     return nil
 end
-
 function luatextra.default_post_font(f, fontinfos)
     return true
 end
-
 function luatextra.register_font_callback()
     callback.add('define_font', luatextra.define_font, 'luatextra.define_font')
 end
-
-do
-    luatextra.use_module('luamcallbacks')
+%    \end{macrocode}
+%
+%    Initialise a few callbacks.
+%
+%    \begin{macrocode}
     callback.create('pre_read_file', 'simple', luatextra.default_pre_read)
     callback.create('file_reader', 'data', luatextra.default_reader)
     callback.create('file_close', 'simple', luatextra.default_close)
@@ -522,11 +398,6 @@ do
     callback.create('font_syntax', 'simple', luatextra.default_font_syntax)
     callback.create('open_otf_font', 'first', luatextra.default_open_otf)
     callback.create('post_font_opening', 'simple', luatextra.default_post_font)
-
-    if luatextrapath then
-        texio.write(')')
-    end
-end
 %    \end{macrocode}
 % \iffalse
 %</lua>
@@ -548,7 +419,7 @@ end
 
 %    \end{macrocode}
 %
-%    Then we load \textsf{ifluatex} and etex if under \LaTeX.
+%    Then we load \textsf{ifluatex}.
 %
 %    \begin{macrocode}
 
@@ -579,28 +450,54 @@ end
 
 %    \end{macrocode}
 %
-%    Here we end the loading of the file if we are under a non-Lua\TeX{}
-%    engine, and we issue a warning.
+%    Make sure Lua\TeX\ is being used.
 %
 %    \begin{macrocode}
-
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input ifluatex.sty
+\else
+  \RequirePackage{ifluatex}
+\fi
 \ifluatex\else
-  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
-    \immediate\write16{}
-    \immediate\write16{Package luatextra Warning: this package should be used with LuaTeX.}
-  \else
-    \PackageWarning{luatextra}{this package should be used with LuaTeX.}
-  \fi
+  \begingroup
+    \expandafter\ifx\csname PackageWarningNoLine\endcsname\relax
+      \def\x#1#2{\begingroup\newlinechar10
+        \immediate\write16{Package #1 warning: #2}\endgroup}
+    \else
+      \let\x\PackageWarningNoLine
+    \fi
+  \expandafter\endgroup
+  \x{luatexbase-modutils}{LuaTeX is required for this package.^^J
+    Aborting package loading.}
   \expandafter\endinput
 \fi
-
+%    \end{macrocode}
+%
+%    Load other usefull packages.
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input luatexbase-modutils.sty
+  \input luatexbase-attr.sty
+  \input luatexbase-cctb.sty
+  \input luatexbase-regs.sty
+\else
+  \RequirePackage{luatexbase-modutils}
+  \RequirePackage{luatexbase-attr}
+  \RequirePackage{luatexbase-cctb}
+  \RequirePackage{luatexbase-regs}
+\fi
+\luatexUseModule{luamcallbacks}
+\luatexUseModule{luaextra}
 %    \end{macrocode}
 %
 %    If the package is loaded with \LaTeX , we
 %    also define the environment \texttt{luacode}.
 %
 %    \begin{macrocode}
-\expandafter\ifx\csname ProvidesPackage\endcsname\relax \else
+\expandafter\ifx\csname RequirePackage\endcsname\relax \else
   \RequirePackage{environ}
   \NewEnviron{luacode}{\luadirect{\BODY}}
 \fi
@@ -616,7 +513,6 @@ end
 %    \texttt{\string\directlua} syntax prints a warning.
 %
 %    \begin{macrocode}
-
 \ifnum\luatexversion<36
 %    \end{macrocode}
 %
@@ -667,33 +563,27 @@ end
   \let\saveluatexcatcodetable\luatexsavecatcodetable
   \let\luaclose\luatexcloselua
 \fi
-
-
 %    \end{macrocode}
 %
 %    We load the \texttt{lua} file.
 %
 %    \begin{macrocode}
-
 \luadirect{dofile(kpse.find_file("luatextra.lua"))}
-
 %    \end{macrocode}
 %
 %    A small macro to register the \texttt{define\_font} callback from
 %    \textsf{luatextra}. See section \ref{sub:df} for more details.
 %
 %    \begin{macrocode}
-
 \def\ltxtra@RegisterFontCallback{
   \luadirect{luatextra.register_font_callback()}
 }
-
 %    \end{macrocode}
 %
-%    We provide some functions for backward compatibility with old versions of luatextra.
+%    We provide some functions for backward compatibility with old versions of
+%    luatextra.
 %
 %    \begin{macrocode}
-
 \let\newluaattribute\newluatexattribute
 \let\luaattribute\luatexattribute
 \let\unsetluaattribute\unsetluatexattribute
@@ -704,19 +594,16 @@ end
 \let\luaModuleError\luatexModuleError
 \let\luaRequireModule\luatexRequireModule
 \let\luaUseModule\luatexUseModule
-
 %    \end{macrocode}
 %
 %    Finally, we load \textsf{luaotfload}.
 %
 %    \begin{macrocode}
-
 \expandafter\ifx\csname ProvidesPackage\endcsname\relax
   \input luaotfload.sty
 \else
   \RequirePackage{luaotfload}
 \fi
-
 %    \end{macrocode}
 % \iffalse
 %</package>
