@@ -17,8 +17,8 @@ GENERATED = $(UNPACKED) $(DOC_DTX)
 SOURCE = $(DTX) $(SRC_TEX) README Makefile
 
 # Files grouped by installation location
-RUNFILES = $(UNPACKED_EXTRA) $(UNPACKED_TEXTRA) $(EXTRA) luamcallbacks.lua
-DOCFILES = $(DOC_DTX) $(DOC_TEX) README luamcallbacks-test.tex
+RUNFILES = $(UNPACKED_EXTRA) $(UNPACKED_TEXTRA) $(EXTRA)
+DOCFILES = $(DOC_DTX) $(DOC_TEX) README
 SRCFILES = $(DTX) $(SRC_TEX) Makefile
 
 # The following definitions should be equivalent
