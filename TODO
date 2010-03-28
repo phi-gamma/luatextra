@@ -1,2 +1,7 @@
+- fix packaging (catcode check, etc.)
 - make test documents for LuaTeX and Plain and be sure they work
-- add a 'check' target in makefile?
+- add a 'check' target in makefile
+- fix doc (dtx, readme)
+- work on -reference later, when things are more stable
+
+- s/luatextra/luatexbase/ (import a few names for compat ?)
