@@ -1,5 +1,8 @@
                           The luatextra generic bundle
 
+WARNING: this package is undergoing major changes. The documentation (including
+this readme) is sometimes inconsistent. Also, everything may change in the near
+future.
 
 LuaTeXtra is a collection of two coherent packages:
 
@@ -36,23 +39,6 @@ distribution's manual for details.
 
 4. Try to figure it out by looking at the Makefile and comments in the sources.
 
-
-Manifest
---------
-
-Source files:
-        luaextra.dtx
-        luatextra.dtx
-        luatextra-reference.tex
-
-Derived files:
-        luatextra-reference.pdf         introduction to luatextra packages
-        luaextra.pdf
-        luatextra.pdf
-        luaextra.lua
-        luatextra-latex.tex
-        luatextra.lua
-        luatextra.sty
 
 License
 -------
