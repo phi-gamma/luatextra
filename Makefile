@@ -5,20 +5,17 @@ DTX = $(wildcard *.dtx)
 DOC_DTX = $(patsubst %.dtx, %.pdf, $(DTX))
 SRC_TEX = luatextra-reference.tex
 DOC_TEX = $(patsubst %.tex, %.pdf, $(SRC_TEX))
-EXTRA = $(wildcard luaextra-*.lua)
 
 # Files grouped by generation mode
-UNPACKED_EXTRA = luaextra.lua 
-UNPACKED_TEXTRA = luatextra-latex.tex luatextra.lua luatextra.sty 
-UNPACKED = $(UNPACKED_EXTRA) $(UNPACKED_TEXTRA)
-COMPILED = $(DOC_DTX) $(DOC_TEX) 
+UNPACKED= luatextra-latex.tex luatextra.lua luatextra.sty
+COMPILED = $(DOC_DTX) $(DOC_TEX)
 # $(DOC_TEX) has a compiled version in the repository
 GENERATED = $(UNPACKED) $(DOC_DTX)
-SOURCE = $(DTX) $(SRC_TEX) README Makefile
+SOURCE = $(DTX) $(SRC_TEX) README Makefile News
 
 # Files grouped by installation location
-RUNFILES = $(UNPACKED_EXTRA) $(UNPACKED_TEXTRA) $(EXTRA)
-DOCFILES = $(DOC_DTX) $(DOC_TEX) README
+RUNFILES = $(UNPACKED)
+DOCFILES = $(DOC_DTX) $(DOC_TEX) README News
 SRCFILES = $(DTX) $(SRC_TEX) Makefile
 
 # The following definitions should be equivalent
@@ -47,6 +44,7 @@ unpack: $(UNPACKED)
 ctan: $(CTAN_ZIP)
 tds: $(TDS_ZIP)
 world: all ctan
+.PHONY: all doc unpack ctan tds world
 
 %.pdf: %.dtx
 	$(DO_PDFLATEX)
@@ -59,10 +57,7 @@ $(DOC_TEX): $(SRC_TEX)
 	$(DO_PDFLUALATEX)
 	$(DO_PDFLUALATEX)
 
-$(UNPACKED_TEXTRA): luatextra.dtx
-	$(DO_TEX)
-
-$(UNPACKED_EXTRA): luaextra.dtx
+$(UNPACKED): luatextra.dtx
 	$(DO_TEX)
 
 $(CTAN_ZIP): $(SOURCE) $(COMPILED) $(TDS_ZIP)

@@ -1,4 +1,6 @@
                         History of the luatextra bundle
+2010/03/28
+    * move luaextra to a separate package
 
 2010/03/28, luatextra v0.96
     * a lot of stuff moved to luatexbase. Now using luatexbase v0.1.
