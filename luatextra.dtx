@@ -97,7 +97,7 @@ and the derived files
 %<*driver>
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesFile{luaminimalotf.drv}%
-  [2010/03/28 v0.96 LuaTeX extra low-level macros.]%
+  [2010/03/30 v0.97 LuaTeX extra low-level macros.]%
 \documentclass{ltxdoc}
 \EnableCrossrefs
 \CodelineIndex
@@ -170,12 +170,12 @@ module("luatextra", package.seeall)
 %
 %    \begin{macrocode}
 luatextra.provides_module {
-    version     = 0.95,
+    version     = 0.97,
     name        = "luatextra",
-    date        = "2009/12/16",
+    date        = "2010/03/30",
     description = "Additional low level functions for LuaTeX",
-    author      = "Elie Roux",
-    copyright   = "Elie Roux, 2009",
+    author      = "Elie Roux and Manuel Pegourie-Gonnard",
+    copyright   = "Elie Roux, 2009 and Manuel Pegourie-Gonnard, 2010",
     license     = "CC0",
 }
 local format = string.format
@@ -427,7 +427,7 @@ end
   \RequirePackage{ifluatex}
   \NeedsTeXFormat{LaTeX2e}
   \ProvidesPackage{luatextra}
-    [2009/12/16 v0.95 LuaTeX extra low-level macros]
+    [2010/03/30 v0.97 LuaTeX extra low-level macros]
 \fi
 
 %    \end{macrocode}

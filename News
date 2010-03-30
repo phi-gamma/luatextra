@@ -1,4 +1,8 @@
                         History of the luatextra bundle
+
+2010/03/29 v0.97
+    * bump version to account for luaextra separation
+
 2010/03/28
     * move luaextra to a separate package
 
