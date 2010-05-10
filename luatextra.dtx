@@ -169,7 +169,7 @@ module("luatextra", package.seeall)
 %    \texttt{luatextra.provides\_module} for more details.
 %
 %    \begin{macrocode}
-luatextra.provides_module {
+luatexbase.provides_module {
     version     = 0.97,
     name        = "luatextra",
     date        = "2010/03/30",
@@ -184,7 +184,7 @@ local format = string.format
 %    \subsection{Multiple callbacks on the \texttt{open\_read\_file}
 %    callback\label{sub:orf}}
 %
-%    The luamcallbacks (see documentation for details) cannot really provide a
+%    |luatexbase| (see documentation for details) cannot really provide a
 %    simple and reliable way of registering multiple functions in some
 %    callbacks. To be able to do so, the solution we implemented is to
 %    register one function in these callbacks, and to create "sub-callbacks"
@@ -219,7 +219,7 @@ function luatextra.open_read_file(filename)
       ['filename'] = filename,
       ['path'] = path,
     }
-    luamcallbacks.call('pre_read_file', env)
+    callback.call('pre_read_file', env)
     path = env.path
     if not path then
         return
@@ -246,18 +246,18 @@ end
 %    \begin{macrocode}
 function luatextra.reader(env)
     local line = (env.file):read()
-    line = luamcallbacks.call('file_reader', env, line)
+    line = callback.call('file_reader', env, line)
     return line
 end
 function luatextra.close(env)
     (env.file):close()
-    luamcallbacks.call('file_close', env)
+    callback.call('file_close', env)
 end
 %    \end{macrocode}
 %
 %    In the callback creation process we need to have default behaviours. Here
 %    they are. These are called only when no function is registered in the
-%    created callback. See the documentation of \texttt{luamcallbacks} for
+%    created callback. See the documentation of \texttt{luatexbase} for
 %    more details.
 %
 %    \begin{macrocode}
@@ -479,13 +479,14 @@ end
   \input luatexbase-attr.sty
   \input luatexbase-cctb.sty
   \input luatexbase-regs.sty
+  \input luatexbase-mcb.sty
 \else
   \RequirePackage{luatexbase-modutils}
   \RequirePackage{luatexbase-attr}
   \RequirePackage{luatexbase-cctb}
   \RequirePackage{luatexbase-regs}
+  \RequirePackage{luatexbase-mcb}
 \fi
-\luatexUseModule{luamcallbacks}
 \luatexUseModule{luaextra}
 %    \end{macrocode}
 %
