@@ -35,7 +35,7 @@ ZIPS = $(CTAN_ZIP) $(TDS_ZIP)
 
 DO_TEX = tex --interaction=batchmode $< >/dev/null
 DO_PDFLATEX = pdflatex --interaction=batchmode $< >/dev/null
-DO_PDFLUALATEX = pdflualatex --interaction=batchmode $< >/dev/null
+DO_PDFLUALATEX = lualatex --interaction=batchmode $< >/dev/null
 DO_MAKEINDEX = makeindex -s gind.ist $(subst .dtx,,$<) >/dev/null 2>&1
 
 all: $(GENERATED) $(DOC_TEX)
