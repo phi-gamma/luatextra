@@ -53,9 +53,10 @@ world: all ctan
 	$(DO_PDFLATEX)
 
 $(DOC_TEX): $(SRC_TEX)
-	$(DO_PDFLUALATEX)
-	$(DO_PDFLUALATEX)
-	$(DO_PDFLUALATEX)
+	true
+	#$(DO_PDFLUALATEX)
+	#$(DO_PDFLUALATEX)
+	#$(DO_PDFLUALATEX)
 
 $(UNPACKED): luatextra.dtx
 	$(DO_TEX)
