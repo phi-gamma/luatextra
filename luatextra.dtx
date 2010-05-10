@@ -96,8 +96,8 @@ and the derived files
 %</ignore>
 %<*driver>
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesFile{luaminimalotf.drv}%
-  [2010/03/30 v0.97 LuaTeX extra low-level macros.]%
+\ProvidesFile{luatextra.drv}%
+  [2010/05/10 v0.97 LuaTeX extra low-level macros.]%
 \documentclass{ltxdoc}
 \EnableCrossrefs
 \CodelineIndex
@@ -128,7 +128,7 @@ and the derived files
 % \GetFileInfo{luatextra.drv}
 %
 % \title{The \textsf{luatextra} package}
-% \date{2010/03/28 v0.96}
+% \date{2010/05/10 v0.97}
 % \author{Elie Roux \\ \texttt{elie.roux@telecom-bretagne.eu}}
 %
 % \maketitle
@@ -172,7 +172,7 @@ module("luatextra", package.seeall)
 luatexbase.provides_module {
     version     = 0.97,
     name        = "luatextra",
-    date        = "2010/03/30",
+    date        = "2010/05/10",
     description = "Additional low level functions for LuaTeX",
     author      = "Elie Roux and Manuel Pegourie-Gonnard",
     copyright   = "Elie Roux, 2009 and Manuel Pegourie-Gonnard, 2010",
@@ -219,7 +219,7 @@ function luatextra.open_read_file(filename)
       ['filename'] = filename,
       ['path'] = path,
     }
-    callback.call('pre_read_file', env)
+    luatexbase.call_callback('pre_read_file', env)
     path = env.path
     if not path then
         return
@@ -246,12 +246,12 @@ end
 %    \begin{macrocode}
 function luatextra.reader(env)
     local line = (env.file):read()
-    line = callback.call('file_reader', env, line)
+    line = luatexbase.call_callback('file_reader', env, line)
     return line
 end
 function luatextra.close(env)
     (env.file):close()
-    callback.call('file_close', env)
+    luatexbase.call_callback('file_close', env)
 end
 %    \end{macrocode}
 %
@@ -358,7 +358,7 @@ function luatextra.define_font(name, size)
     elseif ext == 'vf' or ext == 'ovf' then
         f =  font.read_vf(name, size)
     elseif ext == 'ttf' or ext == 'otf' or ext == 'ttc' then
-        f = callback.call('open_otf_font', fontinfos)
+        f = luatexbase.call_callback('open_otf_font', fontinfos)
     else
         luatextra.font_load_error("unable to determine the type of font "..name)
         f = luatextra.load_default_font(size)
@@ -367,7 +367,7 @@ function luatextra.define_font(name, size)
         luatextra.font_load_error("unable to load font "..name)
         f = luatextra.load_default_font(size)
     end
-    callback.call('post_font_opening', f, fontinfos)
+    luatexbase.call_callback('post_font_opening', f, fontinfos)
     return f
 end
 function luatextra.default_font_syntax(fontinfos)
@@ -380,20 +380,20 @@ function luatextra.default_post_font(f, fontinfos)
     return true
 end
 function luatextra.register_font_callback()
-    callback.add('define_font', luatextra.define_font, 'luatextra.define_font')
+    luatexbase.add_to_callback('define_font', luatextra.define_font, 'luatextra.define_font')
 end
 %    \end{macrocode}
 %
 %    Initialise a few callbacks.
 %
 %    \begin{macrocode}
-    callback.create('pre_read_file', 'simple', luatextra.default_pre_read)
-    callback.create('file_reader', 'data', luatextra.default_reader)
-    callback.create('file_close', 'simple', luatextra.default_close)
-    callback.add('open_read_file', luatextra.open_read_file, 'luatextra.open_read_file')
-    callback.create('font_syntax', 'simple', luatextra.default_font_syntax)
-    callback.create('open_otf_font', 'first', luatextra.default_open_otf)
-    callback.create('post_font_opening', 'simple', luatextra.default_post_font)
+    luatexbase.create_callback('pre_read_file', 'simple', luatextra.default_pre_read)
+    luatexbase.create_callback('file_reader', 'data', luatextra.default_reader)
+    luatexbase.create_callback('file_close', 'simple', luatextra.default_close)
+    luatexbase.add_to_callback('open_read_file', luatextra.open_read_file, 'luatextra.open_read_file')
+    luatexbase.create_callback('font_syntax', 'simple', luatextra.default_font_syntax)
+    luatexbase.create_callback('open_otf_font', 'first', luatextra.default_open_otf)
+    luatexbase.create_callback('post_font_opening', 'simple', luatextra.default_post_font)
 %    \end{macrocode}
 % \iffalse
 %</lua>
@@ -427,7 +427,7 @@ end
   \RequirePackage{ifluatex}
   \NeedsTeXFormat{LaTeX2e}
   \ProvidesPackage{luatextra}
-    [2010/03/30 v0.97 LuaTeX extra low-level macros]
+    [2010/05/10 v0.97 LuaTeX extra low-level macros]
 \fi
 
 %    \end{macrocode}
@@ -487,7 +487,7 @@ end
   \RequirePackage{luatexbase-regs}
   \RequirePackage{luatexbase-mcb}
 \fi
-\luatexUseModule{luaextra}
+\luatexUseModule{lualibs}
 %    \end{macrocode}
 %
 %    If the package is loaded with \LaTeX , we
@@ -496,7 +496,7 @@ end
 %    \begin{macrocode}
 \expandafter\ifx\csname RequirePackage\endcsname\relax \else
   \RequirePackage{environ}
-  \NewEnviron{luacode}{\luadirect{\BODY}}
+  \NewEnviron{luacode}{\directlua{\BODY}}
 \fi
 %    \end{macrocode}
 %
@@ -565,7 +565,7 @@ end
 %    We load the \texttt{lua} file.
 %
 %    \begin{macrocode}
-\luadirect{dofile(kpse.find_file("luatextra.lua"))}
+\directlua{dofile(kpse.find_file("luatextra.lua"))}
 %    \end{macrocode}
 %
 %    A small macro to register the \texttt{define\_font} callback from
@@ -573,7 +573,7 @@ end
 %
 %    \begin{macrocode}
 \def\ltxtra@RegisterFontCallback{
-  \luadirect{luatextra.register_font_callback()}
+  \directlua{luatextra.register_font_callback()}
 }
 %    \end{macrocode}
 %

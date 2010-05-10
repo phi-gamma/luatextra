@@ -1,5 +1,9 @@
                         History of the luatextra bundle
 
+
+2010/05/10
+    * adaptation to the new luatexbase package
+
 2010/03/29 v0.97
     * bump version to account for luaextra separation
 
