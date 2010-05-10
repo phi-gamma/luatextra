@@ -4,15 +4,8 @@ WARNING: this package is undergoing major changes. The documentation (including
 this readme) is sometimes inconsistent. Also, everything may change in the near
 future.
 
-LuaTeXtra is a collection of two coherent packages:
-
-1. luatextra provides low-level functions for LuaTeX use with LaTeX and Plain, for
-instance the macro \newluaattribute. It also provides a way to use and register
-new lua modules, inspired by the LaTeX packages system.
-
-2. luaextra provides extra lua functions useful for package development.
-
-Note that this package automatically loads luaotfload.
+luatextra loads many usefull packages for LuaTeX (like luaotfload) and provides
+a few additional features and goodies.
 
 Please see the luatextra-reference.pdf documentation for more details.
 
@@ -36,9 +29,6 @@ distribution's manual for details.
 3. a. Grab the sources from CTAN or github.
    b. Run 'make install TEXMFROOT=/path/to/texmf'.
    c. See 2c.
-
-4. Try to figure it out by looking at the Makefile and comments in the sources.
-
 
 License
 -------

@@ -5,7 +5,7 @@
     * adaptation to the new luatexbase package
 
 2010/03/29 v0.97
-    * bump version to account for luaextra separation
+    * bump version to account for luaextra (now lualibs) separation
 
 2010/03/28
     * move luaextra to a separate package

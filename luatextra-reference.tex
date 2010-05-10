@@ -57,7 +57,8 @@
 
 This document describes, from the user or developer point of view, how to use
 the coherent set of packages \textsf{luatextra}, \textsf{luainputenc},
-\textsf{luaotfload}, \textsf{luamcallbacks} and \textsf{luaextra}.
+\textsf{luaotfload}, \textsf{luamcallbacks} and \textsf{lualibs} (previously
+\textsf{luaextra}.
 
 If you are looking for documentation on the \LuaTeX\ engine, please refer to
 the file \texttt{luatexref-t.pdf}, but note that using these packages will
@@ -188,7 +189,8 @@ The \LuaTeX tra coherent set of packages contains:
   \item \textsf{luainputenc}: adaptation of \textsf{inputenc} to \LuaTeX
   \item \textsf{luamcallbacks}: pure lua package to be able to register
     several functions in a callback
-  \item \textsf{luaextra}: additional lua functions
+  \item \textsf{lualibs}: additional lua functions (previously
+    \textsf{luaextra}).
 \end{itemize}
 
 \subsection{Overview}
@@ -404,7 +406,7 @@ Three other very useful new functions are provided:
 
 Some extra functions have been added to the standard lua library, mostly
 coming from the Con\TeX t libraries, for the complete list of functions,
-please refer to the documentation \texttt{luaextra.pdf}.
+please refer to the documentation \texttt{lualibs.pdf}.
 
 The most useful of these added functions is certainly \texttt{table.serialize}
 that returns the string describing a given table. This string can be used for
