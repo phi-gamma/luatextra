@@ -349,9 +349,9 @@ function luatextra.define_font(name, size)
         return luatextra.load_default_font(size)
     end
     if not fontinfos.filename then
-        fontinfos.filename = fpath.basename(path)
+        fontinfos.filename = file.basename(path)
     end
-    local ext = fpath.suffix(path)
+    local ext = file.suffix(path)
     local f
     if ext == 'tfm' or ext == 'ofm' then
         f =  font.read_tfm(name, size)
