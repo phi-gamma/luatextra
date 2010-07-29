@@ -419,6 +419,7 @@ end
 %
 %    \begin{macrocode}
 
+\bgroup\expandafter\expandafter\expandafter\egroup
 \expandafter\ifx\csname ProvidesPackage\endcsname\relax
   \expandafter\ifx\csname ifluatex\endcsname\relax
     \input ifluatex.sty
@@ -449,8 +450,8 @@ end
 %    Make sure Lua\TeX\ is being used.
 %
 %    \begin{macrocode}
-\begingroup\expandafter\expandafter\expandafter\endgroup
-\expandafter\ifx\csname RequirePackage\endcsname\relax
+\bgroup\expandafter\expandafter\expandafter\egroup
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
   \input ifluatex.sty
 \else
   \RequirePackage{ifluatex}
@@ -473,8 +474,8 @@ end
 %    Load other usefull packages.
 %
 %    \begin{macrocode}
-\begingroup\expandafter\expandafter\expandafter\endgroup
-\expandafter\ifx\csname RequirePackage\endcsname\relax
+\bgroup\expandafter\expandafter\expandafter\egroup
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
   \input luatexbase-modutils.sty
   \input luatexbase-attr.sty
   \input luatexbase-cctb.sty
@@ -494,7 +495,8 @@ end
 %    also define the environment \texttt{luacode}.
 %
 %    \begin{macrocode}
-\expandafter\ifx\csname RequirePackage\endcsname\relax \else
+\bgroup\expandafter\expandafter\expandafter\egroup
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
   \RequirePackage{environ}
   \NewEnviron{luacode}{\directlua{\BODY}}
 \fi
@@ -596,6 +598,7 @@ end
 %    Finally, we load \textsf{luaotfload}.
 %
 %    \begin{macrocode}
+\bgroup\expandafter\expandafter\expandafter\egroup
 \expandafter\ifx\csname ProvidesPackage\endcsname\relax
   \input luaotfload.sty
 \else
