@@ -496,7 +496,7 @@ end
 %
 %    \begin{macrocode}
 \bgroup\expandafter\expandafter\expandafter\egroup
-\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax \else
   \RequirePackage{environ}
   \NewEnviron{luacode}{\directlua{\BODY}}
 \fi
