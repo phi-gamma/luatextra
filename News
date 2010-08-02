@@ -1,5 +1,8 @@
                         History of the luatextra bundle
 
+2010/08/02 v0.971
+    * fix latex detection that used to break latex detection in other packages
+    (inc. TikZ).
 
 2010/05/10
     * adaptation to the new luatexbase package
