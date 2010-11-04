@@ -240,28 +240,7 @@ texio.write_nl("It works!")
 
 \subsection{lua modules}
 
-For more informations about this part (and the attributes and catcodetables),
-see the documentation \code{luatextra.pdf}.
-
-\LuaTeX tra provides the same kind of functions for lua modules as \LaTeX\
-does for packages: it provides the macros \verb+\luaUseModule+ and
-\verb+\luaRequireModule+, as well as the functions
-\code{luatextra.use\_module}, \code{luatextra.require\_module} and
-\code{luatextra.provides\_module}.
-
-If you want to use a lua file mypackage.lua, you can safely use
-\verb+\luaUseModule{mypackage}+: it will automatically load the
-file; and will load it only once if the function is called several times. You
-can also use \verb+\luaRequireModule+ that takes the minimal version
-(or date) as a second (optional under \LaTeX ) argument.
-
-In a lua module, you have to call \code{luatextra.provides\_module}. It
-takes a table as an argument. This table must contain at least the fields
-\code{name}, \code{version}, \code{date} and \code{description}. You
-can also use the fields \code{author}, \code{copyright}, \code{license},
-or any field you want.
-
-See section \ref{sub:luatemplate} for an example of a lua module.
+See \file{luatexbase-modutils.pdf}.
 
 \subsection{attributes}
 
@@ -333,52 +312,5 @@ The most useful of these added functions is certainly \code{table.serialize}
 that returns the string describing a given table. This string can be used for
 debugging purposes, or table saving in files, as the string can be read by lua
 to rebuild the original table.
-
-\subsection{\file{.lua} module template\label{sub:luatemplate}}
-
-\begin{verbatim}
-mypackage = { }
-
-mypackage.module = {
-    name          = "mypackage",
-    version       =  1.0,
-    date          = "2009/03/08",
-    description   = "My fancy package",
-    author        = "Me",
-    copyright     = "Myself",
-    license       = "My License",
-}
-
-luatextra.provides_module(mypackage.module)
-
-local format = string.format
-
-function mypackage.log (...)
-    luatextra.module_log('mypackage', format(...))
-end
-
-function mypackage.warning (...)
-    luatextra.module_warning('mypackage', format(...))
-end
-
-function mypackage.error (...)
-    luatextra.module_error('mypackage', format(...))
-end
-\end{verbatim}
-
-\subsection{\file{.sty} template}
-
-\begin{verbatim}
-\expandafter\ifx\csname ProvidesPackage\endcsname\relax
-  \input luatextra.sty
-\else
-  \NeedsTeXFormat{LaTeX2e}
-  \ProvidesPackage{mypackage}
-    [2009/03/08 v1.00 My super package.]
-  \RequirePackage{luatextra}
-\fi
-
-\luaUseModule{mymodule}
-\end{verbatim}
 
 \end{document}
