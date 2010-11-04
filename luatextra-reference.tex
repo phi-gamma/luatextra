@@ -158,21 +158,6 @@ These two problems are very concrete, that's the main reason why \LuaTeX tra
 has been created: without it a lot of package compatibility problems would
 have been raised.
 
-\subsection{The different packages}
-
-The \LuaTeX tra coherent set of packages contains:
-
-\begin{itemize}
-  \item \pf{luatextra}: a wrapper loading other packages and providing
-    additional goodies;
-  \item \pf{luatexbase}: low-level functions for resources handling and
-    compatibility. Divided in sub-packages, like \pf{luatexbase-mcb} (formerly
-    \pf{luamcallbacks}) that allows to register several functions in a
-    callback;
-  \item \pf{luainputenc}: adaptation of \pf{inputenc} to \LuaTeX;
-  \item \pf{lualibs}: additional lua functions (previously \pf{luaextra}).
-\end{itemize}
-
 \subsection{Overview}
 
 The main idea, as explained above, is to provide a safe way to use different
@@ -199,59 +184,5 @@ as attribute is already something used by a lot of packages and users. This
 lead us to name our macros \verb+\newluaattribute+,
 \verb+\unsetluaattribute+, etc. for backward compatibility. On the
 same principle, \code{catcodetable} is replaced by \code{luacatcodetable}.
-
-\section{Basic user point of view}
-
-\subsection{Plain and \LaTeX\ macros}
-
-The most useful macro provided by \pf{luatextra} is certainly
-\verb+\luadirect+, which is a wrapper for \verb+\directlua+,
-but will keep the same signature whatever the \LuaTeX\ version. For example
-this macro works for \LuaTeX\ versions $<$ 0.36, and will most certainly work
-for future versions of \LuaTeX . It is advised to use this macro to keep the
-compatibility of your package with all versions of \LuaTeX .
-\verb+\lualate+ is also provided as a wrapper for
-\verb+\latelua+.
-
-Under \LaTeX, the \pf{metalogo} package is loaded, providing the macros
-\verb+\LuaTeX+ and \verb+\LuaLaTeX+ to typeset the logos.
-
-\pf{luatextra} automatically loads \pf{luaotfload}, so you can open otf fonts
-directly, for instance \verb+\font\foo="LinLibertine.otf"\foo+ will work. You
-can also pass options to the font opening, for example the different OTF
-options you want. These options are passed with the \XeTeX\ font syntax
-(briefly described in \file{XeTeX-reference.pdf}), for example if you want to
-open a font with the usual \TeX\ substitutions and ligatures, with also the
-font default ligatures, you can try \newline
-\verb!\font\foo="LinLibertine.otf;+tlig;+tsub;+liga;+rlig;"\foo!.
-
-\subsection{\LaTeX -only macros}
-
-\LuaTeX tra also provides an environment for lua code integration:
-\code{luacode}. You can simply use it this way:
-
-\begin{verbatim}
-\begin{luacode}
-texio.write_nl("It works!")
-\end{luacode}
-\end{verbatim}
-
-\section{Advanced user point of view}
-
-See the documentation for \pf{luatexbase} and its components.
-Note that \pf{luatextra} currently expands on \pf{luatexbase-mcb} by proposing
-solutions for the \verb+define_font+ and \verb+open_read_file+ callbacks. See
-\file{luatextra.pdf} for details.
-
-\subsection{lua extra functions}
-
-Some extra functions have been added to the standard lua library, mostly
-coming from the Con\TeX t libraries, for the complete list of functions,
-please refer to the documentation \file{lualibs.pdf}.
-
-The most useful of these added functions is certainly \code{table.serialize}
-that returns the string describing a given table. This string can be used for
-debugging purposes, or table saving in files, as the string can be read by lua
-to rebuild the original table.
 
 \end{document}

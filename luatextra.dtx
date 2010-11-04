@@ -1,6 +1,8 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2009 by Elie Roux <elie.roux@telecom-bretagne.eu>
+% Written in 2009, 2010 by Manuel Pégourié-Gonnard and Élie Roux.
+%     <mpg@elzevir.fr>
+%     <elie.roux@telecom-bretagne.eu>
 %
 % This work is under the CC0 license.
 %
@@ -10,16 +12,8 @@
 %
 % Unpacking:
 %    tex luatextra.dtx
-%
 % Documentation:
 %    pdflatex luatextra.dtx
-%
-%    The class ltxdoc loads the configuration file ltxdoc.cfg
-%    if available. Here you can specify further options, e.g.
-%    use A4 as paper format:
-%       \PassOptionsToClass{a4paper}{article}
-%
-%
 %
 %<*ignore>
 \begingroup
@@ -39,29 +33,21 @@
 \let\MetaPrefix\relax
 
 \preamble
-This is a generated file.
 
-Copyright (C) 2009 by Elie Roux <elie.roux@telecom-bretagne.eu>
+Written in 2009, 2010 by Manuel Pegourie-Gonnard and Elie Roux.
 
 This work is under the CC0 license.
-
-This work consists of the main source file luainputenc.dtx
-and the derived files
-    luatextra.sty, luatextra.lua, luatextra-latex.tex, luatextra.pdf
+See source file '\inFileName' for details.
 
 \endpreamble
 
 \let\MetaPrefix\DoubleperCent
-
 
 \generate{%
   \usedir{tex/luatex/luatextra}%
   \file{luatextra.sty}{\from{luatextra.dtx}{package}}%
   \file{luatextra-latex.tex}{\from{luatextra.dtx}{latex}}%
 }
-
-% The following hacks are to generate a lua file with lua comments starting by
-% -- instead of %%
 
 \def\MetaPrefix{-- }
 
@@ -95,12 +81,19 @@ and the derived files
 \fi
 %</ignore>
 %<*driver>
-\NeedsTeXFormat{LaTeX2e}
-\ProvidesFile{luatextra.drv}%
-  [2010/08/02 v0.971 LuaTeX extra low-level macros.]%
 \documentclass{ltxdoc}
-\EnableCrossrefs
-\CodelineIndex
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{lmodern}
+\usepackage{metalogo}
+\usepackage[bookmarks=true, colorlinks=true]{hyperref}
+\usepackage{bookmark}
+\usepackage[english]{babel}
+\providecommand\eTeX{e\TeX}
+\newcommand\pf{\textsf}
+\newcommand\file{\texorpdfstring{\nolinkurl}{}}
+\newcommand\code{\texttt}
 \begin{document}
   \DocInput{luatextra.dtx}%
 \end{document}
@@ -125,35 +118,98 @@ and the derived files
 %   Grave accent  \`     Left brace    \{     Vertical bar  \|
 %   Right brace   \}     Tilde         \~}
 %
-% \GetFileInfo{luatextra.drv}
-%
 % \title{The \textsf{luatextra} package}
-% \date{2010/08/02 v0.971}
-% \author{Elie Roux \\ \texttt{elie.roux@telecom-bretagne.eu}}
+% \date{2010/11/04 v0.98}
+% \author{%
+%   Manuel P\'egouri\'e-Gonnard \\ \email{mpg@elzevir.fr} \and
+%   \'Elie Roux \\ \email{elie.roux@telecom-bretagne.eu}}
 %
 % \maketitle
 %
 % \begin{abstract}
-% This document is made for people wanting to understand how the package was
-% made. For an introduction to the use of Lua\TeX\ with the formats Plain and
-% \LaTeX , please read the document \texttt{luatextra-reference.pdf} that you
-% can find in your \TeX\ distribution (\TeX Live from version 2009) or on the
-% CTAN.
+% The \pf{luatextra} package loads essential packages for \LuaTeX, and
+% provides few additional user-level goodies. It is meant as a convenience
+% package for users. Developers should load directly the underlying packages
+% they specifically need.
 %
-% \textbf{Warning.} This package is undergoing major changes, so the
-% documentation may sometimes be inconsistent. Also, be aware that everything
-% may change.
+% \textbf{Warning.} This package is undergoing major changes, see the
+% ``Planned changes'' section on page~\pageref{sec-plan}.
 % \end{abstract}
 %
 % \tableofcontents
 %
-% \section{\texttt{luatextra.lua}}
+% \section{Documentation}
 %
-% \subsection{Initialization and internal functions}
+% The \pf{luatextra} package loads the following essential packages:
+% \begin{itemize}
+%   \item \pf{luatexbase}: low-level functions for resources handling and
+%   compatibility. Divided in sub-packages, like \pf{luatexbase-mcb} (formerly
+%   \pf{luamcallbacks}) that allows to register several functions in a
+%   callback;
+%   \item \pf{lualibs}: additional lua functions (previously \pf{luaextra}) ;
+%   \item \pf{luaotfload}: implements extended syntax for \verb+\font+;
+% \end{itemize}
+% When running \LaTeX\ (as opposed to Plain \TeX), the \pf{metalogo} package
+% is loaded too, proviging the macros \verb+\LuaTeX+ and \verb+\LuaLaTeX+ to
+% typeset the logos.
 %
-% \iffalse
+% It also provides additional goodies, detailled in the next sections.
+%
+% By the way, people wanting to port their old documents to \LuaLateX\ without
+% needing to change the input and font encodings may want to use the
+% additional package \pf{luainputenc} (which is \emph{not} recommended for
+% anything but compatibility).
+%
+% \subsection{Plain and \LaTeX\ macros}
+%
+% The most useful macro provided by \pf{luatextra} is certainly
+% \verb+\luadirect+, which is a wrapper for \verb+\directlua+,
+% but will keep the same signature whatever the \LuaTeX\ version. For example
+% this macro works for \LuaTeX\ versions $<$ 0.36, and will most certainly work
+% for future versions of \LuaTeX . It is advised to use this macro to keep the
+% compatibility of your package with all versions of \LuaTeX .
+% \verb+\lualate+ is also provided as a wrapper for
+% \verb+\latelua+.
+%
+% \pf{luatextra} automatically loads \pf{luaotfload}, so you can open otf fonts
+% directly, for instance \verb+\font\foo="LinLibertine.otf"\foo+ will work. You
+% can also pass options to the font opening, for example the different OTF
+% options you want. These options are passed with the \XeTeX\ font syntax
+% (briefly described in \file{XeTeX-reference.pdf}), for example if you want to
+% open a font with the usual \TeX\ substitutions and ligatures, with also the
+% font default ligatures, you can try \newline
+% \verb!\font\foo="LinLibertine.otf;+tlig;+tsub;+liga;+rlig;"\foo!.
+%
+% \subsection{\LaTeX -only macros}
+%
+% \LuaTeX tra also provides an environment for lua code integration:
+% \code{luacode}. You can simply use it this way:
+%
+% \begin{verbatim}
+% \begin{luacode}
+% texio.write_nl("It works!")
+% \end{luacode}
+% \end{verbatim}
+%
+% \subsection{Planned changes}
+%
+% Note that \pf{luatextra} currently expands on \pf{luatexbase-mcb} by
+% proposing solutions for the \verb+define_font+ and \verb+open_read_file+
+% callbacks. See the implementation section below for details. In the future,
+% this will either be merged in \pf{luatexbase-mcb} or just disappear, since
+% it seems rather unlikely that different packages want to (or are able to
+% usefully) share these callbacks. If you don't want this feature to
+% disappear, please protest on the mailing list.
+%
+%    \section{Implementation}
+%
+%    \subsection{Lua module}
+%
+%    \subsubsection{Initialization and internal functions}
+%
+%    \begin{macrocode}
 %<*lua>
-% \fi
+%    \end{macrocode}
 %
 %    We create the \texttt{luatextra} table that will contain all the
 %    functions and variables, and we register it as a normal lua module.
@@ -181,7 +237,7 @@ luatexbase.provides_module {
 local format = string.format
 %    \end{macrocode}
 %
-%    \subsection{Multiple callbacks on the \texttt{open\_read\_file}
+%    \subsubsection{Multiple callbacks on the \texttt{open\_read\_file}
 %    callback\label{sub:orf}}
 %
 %    |luatexbase| (see documentation for details) cannot really provide a
@@ -272,7 +328,7 @@ function luatextra.default_pre_read(env)
 end
 %    \end{macrocode}
 %
-%    \subsection{Multiple callbacks on the \texttt{define\_font}
+%    \subsubsection{Multiple callbacks on the \texttt{define\_font}
 %    callback\label{sub:df}}
 %
 %    The same principle is applied to the \texttt{define\_font} callback. The
@@ -395,17 +451,18 @@ end
     luatexbase.create_callback('open_otf_font', 'first', luatextra.default_open_otf)
     luatexbase.create_callback('post_font_opening', 'simple', luatextra.default_post_font)
 %    \end{macrocode}
-% \iffalse
+%
+%    \begin{macrocode}
 %</lua>
-% \fi
+%    \end{macrocode}
 %
-% \section{\texttt{luatextra.sty}}
+%    \subsection{\TeX\ package}
 %
-% \iffalse
+%    \begin{macrocode}
 %<*package>
-% \fi
+%    \end{macrocode}
 %
-%    \subsection{Initializations}
+%    \subsubsection{Initializations}
 %
 %    First we prevent multiple loads of the file (useful for plain-\TeX ).
 %
@@ -487,7 +544,7 @@ end
 %    \end{macrocode}
 %
 %
-% \subsection{Primitives renaming}
+% \subsubsection{Primitives renaming}
 %
 %    Here we differenciate two very different cases: Lua\TeX\ version < 0.36
 %    has no \texttt{tex.enableprimitives} function, and has support for
@@ -555,7 +612,7 @@ end
 %    \end{macrocode}
 %
 %    A small macro to register the \texttt{define\_font} callback from
-%    \textsf{luatextra}. See section \ref{sub:df} for more details.
+%    \textsf{luatextra}. See subsection \ref{sub:df} for more details.
 %
 %    \begin{macrocode}
 \def\ltxtra@RegisterFontCallback{
@@ -589,9 +646,10 @@ end
   \RequirePackage{luaotfload}
 \fi
 %    \end{macrocode}
-% \iffalse
+%
+%    \begin{macrocode}
 %</package>
-% \fi
+%    \end{macrocode}
 %
 %
 % \Finale
