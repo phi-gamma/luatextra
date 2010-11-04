@@ -151,7 +151,7 @@ safely take attributes, being sure that noone else will use them.
 Another similar problem is callback access: by default \LuaTeX\ does not
 provide a way to register several functions in a callback, so if two packages
 want to register a function in a callback, they won't be compatible, as only
-one will work. \pf{luamcallback} provides a new mechanism for callbacks
+one will work. \pf{luatexbase-mcb} provides a new mechanism for callbacks
 that enables this, allowing more package compatibility.
 
 These two problems are very concrete, that's the main reason why \LuaTeX tra
@@ -167,7 +167,7 @@ The \LuaTeX tra coherent set of packages contains:
     additional goodies;
   \item \pf{luatexbase}: low-level functions for resources handling and
     compatibility. Divided in sub-packages, like \pf{luatexbase-mcb} (formerly
-    \pf{luamcallbacks} that allows to register several functions in a
+    \pf{luamcallbacks}) that allows to register several functions in a
     callback;
   \item \pf{luainputenc}: adaptation of \pf{inputenc} to \LuaTeX;
   \item \pf{lualibs}: additional lua functions (previously \pf{luaextra}).
@@ -188,7 +188,7 @@ system works basically like the \LaTeX\ package system: you can simply use
 them, or require them with a version number, etc.
 
 As explained above, another important function provided by \LuaTeX tra is
-attributes allocation with \verb+\newluaattribute+.
+attributes allocation with \verb+\newluatexattribute+.
 
 \subsection{Naming conventions}
 
@@ -238,75 +238,16 @@ texio.write_nl("It works!")
 
 \section{Advanced user point of view}
 
-\subsection{lua modules}
-
-See \file{luatexbase-modutils.pdf}.
-
-\subsection{attributes}
-
-We already talked about the most important function:
-\verb+\newluaattribute+. It is the equivalent of
-\verb+\newcount+ for attributes.
-
-Another important function is \verb+\unsetluaattribute+ that unsets
-an attribute. It's adised to use this macro instead of unsetting it by hand,
-as the unset value may change (it changed in version 0.37 from \code{-1} to
-\code{-"7FFFFFFF}).
-
-You can also use the macro \verb+\setluaattribute+ that takes an
-attribute and a value as arguments, and set the argument to the asked value.
-
-\subsection{catcodetables}
-
-The equivalent of \verb+\newcount+ for catcodetables is
-\verb+\newluacatcodetable+. Also a set of predefined catcodetables
-comes with \LuaTeX tra:
-
-\begin{itemize}
-  \item \verb+\CatcodeTableIniTeX+: the base \TeX\ catcodes
-  \item \verb+\CatcodeTableString+: almost all characters have
-    catcode 12
-  \item \verb+\CatcodeTableOther+: all characters have catcode 12
-    (even space)
-  \item \verb+\CatcodeTableLaTeX+: the \LaTeX\ classical catcodes
-\end{itemize}
-
-\subsection{callbacks}
-
-For more informations about this part, see the documentation
-\code{luatexbase-mcb.pdf}.
-
-One of the main goals of \LuaTeX tra is also to provide a way for several
-packages to register their functions in one callback. The function
-\code{callback.register} does not provide any way to do so. To fix it,
-\LuaTeX tra provides the function \code{callback.add} that takes the same
-two first arguments as \code{callback.register} (name of the callback and
-function to register), and two other arguments: a mandatory description of the
-function, and an optional priority (the lower the number, the higher the
-priority).
-
-If people use \code{callback.register} all the \LuaTeX tra mechanism is
-broken, so we override \code{callback.register} with a function that simply
-outputs an error message.
-
-Three other very useful new functions are provided:
-
-\begin{itemize}
-  \item \code{callback.remove} takes the name of a callback and the
-    description of a register function (third argument of
-    \code{callback.add}), and removes the function from a callback.
-  \item \code{callback.reset} removes all register functions from a
-    callback.
-  \item \code{callback.get\_priority} takes the name of a callback and the
-    description of a registered function, and returns the priority of the
-    function in the callback, or 0 if the function is not registered.
-\end{itemize}
+See the documentation for \pf{luatexbase} and its components.
+Note that \pf{luatextra} currently expands on \pf{luatexbase-mcb} by proposing
+solutions for the \verb+define_font+ and \verb+open_read_file+ callbacks. See
+\file{luatextra.pdf} for details.
 
 \subsection{lua extra functions}
 
 Some extra functions have been added to the standard lua library, mostly
 coming from the Con\TeX t libraries, for the complete list of functions,
-please refer to the documentation \code{lualibs.pdf}.
+please refer to the documentation \file{lualibs.pdf}.
 
 The most useful of these added functions is certainly \code{table.serialize}
 that returns the string describing a given table. This string can be used for
