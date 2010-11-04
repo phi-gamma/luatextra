@@ -33,8 +33,7 @@ TDS_ZIP = $(NAME).tds.zip
 ZIPS = $(CTAN_ZIP) $(TDS_ZIP)
 
 DO_TEX = tex --interaction=batchmode $< >/dev/null
-DO_PDFLATEX = pdflatex --interaction=batchmode $< >/dev/null
-DO_MAKEINDEX = makeindex -s gind.ist $(subst .dtx,,$<) >/dev/null 2>&1
+DO_LATEXMK = latexmk -silent $< >/dev/null
 
 all: $(GENERATED) $(DOC_TEX)
 doc: $(COMPILED)
@@ -45,15 +44,10 @@ world: all ctan
 .PHONY: all doc unpack ctan tds world
 
 %.pdf: %.dtx
-	$(DO_PDFLATEX)
-	$(DO_MAKEINDEX)
-	$(DO_PDFLATEX)
-	$(DO_PDFLATEX)
+	$(DO_LATEXMK)
 
 $(DOC_TEX): $(SRC_TEX)
-	$(DO_PDFLATEX)
-	$(DO_PDFLATEX)
-	$(DO_PDFLATEX)
+	$(DO_LATEXMK)
 
 $(UNPACKED): luatextra.dtx
 	$(DO_TEX)
@@ -90,8 +84,10 @@ manifest:
 	@echo "Derived files:"
 	@for f in $(GENERATED); do echo $$f; done
 
-clean: 
-	@$(RM) -- *.log *.aux *.toc *.idx *.ind *.ilg *.out
+clean:
+	@latexmk -silent -c *.tex *.dtx >/dev/null
+	@# for tex runs:
+	@rm -f -- *.log
 
 mrproper: clean
 	@$(RM) -- $(GENERATED) $(ZIPS)
