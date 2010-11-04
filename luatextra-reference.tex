@@ -227,64 +227,6 @@ font default ligatures, you can try \newline
 
 \subsection{\LaTeX -only macros}
 
-\subsubsection{luainputenc}
-
-From the user point of view, adapting an old document for \LuaTeX\ is really
-easy: replacing \pf{inputenc} by \pf{luainputenc} in the preamble is
-enough.
-
-\textbf{Warning:} the current version of \pf{luainputenc} automatically
-loads the \LuaTeX tra packages. It won't necessarily be the case in the
-future. So if you use some functions of \LuaTeX tra (like
-\verb+\newluaattribute+), it is advised to also explicitely use
-\pf{luatextra}. A typical part of \LaTeX\ preamble for \LuaTeX\ will be
-for example:
-
-\begin{verbatim}
-\usepackage[utf8]{luainputenc}
-\usepackage{luatextra}
-\end{verbatim}
-
-Another important thing to know, for \LaTeX , is that loading
-\pf{luainputenc} is necessary if you use old fonts. One could believe that
-\LuaTeX\ reading UTF-8 natively, \pf{inputenc} is not necessary anymore.
-It's not the case! The exception to this is the case where you only use OTF
-fonts. But you can't simply suppress \pf{inputenc} for your old documents.
-
-Note that \pf{luainputenc} automatically loads \pf{inputenc} if called
-with an old engine, so you will still be able to compile your documents with
-pdf\TeX\ without changing them.
-
-A new font encoding has been added: \code{EU2}. It is meant to be used with
-OTF fonts. It is very minimal and just defines a default font (lmodern). Use
-it if you use only OTF fonts. To use it simply call \pf{fontenc} with the
-option \code{EU2}.
-
-EU2 encoding is special as it needs non-ASCII characters to be non-active
-(unlike other font encodings), so you cannot mix old encodings and EU2. If you
-want to use both old fonts and OTF fonts in your document, the way to do so is
-by using a new option of \pf{luainputenc}: \code{lutf8x}. This option
-overrides \LaTeX 's mechanism to change the font encoding and activates or
-unactivates non-ASCII characters. If you use this option, you will be able to
-change the encoding, for example:
-
-\begin{verbatim}
-abc
-{
-\fontencoding{EU2}\usefont
-\font\foo="MyOtfFont.otf"\foo
-abc
-}
-abc
-\end{verbatim}
-
-Another new option has been added to \pf{luainputenc}:
-\code{unactivate}. With this option, non-ASCII characters won't be
-activated, so you will be able to use only OTF fonts. Typically you can use
-this options with the \code{EU2} \pf{fontenc} option.
-
-\subsubsection{luacode environment}
-
 \LuaTeX tra also provides an environment for lua code integration:
 \code{luacode}. You can simply use it this way:
 
