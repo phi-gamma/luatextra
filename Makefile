@@ -3,23 +3,21 @@
 NAME = luatextra
 DTX = $(wildcard *.dtx)
 DOC_DTX = $(patsubst %.dtx, %.pdf, $(DTX))
-SRC_TEX = luatextra-reference.tex
-DOC_TEX = $(patsubst %.tex, %.pdf, $(SRC_TEX))
 
 # Files grouped by generation mode
 UNPACKED= luatextra-latex.tex luatextra.lua luatextra.sty
-COMPILED = $(DOC_DTX) $(DOC_TEX)
+COMPILED = $(DOC_DTX)
 GENERATED = $(UNPACKED) $(COMPILED)
-SOURCE = $(DTX) $(SRC_TEX) README Makefile News
+SOURCE = $(DTX) README Makefile News
 
 # Files grouped by installation location
 RUNFILES = $(UNPACKED)
-DOCFILES = $(DOC_DTX) $(DOC_TEX) README News
-SRCFILES = $(DTX) $(SRC_TEX) Makefile
+DOCFILES = $(DOC_DTX) README News
+SRCFILES = $(DTX) Makefile
 
 # The following definitions should be equivalent
 # ALL_FILES = $(RUNFILES) $(DOCFILES) $(SRCFILES)
-ALL_FILES = $(GENERATED) $(SOURCE) $(DOC_TEX)
+ALL_FILES = $(GENERATED) $(SOURCE)
 
 # Installation locations
 FORMAT = luatex
@@ -35,7 +33,7 @@ ZIPS = $(CTAN_ZIP) $(TDS_ZIP)
 DO_TEX = tex --interaction=batchmode $< >/dev/null
 DO_LATEXMK = latexmk -silent $< >/dev/null
 
-all: $(GENERATED) $(DOC_TEX)
+all: $(GENERATED)
 doc: $(COMPILED)
 unpack: $(UNPACKED)
 ctan: $(CTAN_ZIP)
@@ -44,9 +42,6 @@ world: all ctan
 .PHONY: all doc unpack ctan tds world
 
 %.pdf: %.dtx
-	$(DO_LATEXMK)
-
-$(DOC_TEX): $(SRC_TEX)
 	$(DO_LATEXMK)
 
 $(UNPACKED): luatextra.dtx
@@ -85,8 +80,8 @@ manifest:
 	@for f in $(GENERATED); do echo $$f; done
 
 clean:
-	@latexmk -silent -c *.tex *.dtx >/dev/null
-	@# for tex runs:
+	@latexmk -silent -c *.dtx >/dev/null
+	@# for tex-only runs:
 	@rm -f -- *.log
 
 mrproper: clean

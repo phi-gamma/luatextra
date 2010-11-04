@@ -1,13 +1,10 @@
                           The luatextra generic bundle
 
-WARNING: this package is undergoing major changes. The documentation (including
-this readme) is sometimes inconsistent. Also, everything may change in the near
-future.
+WARNING: this package is undergoing major changes. See section "Planned
+changes" in the documentation for details.
 
 luatextra loads many usefull packages for LuaTeX (like luaotfload) and provides
 a few additional features and goodies.
-
-Please see the luatextra-reference.pdf documentation for more details.
 
 This package is developed on <http://github.com/mpg/luatextra/>, see the 'News'
 file for version history.
@@ -29,6 +26,7 @@ distribution's manual for details.
 3. a. Grab the sources from CTAN or github.
    b. Run 'make install TEXMFROOT=/path/to/texmf'.
    c. See 2c.
+
 
 License
 -------

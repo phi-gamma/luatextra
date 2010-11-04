@@ -94,6 +94,7 @@ See source file '\inFileName' for details.
 \newcommand\pf{\textsf}
 \newcommand\file{\texorpdfstring{\nolinkurl}{}}
 \newcommand\code{\texttt}
+\newcommand*\email[1]{\href{mailto:#1}{#1}}
 \begin{document}
   \DocInput{luatextra.dtx}%
 \end{document}
@@ -121,8 +122,8 @@ See source file '\inFileName' for details.
 % \title{The \textsf{luatextra} package}
 % \date{2010/11/04 v0.98}
 % \author{%
-%   Manuel P\'egouri\'e-Gonnard \\ \email{mpg@elzevir.fr} \and
-%   \'Elie Roux \\ \email{elie.roux@telecom-bretagne.eu}}
+%   Manuel P\'egouri\'e-Gonnard \email{mpg@elzevir.fr} \\
+%   \'Elie Roux \email{elie.roux@telecom-bretagne.eu}}
 %
 % \maketitle
 %
@@ -155,7 +156,7 @@ See source file '\inFileName' for details.
 %
 % It also provides additional goodies, detailled in the next sections.
 %
-% By the way, people wanting to port their old documents to \LuaLateX\ without
+% By the way, people wanting to port their old documents to \LuaLaTeX\ without
 % needing to change the input and font encodings may want to use the
 % additional package \pf{luainputenc} (which is \emph{not} recommended for
 % anything but compatibility).
@@ -191,7 +192,7 @@ See source file '\inFileName' for details.
 % \end{luacode}
 % \end{verbatim}
 %
-% \subsection{Planned changes}
+% \subsection{Planned changes} \label{sec-plan}
 %
 % Note that \pf{luatextra} currently expands on \pf{luatexbase-mcb} by
 % proposing solutions for the \verb+define_font+ and \verb+open_read_file+
@@ -612,7 +613,7 @@ end
 %    \end{macrocode}
 %
 %    A small macro to register the \texttt{define\_font} callback from
-%    \textsf{luatextra}. See subsection \ref{sub:df} for more details.
+%    \textsf{luatextra}.
 %
 %    \begin{macrocode}
 \def\ltxtra@RegisterFontCallback{
