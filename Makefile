@@ -9,8 +9,7 @@ DOC_TEX = $(patsubst %.tex, %.pdf, $(SRC_TEX))
 # Files grouped by generation mode
 UNPACKED= luatextra-latex.tex luatextra.lua luatextra.sty
 COMPILED = $(DOC_DTX) $(DOC_TEX)
-# $(DOC_TEX) has a compiled version in the repository
-GENERATED = $(UNPACKED) $(DOC_DTX)
+GENERATED = $(UNPACKED) $(COMPILED)
 SOURCE = $(DTX) $(SRC_TEX) README Makefile News
 
 # Files grouped by installation location
@@ -35,7 +34,6 @@ ZIPS = $(CTAN_ZIP) $(TDS_ZIP)
 
 DO_TEX = tex --interaction=batchmode $< >/dev/null
 DO_PDFLATEX = pdflatex --interaction=batchmode $< >/dev/null
-DO_PDFLUALATEX = lualatex --interaction=batchmode $< >/dev/null
 DO_MAKEINDEX = makeindex -s gind.ist $(subst .dtx,,$<) >/dev/null 2>&1
 
 all: $(GENERATED) $(DOC_TEX)
@@ -53,9 +51,9 @@ world: all ctan
 	$(DO_PDFLATEX)
 
 $(DOC_TEX): $(SRC_TEX)
-	$(DO_PDFLUALATEX)
-	$(DO_PDFLUALATEX)
-	$(DO_PDFLUALATEX)
+	$(DO_PDFLATEX)
+	$(DO_PDFLATEX)
+	$(DO_PDFLATEX)
 
 $(UNPACKED): luatextra.dtx
 	$(DO_TEX)
