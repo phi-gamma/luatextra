@@ -433,29 +433,19 @@ end
 
 %    \end{macrocode}
 %
-%    The two macros \texttt{\string\LuaTeX} and \texttt{\string\LuaLaTeX} are
-%    defined to Lua\TeX\ and Lua\LaTeX , because that's the way it's written
-%    in the Lua\TeX 's manual (not in small capitals).
-%
-%    These two macros are the only two loaded if we are under a non-Lua\TeX{}
-%    engine.
+%    Delegate logo definition to the metalogo package (unless running with
+%    Plain TeX).
 %
 %    \begin{macrocode}
-
-\def\LuaTeX{Lua\TeX }
-\def\LuaLaTeX{Lua\LaTeX }
-
+\beginroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax \else
+  \RequirePackage{metalogo}
+\fi
 %    \end{macrocode}
 %
 %    Make sure Lua\TeX\ is being used.
 %
 %    \begin{macrocode}
-\bgroup\expandafter\expandafter\expandafter\egroup
-\expandafter\ifx\csname ProvidesPackage\endcsname\relax
-  \input ifluatex.sty
-\else
-  \RequirePackage{ifluatex}
-\fi
 \ifluatex\else
   \begingroup
     \expandafter\ifx\csname PackageWarningNoLine\endcsname\relax
@@ -476,17 +466,11 @@ end
 %    \begin{macrocode}
 \bgroup\expandafter\expandafter\expandafter\egroup
 \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+  \input luatexbase.sty
   \input luatexbase-modutils.sty
-  \input luatexbase-attr.sty
-  \input luatexbase-cctb.sty
-  \input luatexbase-regs.sty
-  \input luatexbase-mcb.sty
 \else
+  \RequirePackage{luatexbase}
   \RequirePackage{luatexbase-modutils}
-  \RequirePackage{luatexbase-attr}
-  \RequirePackage{luatexbase-cctb}
-  \RequirePackage{luatexbase-regs}
-  \RequirePackage{luatexbase-mcb}
 \fi
 \luatexUseModule{lualibs}
 %    \end{macrocode}

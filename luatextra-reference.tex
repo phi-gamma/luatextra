@@ -163,12 +163,14 @@ have been raised.
 The \LuaTeX tra coherent set of packages contains:
 
 \begin{itemize}
-  \item \pf{luatextra}: the basic general macros and lua functions
-  \item \pf{luainputenc}: adaptation of \pf{inputenc} to \LuaTeX
-  \item \pf{luamcallbacks}: pure lua package to be able to register
-    several functions in a callback
-  \item \pf{lualibs}: additional lua functions (previously
-    \pf{luaextra}).
+  \item \pf{luatextra}: a wrapper loading other packages and providing
+    additional goodies;
+  \item \pf{luatexbase}: low-level functions for resources handling and
+    compatibility. Divided in sub-packages, like \pf{luatexbase-mcb} (formerly
+    \pf{luamcallbacks} that allows to register several functions in a
+    callback;
+  \item \pf{luainputenc}: adaptation of \pf{inputenc} to \LuaTeX;
+  \item \pf{lualibs}: additional lua functions (previously \pf{luaextra}).
 \end{itemize}
 
 \subsection{Overview}
@@ -211,8 +213,8 @@ compatibility of your package with all versions of \LuaTeX .
 \verb+\lualate+ is also provided as a wrapper for
 \verb+\latelua+.
 
-Some small but useful macros are \verb+\LuaTeX+ and
-\verb+\LuaLaTeX+ that produce \LaTeX\ and \LuaLaTeX .
+Under \LaTeX, the \pf{metalogo} package is loaded, providing the macros
+\verb+\LuaTeX+ and \verb+\LuaLaTeX+ to typeset the logos.
 
 \pf{luatextra} automatically loads \pf{luaotfload}, so you can open otf fonts
 directly, for instance \verb+\font\foo="LinLibertine.otf"\foo+ will work. You
@@ -351,7 +353,7 @@ comes with \LuaTeX tra:
 \subsection{callbacks}
 
 For more informations about this part, see the documentation
-\code{luamcallbacks.pdf}.
+\code{luatexbase-mcb.pdf}.
 
 One of the main goals of \LuaTeX tra is also to provide a way for several
 packages to register their functions in one callback. The function
