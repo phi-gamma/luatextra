@@ -194,6 +194,16 @@ See source file '\inFileName' for details.
 %
 % \subsection{Planned changes} \label{sec-plan}
 %
+% If, for some reason, you disagree with one of the upcoming changes described
+% below, please discuss it on the development list:
+% \email{lualatex-dev@tug.org}. Here they are, in semi-random order.
+%
+% The most major change planned is to make this package compatible with
+% \LaTeX\ only. Rationale: it is (or will soon be) mostly a convenience
+% package loading other packages. Users of Plain \TeX\ often are assumed not
+% to care that much about such convenience. Then, \pf{fontspec} would be
+% loaded rather than \pf{luaotfload}.
+%
 % Note that \pf{luatextra} currently expands on \pf{luatexbase-mcb} by
 % proposing solutions for the \verb+define_font+ and \verb+open_read_file+
 % callbacks. See the implementation section below for details. In the future,
@@ -201,6 +211,21 @@ See source file '\inFileName' for details.
 % it seems rather unlikely that different packages want to (or are able to
 % usefully) share these callbacks. If you don't want this feature to
 % disappear, please protest on the mailing list.
+%
+% The \code{luatextra} Lua namespace (aka table) would then disappear. Most of
+% it has already been moved to \code{luatexbase} anyway.
+%
+% The remainning goodies (currently, just the \code{luacode} environment) mau
+% move to another (\LaTeX-only) package for better modularity.
+%
+% Also, the package will bail out in error when not running \LuaTeX, rather
+% than semi-silently exiting as it currently does.
+%
+% All name aliases (for primitives and macro from \pf{luatexbase}) will be
+% dropped, so as to maintain a the name space clean. Only \verb+\luadirect+
+% would be kept as it may be used by the user, and provides
+% version-independance. Please check section~\ref{rename} for the complete
+% list of what will be dropped.
 %
 %    \section{Implementation}
 %
@@ -545,7 +570,11 @@ end
 %    \end{macrocode}
 %
 %
-% \subsubsection{Primitives renaming}
+%    \subsubsection{Primitives and macros renaming}\label{rename}
+%
+%    \textbf{Warning.} This entire section will probably be dropped in a
+%    future release. Check section~\ref{sec-plan} for what to do if ouy
+%    deperately need it.
 %
 %    Here we differenciate two very different cases: Lua\TeX\ version < 0.36
 %    has no \texttt{tex.enableprimitives} function, and has support for
@@ -615,12 +644,6 @@ end
 %    A small macro to register the \texttt{define\_font} callback from
 %    \textsf{luatextra}.
 %
-%    \begin{macrocode}
-\def\ltxtra@RegisterFontCallback{
-  \directlua{luatextra.register_font_callback()}
-}
-%    \end{macrocode}
-%
 %    We provide some functions for backward compatibility with old versions of
 %    luatextra.
 %
@@ -635,6 +658,14 @@ end
 \let\luaModuleError\luatexModuleError
 \let\luaRequireModule\luatexRequireModule
 \let\luaUseModule\luatexUseModule
+%    \end{macrocode}
+%
+%    \subsubsection{Misc}
+%
+%    \begin{macrocode}
+\def\ltxtra@RegisterFontCallback{
+  \directlua{luatextra.register_font_callback()}
+}
 %    \end{macrocode}
 %
 %    Finally, we load \textsf{luaotfload}.
