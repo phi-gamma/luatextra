@@ -10,8 +10,8 @@ COMPILED = $(DOC_DTX)
 GENERATED = $(UNPACKED) $(COMPILED)
 SOURCE = $(DTX) README Makefile News
 
-# Files grouped by installation location
-RUNFILES = $(UNPACKED)
+# Fi-es grouped by installation location
+RUNFILES = $(filter-out test.tex, $(UNPACKED))
 DOCFILES = $(DOC_DTX) README News
 SRCFILES = $(DTX) Makefile
 
@@ -36,16 +36,19 @@ DO_LATEXMK = latexmk -silent $< >/dev/null
 all: $(GENERATED)
 doc: $(COMPILED)
 unpack: $(UNPACKED)
-ctan: $(CTAN_ZIP)
+ctan: check $(CTAN_ZIP)
 tds: $(TDS_ZIP)
 world: all ctan
-.PHONY: all doc unpack ctan tds world
+.PHONY: all doc unpack ctan tds world check
 
 %.pdf: %.dtx
 	$(DO_LATEXMK)
 
 $(UNPACKED): luatextra.dtx
 	$(DO_TEX)
+
+check: $(UNPACKED)
+	lualatex --interaction=batchmode test.tex >/dev/null
 
 $(CTAN_ZIP): $(SOURCE) $(COMPILED) $(TDS_ZIP)
 	@echo "Making $@ for CTAN upload."
@@ -85,5 +88,5 @@ clean:
 	@rm -f -- *.log
 
 mrproper: clean
-	@$(RM) -- $(GENERATED) $(ZIPS)
+	@$(RM) -- $(GENERATED) $(ZIPS) test.*
 

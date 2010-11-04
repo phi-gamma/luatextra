@@ -49,6 +49,11 @@ See source file '\inFileName' for details.
   \file{luatextra-latex.tex}{\from{luatextra.dtx}{latex}}%
 }
 
+\generate{%
+  \usedir{doc/luatex/luatextra}%
+  \file{test.tex}{\from{luatextra.dtx}{test}}%
+}
+
 \def\MetaPrefix{-- }
 
 \def\luapostamble{%
@@ -520,7 +525,7 @@ end
 %    Plain TeX).
 %
 %    \begin{macrocode}
-\beginroup\expandafter\expandafter\expandafter\endgroup
+\begingroup\expandafter\expandafter\expandafter\endgroup
 \expandafter\ifx\csname RequirePackage\endcsname\relax \else
   \RequirePackage{metalogo}
 \fi
@@ -538,7 +543,7 @@ end
       \let\x\PackageWarningNoLine
     \fi
   \expandafter\endgroup
-  \x{luatexbase-modutils}{LuaTeX is required for this package.^^J
+  \x{luatextra}{LuaTeX is required for this package.^^J
     Aborting package loading.}
   \expandafter\endinput
 \fi
@@ -551,9 +556,11 @@ end
 \expandafter\ifx\csname ProvidesPackage\endcsname\relax
   \input luatexbase.sty
   \input luatexbase-modutils.sty
+  \input luatexbase-mcb.sty
 \else
   \RequirePackage{luatexbase}
   \RequirePackage{luatexbase-modutils}
+  \RequirePackage{luatexbase-mcb}
 \fi
 \luatexUseModule{lualibs}
 %    \end{macrocode}
@@ -681,6 +688,17 @@ end
 %
 %    \begin{macrocode}
 %</package>
+%    \end{macrocode}
+%
+%    \section{Test file}
+%
+%    Very minimal, just check that the package correctly loads.
+%
+%    \begin{macrocode}
+%<*test>
+\RequirePackage{luatextra}
+\stop
+%</test>
 %    \end{macrocode}
 %
 %

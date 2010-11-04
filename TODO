@@ -1,3 +1,1 @@
-- improve packaging
-- make a simple test file; add a check target in the Makefile
-- s/luatextra/luatexbase/ (import a few names for compat ?)
+- see planned changes in the manual
