@@ -1,5 +1,10 @@
                         History of the luatextra bundle
 
+2010/10/08 v0.99
+    * delegate definition of {luacode} and \luadirect to package luacode
+    * raise an error rather than a warning when not running LuaTeX
+    * load fixltx2e under LaTeX
+
 2010/10/04 v0.98
     * load metalogo under LaTeX; don't define logos under Plain TeX
     * documentation overhaul; added a "planned changes" section
