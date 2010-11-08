@@ -31,7 +31,7 @@ TDS_ZIP = $(NAME).tds.zip
 ZIPS = $(CTAN_ZIP) $(TDS_ZIP)
 
 DO_TEX = tex --interaction=batchmode $< >/dev/null
-DO_LATEXMK = latexmk -silent $< >/dev/null
+DO_LATEXMK = latexmk -pdf -silent $< >/dev/null
 
 all: $(GENERATED)
 doc: $(COMPILED)
