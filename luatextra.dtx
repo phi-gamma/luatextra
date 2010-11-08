@@ -125,7 +125,7 @@ See source file '\inFileName' for details.
 %   Right brace   \}     Tilde         \~}
 %
 % \title{The \textsf{luatextra} package}
-% \date{2010/11/04 v0.98}
+% \date{2010/11/08 v0.99}
 % \author{%
 %   Manuel P\'egouri\'e-Gonnard \email{mpg@elzevir.fr} \\
 %   \'Elie Roux \email{elie.roux@telecom-bretagne.eu}}
@@ -160,10 +160,11 @@ See source file '\inFileName' for details.
 % When running \LaTeX\ \pf{luatextra} loads the following additional packages:
 % \begin{itemize}
 %   \item \pf{metalogo}: provides commands for typesetting the \LuaTeX\
-%   and \LuaLaTeX\ logos;
+%   and \LuaLaTeX\ logos amongst others;
 %   \item \pf{luacode}: provides tools for easy integration of Lua code in
 %   \LaTeX;
-%   \item \pf{fixltx2e}: fixes bugs or suboptimal things in the \LaTeX kernel.
+%   \item \pf{fixltx2e}: fixes bugs or suboptimal things in the \LaTeX\ kernel.
+% \end{itemize}
 %
 % In case you are not yet familiar with the available \LuaLaTeX\ packages, you
 % might want to check the document \nolinkurl{lualatex-doc.pdf} from the
@@ -218,9 +219,9 @@ module("luatextra", package.seeall)
 %
 %    \begin{macrocode}
 luatexbase.provides_module {
-    version     = 0.971,
+    version     = 0.99,
     name        = "luatextra",
-    date        = "2010/08/02",
+    date        = "2010/10/08",
     description = "Additional low level functions for LuaTeX",
     author      = "Elie Roux and Manuel Pegourie-Gonnard",
     copyright   = "Elie Roux, 2009 and Manuel Pegourie-Gonnard, 2010",
@@ -477,7 +478,7 @@ end
   \RequirePackage{ifluatex}
   \NeedsTeXFormat{LaTeX2e}
   \ProvidesPackage{luatextra}
-    [2010/08/02 v0.971 LuaTeX extra low-level macros]
+    [2010/10/08 v0.98 LuaTeX extra low-level macros]
 \fi
 
 %    \end{macrocode}
@@ -510,16 +511,19 @@ end
   \input luatexbase.sty
   \input luatexbase-modutils.sty
   \input luatexbase-mcb.sty
+  \luatexUseModule{lualibs}
   \input luaotfload.sty
 \else
   \RequirePackage{luatexbase}
   \RequirePackage{luatexbase-modutils}
   \RequirePackage{luatexbase-mcb}
+  \luatexUseModule{lualibs}
   \RequirePackage{luaotfload}
+  %
   \RequirePackage{metalogo}
   \RequirePackage{luacode}
+  \RequirePackage{fixltx2e}
 \fi
-\luatexUseModule{lualibs}
 %    \end{macrocode}
 %
 %    \subsubsection{Primitives and macros renaming}\label{rename}
