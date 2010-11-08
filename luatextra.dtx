@@ -173,10 +173,10 @@ See source file '\inFileName' for details.
 %
 % If, for some reason, you disagree with one of the upcoming changes described
 % below, please discuss it on the development list:
-% \email{lualatex-dev@tug.org}. Here they are, in semi-random order.
+% \email{lualatex-dev@tug.org}.
 %
 % The most major change planned is to make this package compatible with
-% \LaTeX\ only. Rationale: it is (or will soon be) mostly a convenience
+% \LaTeX\ only. Rationale: it is (or will soon be) only a convenience
 % package loading other packages. Users of Plain \TeX\ are assumed not
 % to care that much about such convenience. Then, \pf{fontspec} would be
 % loaded rather than \pf{luaotfload}.
@@ -184,19 +184,14 @@ See source file '\inFileName' for details.
 % Note that \pf{luatextra} currently expands on \pf{luatexbase-mcb} by
 % proposing solutions for the \verb+define_font+ and \verb+open_read_file+
 % callbacks. See the implementation section below for details. In the future,
-% this code (only half of which was activate) will be removed, since it seems
+% this code (only half of which was activated) will be removed, since it seems
 % very unlikely that different packages want to (or are able to usefully)
-% share these callbacks. If you don't want this feature to disappear, please
-% protest on the mailing list.
+% share these callbacks.  The \code{luatextra} Lua namespace (aka table) will
+% then disappear.
 %
-% The \code{luatextra} Lua namespace (aka table) will then disappear.
-%
-% Also, the package will bail out in error when not running \LuaTeX, rather
-% than semi-silently exiting as it currently does.
-%
-% All name aliases (for primitives and macro from \pf{luatexbase}) will be
-% dropped, so as to maintain a the name space clean.  Please check
-% section~\ref{rename} for the complete list of what will be dropped.
+% All name aliases (for primitives and macro from \pf{luatexbase} and previous
+% versions) will be dropped, so as to maintain a the name space clean.  Please
+% check section~\ref{rename} for the complete list of what will be dropped.
 %
 %    \section{Implementation}
 %
@@ -469,7 +464,7 @@ end
 
 %    \end{macrocode}
 %
-%    Then we load \textsf{ifluatex}.
+%    Then we load \textsf{ifluatex} and identify.
 %
 %    \begin{macrocode}
 
@@ -492,15 +487,17 @@ end
 %    \begin{macrocode}
 \ifluatex\else
   \begingroup
-    \expandafter\ifx\csname PackageWarningNoLine\endcsname\relax
-      \def\x#1#2{\begingroup\newlinechar10
-        \immediate\write16{Package #1 warning: #2}\endgroup}
+    \expandafter\ifx\csname PackageError\endcsname\relax
+      \def\x#1#2#3{\begingroup \newlinechar10
+        \errhelp{#3}\errmessage{Package #1 error: #2}\endgroup}
     \else
-      \let\x\PackageWarningNoLine
+      \let\x\PackageError
     \fi
   \expandafter\endgroup
-  \x{luatextra}{LuaTeX is required for this package.^^J
-    Aborting package loading.}
+  \x{luatextra}{LuaTeX is required for this package. Aborting.}{%
+    This package can only be used with the LuaTeX engine^^J%
+    (command `lualatex' or `luatex').^^J%
+    Package loading has been stopped to prevent additional errors.}
   \expandafter\endinput
 \fi
 %    \end{macrocode}
@@ -588,15 +585,6 @@ end
 \fi
 %    \end{macrocode}
 %
-%    We load the \texttt{lua} file.
-%
-%    \begin{macrocode}
-\directlua{dofile(kpse.find_file("luatextra.lua"))}
-%    \end{macrocode}
-%
-%    A small macro to register the \texttt{define\_font} callback from
-%    \textsf{luatextra}.
-%
 %    We provide some functions for backward compatibility with old versions of
 %    luatextra.
 %
@@ -613,7 +601,16 @@ end
 \let\luaUseModule\luatexUseModule
 %    \end{macrocode}
 %
-%    \subsubsection{Misc}
+%    \subsection{Callbacks}
+%
+%    We load the \texttt{lua} file.
+%
+%    \begin{macrocode}
+\directlua{dofile(kpse.find_file("luatextra.lua"))}
+%    \end{macrocode}
+%
+%    A small macro to register the \texttt{define\_font} callback from
+%    \textsf{luatextra}.
 %
 %    \begin{macrocode}
 \def\ltxtra@RegisterFontCallback{
