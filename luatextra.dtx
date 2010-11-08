@@ -133,10 +133,10 @@ See source file '\inFileName' for details.
 % \maketitle
 %
 % \begin{abstract}
-% The \pf{luatextra} package loads essential packages for \LuaTeX, and
-% provides few additional user-level goodies. It is meant as a convenience
-% package for users. Developers should load directly the underlying packages
-% they specifically need.
+% The \pf{luatextra} package loads essential and convenient packages for
+% \LuaTeX, and provides few additional user-level goodies. It is meant as a
+% convenience package for users. Developers should load directly the
+% underlying packages they specifically need.
 %
 % \textbf{Warning.} This package is undergoing major changes, see the
 % ``Planned changes'' section on page~\pageref{sec-plan}.
@@ -153,49 +153,21 @@ See source file '\inFileName' for details.
 %   \pf{luamcallbacks}) that allows to register several functions in a
 %   callback;
 %   \item \pf{lualibs}: additional lua functions (previously \pf{luaextra}) ;
-%   \item \pf{luaotfload}: implements extended syntax for \verb+\font+;
+%   \item \pf{luaotfload}: implements extended syntax \emph{à la} \XeTeX\
+%   for the \verb+\font+ primitive.
 % \end{itemize}
-% When running \LaTeX\ (as opposed to Plain \TeX), the \pf{metalogo} package
-% is loaded too, proviging the macros \verb+\LuaTeX+ and \verb+\LuaLaTeX+ to
-% typeset the logos.
 %
-% It also provides additional goodies, detailled in the next sections.
+% When running \LaTeX\ \pf{luatextra} loads the following additional packages:
+% \begin{itemize}
+%   \item \pf{metalogo}: provides commands for typesetting the \LuaTeX\
+%   and \LuaLaTeX\ logos;
+%   \item \pf{luacode}: provides tools for easy integration of Lua code in
+%   \LaTeX;
+%   \item \pf{fixltx2e}: fixes bugs or suboptimal things in the \LaTeX kernel.
 %
-% By the way, people wanting to port their old documents to \LuaLaTeX\ without
-% needing to change the input and font encodings may want to use the
-% additional package \pf{luainputenc} (which is \emph{not} recommended for
-% anything but compatibility).
-%
-% \subsection{Plain and \LaTeX\ macros}
-%
-% The most useful macro provided by \pf{luatextra} is certainly
-% \verb+\luadirect+, which is a wrapper for \verb+\directlua+,
-% but will keep the same signature whatever the \LuaTeX\ version. For example
-% this macro works for \LuaTeX\ versions $<$ 0.36, and will most certainly work
-% for future versions of \LuaTeX . It is advised to use this macro to keep the
-% compatibility of your package with all versions of \LuaTeX .
-% \verb+\lualate+ is also provided as a wrapper for
-% \verb+\latelua+.
-%
-% \pf{luatextra} automatically loads \pf{luaotfload}, so you can open otf fonts
-% directly, for instance \verb+\font\foo="LinLibertine.otf"\foo+ will work. You
-% can also pass options to the font opening, for example the different OTF
-% options you want. These options are passed with the \XeTeX\ font syntax
-% (briefly described in \file{XeTeX-reference.pdf}), for example if you want to
-% open a font with the usual \TeX\ substitutions and ligatures, with also the
-% font default ligatures, you can try \newline
-% \verb!\font\foo="LinLibertine.otf;+tlig;+tsub;+liga;+rlig;"\foo!.
-%
-% \subsection{\LaTeX -only macros}
-%
-% \LuaTeX tra also provides an environment for lua code integration:
-% \code{luacode}. You can simply use it this way:
-%
-% \begin{verbatim}
-% \begin{luacode}
-% texio.write_nl("It works!")
-% \end{luacode}
-% \end{verbatim}
+% In case you are not yet familiar with the available \LuaLaTeX\ packages, you
+% might want to check the document \nolinkurl{lualatex-doc.pdf} from the
+% eponymous package.
 %
 % \subsection{Planned changes} \label{sec-plan}
 %
@@ -205,32 +177,26 @@ See source file '\inFileName' for details.
 %
 % The most major change planned is to make this package compatible with
 % \LaTeX\ only. Rationale: it is (or will soon be) mostly a convenience
-% package loading other packages. Users of Plain \TeX\ often are assumed not
+% package loading other packages. Users of Plain \TeX\ are assumed not
 % to care that much about such convenience. Then, \pf{fontspec} would be
 % loaded rather than \pf{luaotfload}.
 %
 % Note that \pf{luatextra} currently expands on \pf{luatexbase-mcb} by
 % proposing solutions for the \verb+define_font+ and \verb+open_read_file+
 % callbacks. See the implementation section below for details. In the future,
-% this will either be merged in \pf{luatexbase-mcb} or just disappear, since
-% it seems rather unlikely that different packages want to (or are able to
-% usefully) share these callbacks. If you don't want this feature to
-% disappear, please protest on the mailing list.
+% this code (only half of which was activate) will be removed, since it seems
+% very unlikely that different packages want to (or are able to usefully)
+% share these callbacks. If you don't want this feature to disappear, please
+% protest on the mailing list.
 %
-% The \code{luatextra} Lua namespace (aka table) would then disappear. Most of
-% it has already been moved to \code{luatexbase} anyway.
-%
-% The remainning goodies (currently, just the \code{luacode} environment) mau
-% move to another (\LaTeX-only) package for better modularity.
+% The \code{luatextra} Lua namespace (aka table) will then disappear.
 %
 % Also, the package will bail out in error when not running \LuaTeX, rather
 % than semi-silently exiting as it currently does.
 %
 % All name aliases (for primitives and macro from \pf{luatexbase}) will be
-% dropped, so as to maintain a the name space clean. Only \verb+\luadirect+
-% would be kept as it may be used by the user, and provides
-% version-independance. Please check section~\ref{rename} for the complete
-% list of what will be dropped.
+% dropped, so as to maintain a the name space clean.  Please check
+% section~\ref{rename} for the complete list of what will be dropped.
 %
 %    \section{Implementation}
 %
@@ -521,16 +487,6 @@ end
 
 %    \end{macrocode}
 %
-%    Delegate logo definition to the metalogo package (unless running with
-%    Plain TeX).
-%
-%    \begin{macrocode}
-\begingroup\expandafter\expandafter\expandafter\endgroup
-\expandafter\ifx\csname RequirePackage\endcsname\relax \else
-  \RequirePackage{metalogo}
-\fi
-%    \end{macrocode}
-%
 %    Make sure Lua\TeX\ is being used.
 %
 %    \begin{macrocode}
@@ -549,7 +505,7 @@ end
 \fi
 %    \end{macrocode}
 %
-%    Load other usefull packages.
+%    Load packages.
 %
 %    \begin{macrocode}
 \bgroup\expandafter\expandafter\expandafter\egroup
@@ -557,31 +513,23 @@ end
   \input luatexbase.sty
   \input luatexbase-modutils.sty
   \input luatexbase-mcb.sty
+  \input luaotfload.sty
 \else
   \RequirePackage{luatexbase}
   \RequirePackage{luatexbase-modutils}
   \RequirePackage{luatexbase-mcb}
+  \RequirePackage{luaotfload}
+  \RequirePackage{metalogo}
+  \RequirePackage{luacode}
 \fi
 \luatexUseModule{lualibs}
 %    \end{macrocode}
 %
-%    If the package is loaded with \LaTeX , we
-%    also define the environment \texttt{luacode}.
-%
-%    \begin{macrocode}
-\bgroup\expandafter\expandafter\expandafter\egroup
-\expandafter\ifx\csname ProvidesPackage\endcsname\relax \else
-  \RequirePackage{environ}
-  \NewEnviron{luacode}{\directlua{\BODY}}
-\fi
-%    \end{macrocode}
-%
-%
 %    \subsubsection{Primitives and macros renaming}\label{rename}
 %
-%    \textbf{Warning.} This entire section will probably be dropped in a
-%    future release. Check section~\ref{sec-plan} for what to do if ouy
-%    deperately need it.
+%    \textbf{Warning.} This entire section will be dropped in a future
+%    release. Check section~\ref{sec-plan} for what to do if you deperately
+%    need it.
 %
 %    Here we differenciate two very different cases: Lua\TeX\ version < 0.36
 %    has no \texttt{tex.enableprimitives} function, and has support for
@@ -605,7 +553,6 @@ end
 %    \begin{macrocode}
   \def\directlua{\pdfprimitive\directlua0}
   \def\latelua{\pdfprimitive\latelua0}
-  \def\luadirect{\pdfprimitive\directlua0}
   \def\lualate{\pdfprimitive\latelua0}
   \def\luatexattribute{\attribute}
   \def\luatexattributedef{\attributedef}
@@ -634,7 +581,6 @@ end
   \directlua{tex.enableprimitives('luatex', {'initcatcodetable'})}
   \directlua{tex.enableprimitives('luatex', {'savecatcodetable'})}
   \directlua{tex.enableprimitives('luatex', {'closelua'})}
-  \let\luadirect\directlua
   \let\lualate\luatexlatelua
   \let\initluatexcatcodetable\luatexinitcatcodetable
   \let\saveluatexcatcodetable\luatexsavecatcodetable
@@ -673,17 +619,6 @@ end
 \def\ltxtra@RegisterFontCallback{
   \directlua{luatextra.register_font_callback()}
 }
-%    \end{macrocode}
-%
-%    Finally, we load \textsf{luaotfload}.
-%
-%    \begin{macrocode}
-\bgroup\expandafter\expandafter\expandafter\egroup
-\expandafter\ifx\csname ProvidesPackage\endcsname\relax
-  \input luaotfload.sty
-\else
-  \RequirePackage{luaotfload}
-\fi
 %    \end{macrocode}
 %
 %    \begin{macrocode}

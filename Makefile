@@ -10,9 +10,9 @@ COMPILED = $(DOC_DTX)
 GENERATED = $(UNPACKED) $(COMPILED)
 SOURCE = $(DTX) README Makefile News
 
-# Fi-es grouped by installation location
+# Files grouped by installation location
 RUNFILES = $(filter-out test.tex, $(UNPACKED))
-DOCFILES = $(DOC_DTX) README News
+DOCFILES = $(DOC_DTX) test.tex README News
 SRCFILES = $(DTX) Makefile
 
 # The following definitions should be equivalent
