@@ -1,13 +1,8 @@
-                          The luatextra generic bundle
+                      The luatextra package for LuaLaTeX
 
-WARNING: this package is undergoing major changes. See section "Planned
-changes" in the documentation for details.
 
-luatextra loads many usefull packages for LuaTeX (like luaotfload) and provides
-a few additional features and goodies.
-
-This package is developed on <http://github.com/mpg/luatextra/>, see the 'News'
-file for version history.
+The luatextr} package loads essential and useful packages for LuaLaTeX. It is
+meant as convenience for users who don't want to load them individually.
 
 
 Installation
