@@ -1,7 +1,7 @@
                       The luatextra package for LuaLaTeX
 
 
-The luatextr} package loads essential and useful packages for LuaLaTeX. It is
+The luatextra package loads essential and useful packages for LuaLaTeX. It is
 meant as convenience for users who don't want to load them individually.
 
 
