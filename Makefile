@@ -20,7 +20,7 @@ SRCFILES = $(DTX) Makefile
 ALL_FILES = $(GENERATED) $(SOURCE)
 
 # Installation locations
-FORMAT = luatex
+FORMAT = lualatex
 RUNDIR = $(TEXMFROOT)/tex/$(FORMAT)/$(NAME)
 DOCDIR = $(TEXMFROOT)/doc/$(FORMAT)/$(NAME)
 SRCDIR = $(TEXMFROOT)/source/$(FORMAT)/$(NAME)
