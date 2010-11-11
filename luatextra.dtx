@@ -114,54 +114,32 @@ See source file '\inFileName' for details.
 % \maketitle
 %
 % \begin{abstract}
-% The \pf{luatextra} package loads essential and convenient packages for
-% \LuaTeX, and provides few additional user-level goodies. It is meant as a
-% convenience package for users. Developers should load directly the
-% underlying packages they specifically need.
-%
-% \textbf{Warning.} This package is undergoing major changes, see the
-% ``Planned changes'' section on page~\pageref{sec-plan}.
+% The \pf{luatextra} package loads essential and useful packages for
+% \LuaLaTeX. It is meant as convenience for users who don't want to load them
+% individually.
 % \end{abstract}
 %
 % \tableofcontents
 %
 % \section{Documentation}
 %
-% The \pf{luatextra} package loads the following essential packages:
-% \begin{itemize}
-%   \item \pf{luatexbase}: low-level functions for resources handling and
-%   compatibility. Divided in sub-packages, like \pf{luatexbase-mcb} (formerly
-%   \pf{luamcallbacks}) that allows to register several functions in a
-%   callback;
-%   \item \pf{lualibs}: additional lua functions (previously \pf{luaextra}) ;
-%   \item \pf{luaotfload}: implements extended syntax \emph{à la} \XeTeX\
-%   for the \verb+\font+ primitive.
-% \end{itemize}
-%
-% When running \LaTeX\ \pf{luatextra} loads the following additional packages:
-% \begin{itemize}
-%   \item \pf{metalogo}: provides commands for typesetting the \LuaTeX\
-%   and \LuaLaTeX\ logos amongst others;
-%   \item \pf{luacode}: provides tools for easy integration of Lua code in
-%   \LaTeX;
-%   \item \pf{fixltx2e}: fixes bugs or suboptimal things in the \LaTeX\ kernel.
-% \end{itemize}
+% The following packages are loaded:
+% \begin{description}
+%   \item[fontspec] --- advanced font managementi integrated in the \LaTeX font
+%   selection scheme, with access to system fonts and opentype features;
+%   \item[luacode] --- tools for easier integration of Lua code in \LaTeX;
+%   \item[metalogo] --- commands for logos, including |\LuaTeX| and
+%   |\LuaLaTeX|;
+%   \item[fixltx2e] --- various fixes and small enchancements for the \LaTeX
+%   core;
+%   \item[luatexbase] --- low-level management of \LuaTeX's new and extended
+%   resources;
+%   \item[lualibs] --- additional general-purpose Lua functions.
+% \end{description}
 %
 % In case you are not yet familiar with the available \LuaLaTeX\ packages, you
 % might want to check the document \nolinkurl{lualatex-doc.pdf} from the
 % eponymous package.
-%
-% \subsection{Planned changes} \label{sec-plan}
-%
-% If, for some reason, you disagree with one of the upcoming changes described
-% below, please discuss it on the development list:
-% \email{lualatex-dev@tug.org}.
-%
-% The most major change planned is to make this package compatible with
-% \LaTeX\ only. Rationale: it is (or will soon be) only a convenience
-% package loading other packages. Users of Plain \TeX\ are assumed not
-% to care that much about such convenience. Then, \pf{fontspec} would be
-% loaded rather than \pf{luaotfload}.
 %
 %    \section{Implementation}
 %
