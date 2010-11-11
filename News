@@ -1,5 +1,9 @@
                         History of the luatextra bundle
 
+
+2010/10/10 v0.99a
+    * adapt to luatexbase v3.0
+
 2010/10/08 v0.99
     * delegate definition of {luacode} and \luadirect to package luacode
     * raise an error rather than a warning when not running LuaTeX
