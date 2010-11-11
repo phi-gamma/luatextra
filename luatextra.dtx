@@ -165,53 +165,22 @@ See source file '\inFileName' for details.
 %
 %    \section{Implementation}
 %
-%    \subsection{\TeX\ package}
-%
 %    \begin{macrocode}
 %<*package>
 %    \end{macrocode}
 %
-%    \subsubsection{Initializations}
-%
-%    First we prevent multiple loads of the file (useful for plain-\TeX ).
+%    Identify.
 %
 %    \begin{macrocode}
-\csname ifluatextraloaded\endcsname
-\let\ifluatextraloaded\endinput
-
-%    \end{macrocode}
-%
-%    Then we load \textsf{ifluatex} and identify.
-%
-%    \begin{macrocode}
-
-\bgroup\expandafter\expandafter\expandafter\egroup
-\expandafter\ifx\csname ProvidesPackage\endcsname\relax
-  \expandafter\ifx\csname ifluatex\endcsname\relax
-    \input ifluatex.sty
-  \fi
-\else
-  \RequirePackage{ifluatex}
-  \NeedsTeXFormat{LaTeX2e}
-  \ProvidesPackage{luatextra}
-    [2010/10/08 v0.98 LuaTeX extra low-level macros]
-\fi
-
+\ProvidesPackage{luatextra}[2010/10/08 v0.99 Loading LuaLaTeX usual packages]
 %    \end{macrocode}
 %
 %    Make sure Lua\TeX\ is being used.
 %
 %    \begin{macrocode}
+\RequirePackage{ifluatex}
 \ifluatex\else
-  \begingroup
-    \expandafter\ifx\csname PackageError\endcsname\relax
-      \def\x#1#2#3{\begingroup \newlinechar10
-        \errhelp{#3}\errmessage{Package #1 error: #2}\endgroup}
-    \else
-      \let\x\PackageError
-    \fi
-  \expandafter\endgroup
-  \x{luatextra}{LuaTeX is required for this package. Aborting.}{%
+  \PackageError{luatextra}{LuaTeX is required for this package. Aborting.}{%
     This package can only be used with the LuaTeX engine^^J%
     (command `lualatex' or `luatex').^^J%
     Package loading has been stopped to prevent additional errors.}
@@ -219,23 +188,16 @@ See source file '\inFileName' for details.
 \fi
 %    \end{macrocode}
 %
-%    Load packages.
+%    Load packages; \pf{luatexbase} and \pf{lualibs} are loaded (indirectly)
+%    by fontspec, but just to be sure (in case it changes in the future).
 %
 %    \begin{macrocode}
-\bgroup\expandafter\expandafter\expandafter\egroup
-\expandafter\ifx\csname ProvidesPackage\endcsname\relax
-  \input luatexbase.sty
-  \RequireLuaModule{lualibs}
-  \input luaotfload.sty
-\else
-  \RequirePackage{luatexbase}
-  \RequireLuaModule{lualibs}
-  \RequirePackage{luaotfload}
-  %
-  \RequirePackage{metalogo}
-  \RequirePackage{luacode}
-  \RequirePackage{fixltx2e}
-\fi
+\RequirePackage{luatexbase}
+\RequireLuaModule{lualibs}
+\RequirePackage{fontspec}
+\RequirePackage{metalogo}
+\RequirePackage{luacode}
+\RequirePackage{fixltx2e}
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -244,11 +206,13 @@ See source file '\inFileName' for details.
 %
 %    \section{Test file}
 %
-%    Very minimal, just check that the package correctly loads.
+%    Very minimal, just check that the package correctly loads. We have to use
+%    |\documentclass| to make \pf{xkeyval} (loaded by \pf{fontspec}) happy.
 %
 %    \begin{macrocode}
 %<*test>
-\RequirePackage{luatextra}
+\documentclass{minimal}
+\usepackage{luatextra}
 \stop
 %</test>
 %    \end{macrocode}
