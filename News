@@ -1,6 +1,11 @@
                         History of the luatextra package
 
 
+2010/10/10 v1.0
+    * move to latex only
+    * remove old callback code
+    * remove old macro/primitive aliases
+    * load fontspec
 
 2010/10/10 v0.99a
     * adapt to luatexbase v3.0
