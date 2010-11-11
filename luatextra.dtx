@@ -508,15 +508,11 @@ end
 \bgroup\expandafter\expandafter\expandafter\egroup
 \expandafter\ifx\csname ProvidesPackage\endcsname\relax
   \input luatexbase.sty
-  \input luatexbase-modutils.sty
-  \input luatexbase-mcb.sty
-  \luatexUseModule{lualibs}
+  \RequireLuaModule{lualibs}
   \input luaotfload.sty
 \else
   \RequirePackage{luatexbase}
-  \RequirePackage{luatexbase-modutils}
-  \RequirePackage{luatexbase-mcb}
-  \luatexUseModule{lualibs}
+  \RequireLuaModule{lualibs}
   \RequirePackage{luaotfload}
   %
   \RequirePackage{metalogo}
