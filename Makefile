@@ -5,7 +5,7 @@ DTX = $(wildcard *.dtx)
 DOC_DTX = $(patsubst %.dtx, %.pdf, $(DTX))
 
 # Files grouped by generation mode
-UNPACKED= luatextra.lua luatextra.sty
+UNPACKED= luatextra.sty
 COMPILED = $(DOC_DTX)
 GENERATED = $(UNPACKED) $(COMPILED)
 SOURCE = $(DTX) README Makefile News

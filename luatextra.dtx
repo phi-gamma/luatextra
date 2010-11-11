@@ -30,8 +30,6 @@
 \keepsilent
 \askforoverwritefalse
 
-\let\MetaPrefix\relax
-
 \preamble
 
 Written in 2009, 2010 by Manuel Pegourie-Gonnard and Elie Roux.
@@ -41,8 +39,6 @@ See source file '\inFileName' for details.
 
 \endpreamble
 
-\let\MetaPrefix\DoubleperCent
-
 \generate{%
   \usedir{tex/luatex/luatextra}%
   \file{luatextra.sty}{\from{luatextra.dtx}{package}}%
@@ -51,20 +47,6 @@ See source file '\inFileName' for details.
 \generate{%
   \usedir{doc/luatex/luatextra}%
   \file{test.tex}{\from{luatextra.dtx}{test}}%
-}
-
-\def\MetaPrefix{-- }
-
-\def\luapostamble{%
-  \MetaPrefix^^J%
-  \MetaPrefix\space End of File `\outFileName'.%
-}
-
-\def\currentpostamble{\luapostamble}%
-
-\generate{%
-  \usedir{tex/luatex/luatextra}%
-  \file{luatextra.lua}{\from{luatextra.dtx}{lua}}%%
 }
 
 \obeyspaces
@@ -126,8 +108,8 @@ See source file '\inFileName' for details.
 % \title{The \textsf{luatextra} package}
 % \date{2010/11/08 v0.99a}
 % \author{%
-%   Manuel P\'egouri\'e-Gonnard \email{mpg@elzevir.fr} \\
-%   \'Elie Roux \email{elie.roux@telecom-bretagne.eu}}
+%   Manuel P\'egouri\'e-Gonnard \& \'Elie Roux \\
+%   Support: \email{lualatex-dev@tug.org}}
 %
 % \maketitle
 %
@@ -181,272 +163,7 @@ See source file '\inFileName' for details.
 % to care that much about such convenience. Then, \pf{fontspec} would be
 % loaded rather than \pf{luaotfload}.
 %
-% Note that \pf{luatextra} currently expands on \pf{luatexbase-mcb} by
-% proposing solutions for the \verb+define_font+ and \verb+open_read_file+
-% callbacks. See the implementation section below for details. In the future,
-% this code (only half of which was activated) will be removed, since it seems
-% very unlikely that different packages want to (or are able to usefully)
-% share these callbacks.  The \code{luatextra} Lua namespace (aka table) will
-% then disappear.
-%
-% All name aliases (for primitives and macro from \pf{luatexbase} and previous
-% versions) will be dropped, so as to maintain a the name space clean.  Please
-% check section~\ref{rename} for the complete list of what will be dropped.
-%
 %    \section{Implementation}
-%
-%    \subsection{Lua module}
-%
-%    \subsubsection{Initialization and internal functions}
-%
-%    \begin{macrocode}
-%<*lua>
-%    \end{macrocode}
-%
-%    We create the \texttt{luatextra} table that will contain all the
-%    functions and variables, and we register it as a normal lua module.
-%
-%    \begin{macrocode}
-module("luatextra", package.seeall)
-%    \end{macrocode}
-%
-%    We initiate the modules table that will contain informations about the
-%    loaded modules. And we register the \texttt{luatextra} module. The
-%    informations contained in the table describing the module are always the
-%    same, it can be taken as a template. See
-%    \texttt{luatextra.provides\_module} for more details.
-%
-%    \begin{macrocode}
-luatexbase.provides_module {
-    version     = 0.99a,
-    name        = "luatextra",
-    date        = "2010/10/08",
-    description = "Additional low level functions for LuaTeX",
-    author      = "Elie Roux and Manuel Pegourie-Gonnard",
-    copyright   = "Elie Roux, 2009 and Manuel Pegourie-Gonnard, 2010",
-    license     = "CC0",
-}
-local format = string.format
-%    \end{macrocode}
-%
-%    \subsubsection{Multiple callbacks on the \texttt{open\_read\_file}
-%    callback\label{sub:orf}}
-%
-%    |luatexbase| (see documentation for details) cannot really provide a
-%    simple and reliable way of registering multiple functions in some
-%    callbacks. To be able to do so, the solution we implemented is to
-%    register one function in these callbacks, and to create "sub-callbacks"
-%    that can accept several functions. That's what we do here for the
-%    callback \texttt{open\_read\_file}.
-%
-%    \begin{macro}{luatextra.open read file}
-%
-%    This function is the one that will be registered in the callback. It
-%    calls new callbacks, that will be created later. These callbacks are:
-%
-%    \begin{itemize}
-%    \item \texttt{pre\_read\_file} in which you can register a function with
-%    the signature \texttt{pre\_read\_file(env)}, with \texttt{env} being a
-%    table containing the fields \texttt{filename} which is the argument of
-%    the callback \texttt{open\_read\_file}, and \texttt{path} which is the
-%    result of \texttt{kpse.find\_file}. You can put any field you want in the
-%    \texttt{env} table, you can even override the existing fields. This
-%    function is called at the very beginning of the callback, it allows for
-%    instance to register functions in the other callbacks. It is useless to
-%    add a field \texttt{reader} or \texttt{close}, as they will be overriden.
-%    \item \texttt{file\_reader} is automatically registered in the
-%    \texttt{reader} callback for every file, it has the same signature.
-%    \item \texttt{file\_close} is registered in the \texttt{close} callback
-%    for every file, and has the same signature.
-%    \end{itemize}
-%
-%    \begin{macrocode}
-function luatextra.open_read_file(filename)
-    local path = kpse.find_file(filename)
-    local env = {
-      ['filename'] = filename,
-      ['path'] = path,
-    }
-    luatexbase.call_callback('pre_read_file', env)
-    path = env.path
-    if not path then
-        return
-    end
-    local f = env.file
-    if not f then
-        f = io.open(path)
-        env.file = f
-    end
-    if not f then
-        return
-    end
-    env.reader = luatextra.reader
-    env.close = luatextra.close
-    return env
-end
-%    \end{macrocode}
-%
-% \end{macro}
-%
-%    The two next functions are the one called in the
-%    \texttt{open\_read\_file} callback.
-%
-%    \begin{macrocode}
-function luatextra.reader(env)
-    local line = (env.file):read()
-    line = luatexbase.call_callback('file_reader', env, line)
-    return line
-end
-function luatextra.close(env)
-    (env.file):close()
-    luatexbase.call_callback('file_close', env)
-end
-%    \end{macrocode}
-%
-%    In the callback creation process we need to have default behaviours. Here
-%    they are. These are called only when no function is registered in the
-%    created callback. See the documentation of \texttt{luatexbase} for
-%    more details.
-%
-%    \begin{macrocode}
-function luatextra.default_reader(env, line)
-    return line
-end
-function luatextra.default_close(env)
-    return
-end
-function luatextra.default_pre_read(env)
-    return env
-end
-%    \end{macrocode}
-%
-%    \subsubsection{Multiple callbacks on the \texttt{define\_font}
-%    callback\label{sub:df}}
-%
-%    The same principle is applied to the \texttt{define\_font} callback. The
-%    main difference is that this mechanism is not applied by default. The
-%    reason is that the callback most people will register in the
-%    \texttt{define\_font} callback is the one from Con\TeX t allowing the use
-%    of OT fonts. When the code will be more adapted (not so soon certainly),
-%    this mechanism will certainly be used, as it allows more flexibility in
-%    the font syntax, the OT font load mechanism, etc.
-%
-%    The callbacks we register here are the following ones:
-%
-%    \begin{itemize}
-%    \item \texttt{font\_syntax} that takes a table with the fields
-%    \texttt{asked\_name}, \texttt{name} and \texttt{size}, and modifies this
-%    table to add more information. It must add at least a \texttt{path}
-%    field. The structure of the final table is not precisely defined, as it
-%    can vary from one syntax to another.
-%    \item \texttt{open\_otf\_font} takes the previous table, and must return
-%    a valid font structure as described in the Lua\TeX\ manual.
-%    \item \texttt{post\_font\_opening} takes the final font table and can
-%    modify it, before this table is returned to the \texttt{define\_font}
-%    callback.
-%    \end{itemize}
-%
-%    But first, we acknowledge the fact that \texttt{fontforge} has been
-%    renamed to \texttt{fontloader}. This check allows older versions of
-%    Lua\TeX\ to use \texttt{fontloader}.
-%
-%    As this mechanism is not loaded by default and certainly won't be until
-%    version 1.0 of Lua\TeX , we don't document it further. See the
-%    documentation of \texttt{luatextra.sty} (macro
-%    \texttt{\string\ltxtra\string@RegisterFontCallback}) to know how to load
-%    this mechanism anyway.
-%
-%    \begin{macrocode}
-do
-  if tex.luatexversion < 36 then
-      fontloader = fontforge
-  end
-end
-function luatextra.find_font(name)
-    local types = {'ofm', 'ovf', 'opentype fonts', 'truetype fonts'}
-    local path = kpse.find_file(name)
-    if path then return path end
-    for _,t in pairs(types) do
-        path = kpse.find_file(name, t)
-        if path then return path end
-    end
-    return nil
-end
-function luatextra.font_load_error(error)
-    luatextra.module_warning('luatextra', string.format('%s\nloading lmr10 instead...', error))
-end
-function luatextra.load_default_font(size)
-    return font.read_tfm("lmr10", size)
-end
-function luatextra.define_font(name, size)
-    if (size < 0) then size = (- 655.36) * size end
-    local fontinfos = {
-        asked_name = name,
-        name = name,
-        size = size
-        }
-    callback.call('font_syntax', fontinfos)
-    name = fontinfos.name
-    local path = fontinfos.path
-    if not path then
-        path = luatextra.find_font(name)
-        fontinfos.path = luatextra.find_font(name)
-    end
-    if not path then
-        luatextra.font_load_error("unable to find font "..name)
-        return luatextra.load_default_font(size)
-    end
-    if not fontinfos.filename then
-        fontinfos.filename = file.basename(path)
-    end
-    local ext = file.suffix(path)
-    local f
-    if ext == 'tfm' or ext == 'ofm' then
-        f =  font.read_tfm(name, size)
-    elseif ext == 'vf' or ext == 'ovf' then
-        f =  font.read_vf(name, size)
-    elseif ext == 'ttf' or ext == 'otf' or ext == 'ttc' then
-        f = luatexbase.call_callback('open_otf_font', fontinfos)
-    else
-        luatextra.font_load_error("unable to determine the type of font "..name)
-        f = luatextra.load_default_font(size)
-    end
-    if not f then
-        luatextra.font_load_error("unable to load font "..name)
-        f = luatextra.load_default_font(size)
-    end
-    luatexbase.call_callback('post_font_opening', f, fontinfos)
-    return f
-end
-function luatextra.default_font_syntax(fontinfos)
-    return
-end
-function luatextra.default_open_otf(fontinfos)
-    return nil
-end
-function luatextra.default_post_font(f, fontinfos)
-    return true
-end
-function luatextra.register_font_callback()
-    luatexbase.add_to_callback('define_font', luatextra.define_font, 'luatextra.define_font')
-end
-%    \end{macrocode}
-%
-%    Initialise a few callbacks.
-%
-%    \begin{macrocode}
-    luatexbase.create_callback('pre_read_file', 'simple', luatextra.default_pre_read)
-    luatexbase.create_callback('file_reader', 'data', luatextra.default_reader)
-    luatexbase.create_callback('file_close', 'simple', luatextra.default_close)
-    luatexbase.add_to_callback('open_read_file', luatextra.open_read_file, 'luatextra.open_read_file')
-    luatexbase.create_callback('font_syntax', 'simple', luatextra.default_font_syntax)
-    luatexbase.create_callback('open_otf_font', 'first', luatextra.default_open_otf)
-    luatexbase.create_callback('post_font_opening', 'simple', luatextra.default_post_font)
-%    \end{macrocode}
-%
-%    \begin{macrocode}
-%</lua>
-%    \end{macrocode}
 %
 %    \subsection{\TeX\ package}
 %
@@ -519,102 +236,6 @@ end
   \RequirePackage{luacode}
   \RequirePackage{fixltx2e}
 \fi
-%    \end{macrocode}
-%
-%    \subsubsection{Primitives and macros renaming}\label{rename}
-%
-%    \textbf{Warning.} This entire section will be dropped in a future
-%    release. Check section~\ref{sec-plan} for what to do if you deperately
-%    need it.
-%
-%    Here we differenciate two very different cases: Lua\TeX\ version < 0.36
-%    has no \texttt{tex.enableprimitives} function, and has support for
-%    multiple lua states, and for versions > 0.35, the
-%    \texttt{tex.enableprimitives} is provided, and the old
-%    \texttt{\string\directlua} syntax prints a warning.
-%
-%    \begin{macrocode}
-\ifnum\luatexversion<36
-%    \end{macrocode}
-%
-%    For old versions, we simply rename the primitives. You can note that
-%    \texttt{\string\attribute} (and also others) have no
-%    \texttt{\string\primitive} before them, because it would make users
-%    unable to call \texttt{\string\global\string\luaattribute}, which is a
-%    strong restriction. With this method, we can call it, but if
-%    \texttt{\string\attribute} was defined before, this means that
-%    \texttt{\string\luaattribute} will get its meaning, which is dangerous.
-%    Note also that you cannot use multiple states.
-%
-%    \begin{macrocode}
-  \def\directlua{\pdfprimitive\directlua0}
-  \def\latelua{\pdfprimitive\latelua0}
-  \def\lualate{\pdfprimitive\latelua0}
-  \def\luatexattribute{\attribute}
-  \def\luatexattributedef{\attributedef}
-  \def\luatexclearmarks{\pdfprimitive\luaclearmarks}
-  \def\luatexformatname{\pdfprimitive\formatname}
-  \def\luatexscantexttokens{\pdfprimitive\scantexttokens}
-  \def\luatexcatcodetable{\catcodetable}
-  \def\initluatexcatcodetable{\pdfprimitive\initcatcodetable}
-  \def\saveluatexcatcodetable{\pdfprimitive\savecatcodetable}
-  \def\luaclose{\pdfprimitive\closelua}
-\else
-%    \end{macrocode}
-%
-%    From TeXLive 2009, all primitives should be provided with the |luatex|
-%    prefix. For TeXLive 2008, we provide some primitives with this prefix too,
-%    to keep backward compatibility.
-%
-%    \begin{macrocode}
-  \directlua{tex.enableprimitives('luatex', {'attribute'})}
-  \directlua{tex.enableprimitives('luatex', {'attributedef'})}
-  \directlua{tex.enableprimitives('luatex', {'clearmarks'})}
-  \directlua{tex.enableprimitives('luatex', {'formatname'})}
-  \directlua{tex.enableprimitives('luatex', {'scantexttokens'})}
-  \directlua{tex.enableprimitives('luatex', {'catcodetable'})}
-  \directlua{tex.enableprimitives('luatex', {'latelua'})}
-  \directlua{tex.enableprimitives('luatex', {'initcatcodetable'})}
-  \directlua{tex.enableprimitives('luatex', {'savecatcodetable'})}
-  \directlua{tex.enableprimitives('luatex', {'closelua'})}
-  \let\lualate\luatexlatelua
-  \let\initluatexcatcodetable\luatexinitcatcodetable
-  \let\saveluatexcatcodetable\luatexsavecatcodetable
-  \let\luaclose\luatexcloselua
-\fi
-%    \end{macrocode}
-%
-%    We provide some functions for backward compatibility with old versions of
-%    luatextra.
-%
-%    \begin{macrocode}
-\let\newluaattribute\newluatexattribute
-\let\luaattribute\luatexattribute
-\let\unsetluaattribute\unsetluatexattribute
-\let\initluacatcodetable\initluatexcatcodetable
-\let\luasetcatcoderange\luatexsetcatcoderange
-\let\newluacatcodetable\newluatexcatcodetable
-\let\setluaattribute\setluatexattribute
-\let\luaModuleError\luatexModuleError
-\let\luaRequireModule\luatexRequireModule
-\let\luaUseModule\luatexUseModule
-%    \end{macrocode}
-%
-%    \subsection{Callbacks}
-%
-%    We load the \texttt{lua} file.
-%
-%    \begin{macrocode}
-\directlua{dofile(kpse.find_file("luatextra.lua"))}
-%    \end{macrocode}
-%
-%    A small macro to register the \texttt{define\_font} callback from
-%    \textsf{luatextra}.
-%
-%    \begin{macrocode}
-\def\ltxtra@RegisterFontCallback{
-  \directlua{luatextra.register_font_callback()}
-}
 %    \end{macrocode}
 %
 %    \begin{macrocode}
